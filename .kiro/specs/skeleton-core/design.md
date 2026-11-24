@@ -91,9 +91,10 @@ class ProtocolAdapter(Protocol):
 class PointConfig:
     name: str
     address: str
-    data_type: DataType       # enum: INT16, UINT16, INT32, UINT32, FLOAT32, BOOL, ...
+    data_type: DataType  # enum: INT16, UINT16, INT32, UINT32, FLOAT32, BOOL, ...
     unit: str
     scale: float | None = None  # must be > 0 when present
+
 
 @dataclass(frozen=True)
 class DeviceConfig:
@@ -101,6 +102,7 @@ class DeviceConfig:
     description: str
     timeout_seconds: float
     points: tuple[PointConfig, ...]
+
 
 @dataclass(frozen=True)
 class Configuration:
@@ -162,10 +164,12 @@ class DataType(str, Enum):
     FLOAT32 = "float32"
     BOOL = "bool"
 
+
 class HealthStatus(str, Enum):
     OK = "ok"
     DEGRADED = "degraded"
     UNREACHABLE = "unreachable"
+
 
 @dataclass(frozen=True)
 class PointConfig:
@@ -175,6 +179,7 @@ class PointConfig:
     unit: str
     scale: float | None = None
 
+
 @dataclass(frozen=True)
 class DeviceConfig:
     name: str
@@ -182,24 +187,27 @@ class DeviceConfig:
     timeout_seconds: float = 2.0
     points: tuple[PointConfig, ...] = ()
 
+
 @dataclass(frozen=True)
 class Configuration:
     devices: tuple[DeviceConfig, ...] = ()
 
+
 @dataclass(frozen=True)
 class AuditEntry:
-    timestamp: str          # ISO 8601
+    timestamp: str  # ISO 8601
     tool: str
-    device: str              # "" if not applicable
-    point: str                # "" if not applicable
-    outcome: str              # e.g. "ok", "rejected", "timeout", "error"
+    device: str  # "" if not applicable
+    point: str  # "" if not applicable
+    outcome: str  # e.g. "ok", "rejected", "timeout", "error"
     duration_ms: float
+
 
 @dataclass(frozen=True)
 class ReadResult:
     value: float | int | bool
     unit: str
-    timestamp: str            # ISO 8601
+    timestamp: str  # ISO 8601
 ```
 
 `PointConfig`, `DeviceConfig` and `Configuration` are immutable and hashable (needed for equality checks in the config round-trip property). `RawValue` used by the Codec is `int | float | bool`, matching the decoded shape of each `DataType`.

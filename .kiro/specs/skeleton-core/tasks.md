@@ -8,20 +8,20 @@ The Codec has no slot in the requested order, so it is built right after configu
 
 ## Tasks
 
-- [ ] 1. Set up the package, point model and adapter interface
-  - [ ] 1.1 Create project scaffolding
+- [x] 1. Set up the package, point model and adapter interface
+  - [x] 1.1 Create project scaffolding
     - Create `pyproject.toml` (Python 3.12, `uv`, dependencies: `mcp`, `fastapi`, `pyyaml`, `uvicorn`; dev: `pytest`, `hypothesis`, `ruff`, `httpx`)
     - Create `skeleton/seance/__init__.py` and `skeleton/tests/__init__.py`
     - Configure `pytest` and `ruff` in `pyproject.toml`
     - _Requirements: 8.2, 8.4_
 
-  - [ ] 1.2 Implement the point model, ProtocolAdapter and Fake_Adapter
+  - [x] 1.2 Implement the point model, ProtocolAdapter and Fake_Adapter
     - In `skeleton/seance/points.py`: `DataType`, `PointConfig`, `DeviceConfig`, `Configuration` as frozen dataclasses with full type hints and no `Any`
     - In `skeleton/seance/adapter.py`: `HealthStatus`, `ProtocolAdapter` (`connect`, `close`, `read`, `health`, no write method), `AdapterRegistrationError` and a registration check that names the adapter class and the missing method
     - In `skeleton/tests/fakes.py`: `Fake_Adapter` with configurable bytes, errors, delay and a call counter
     - _Requirements: 1.1, 1.2, 1.3, 2.3, 4.4, 8.1, 8.2_
 
-  - [ ]* 1.3 Write unit tests for adapter registration and layering
+  - [x] 1.3 Write unit tests for adapter registration and layering
     - Test that a missing method raises `AdapterRegistrationError` naming the method and class
     - Test that no module under `skeleton/seance/` imports `pymodbus`, `pysnmp` or `apps`
     - Test that `ProtocolAdapter` exposes no write method

@@ -1,0 +1,43 @@
+"""Point model: the immutable description of devices and the points they expose."""
+
+from dataclasses import dataclass
+from enum import StrEnum
+
+
+class DataType(StrEnum):
+    """Data types the Codec can decode and encode."""
+
+    INT16 = "int16"
+    UINT16 = "uint16"
+    INT32 = "int32"
+    UINT32 = "uint32"
+    FLOAT32 = "float32"
+    BOOL = "bool"
+
+
+@dataclass(frozen=True)
+class PointConfig:
+    """One readable value on a device. `scale`, when present, must be greater than zero."""
+
+    name: str
+    address: str
+    data_type: DataType
+    unit: str
+    scale: float | None = None
+
+
+@dataclass(frozen=True)
+class DeviceConfig:
+    """One device and the points it exposes."""
+
+    name: str
+    description: str
+    timeout_seconds: float = 2.0
+    points: tuple[PointConfig, ...] = ()
+
+
+@dataclass(frozen=True)
+class Configuration:
+    """The full set of devices served by one app."""
+
+    devices: tuple[DeviceConfig, ...] = ()
