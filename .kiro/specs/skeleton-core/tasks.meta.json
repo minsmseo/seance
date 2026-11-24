@@ -3,6 +3,18 @@
     "2.2 Write property test for configuration round-trip": {
       "status": "passed",
       "lastRunTimestamp": 1795528742482
+    },
+    "3.2 Write property test for decode-then-encode round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1795529011104
+    },
+    "3.3 Write property test for wrong-length input": {
+      "status": "passed",
+      "lastRunTimestamp": 1795529060648
+    },
+    "3.4 Write property test for scaling": {
+      "status": "passed",
+      "lastRunTimestamp": 1795529124022
     }
   },
   "executionHistory": {
@@ -80,6 +92,61 @@
         "executionId": "af7d899f-5329-4d97-ab4d-740e7272b957",
         "chatSessionId": "sess_9e23e280-b48e-4e3b-8456-1f30d2f4e984",
         "timestamp": 1795528753830
+      }
+    ],
+    "3.1 Implement decode, encode and scaling in `skeleton/seance/codec.py`": [
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795528911084
+      },
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795528974126
+      }
+    ],
+    "3.2 Write property test for decode-then-encode round-trip": [
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795528974310
+      },
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795529019692
+      }
+    ],
+    "3.3 Write property test for wrong-length input": [
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795529020134
+      },
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795529067973
+      }
+    ],
+    "3.4 Write property test for scaling": [
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795529068546
+      },
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795529132437
+      }
+    ],
+    "3. Implement the Codec": [
+      {
+        "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
+        "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
+        "timestamp": 1795529132584
       }
     ]
   }

@@ -47,24 +47,24 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Create `skeleton/tests/test_config.py`
     - _Requirements: 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
 
-- [ ] 3. Implement the Codec
-  - [ ] 3.1 Implement decode, encode and scaling in `skeleton/seance/codec.py`
+- [x] 3. Implement the Codec
+  - [x] 3.1 Implement decode, encode and scaling in `skeleton/seance/codec.py`
     - `decode`, `encode`, `apply_scale` for `INT16`, `UINT16`, `INT32`, `UINT32`, `FLOAT32`, `BOOL`
     - `CodecLengthError` naming the data type, expected length and received length
     - Use `RawValue = int | float | bool`
     - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
-  - [ ] 3.2 Write property test for decode-then-encode round-trip
+  - [x] 3.2 Write property test for decode-then-encode round-trip
     - **Property 2: Codec decode-then-encode round-trip**
     - **Validates: Requirements 3.3**
     - Create `skeleton/tests/test_codec_properties.py`
 
-  - [ ] 3.3 Write property test for wrong-length input
+  - [x] 3.3 Write property test for wrong-length input
     - **Property 3: Codec rejects wrong-length input**
     - **Validates: Requirements 3.4**
     - Add to `skeleton/tests/test_codec_properties.py`
 
-  - [ ] 3.4 Write property test for scaling
+  - [x] 3.4 Write property test for scaling
     - **Property 4: Scaling preserves sign**
     - **Validates: Requirements 3.5, 3.6**
     - Add to `skeleton/tests/test_codec_properties.py`
