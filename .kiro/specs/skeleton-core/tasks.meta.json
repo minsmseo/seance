@@ -1,5 +1,10 @@
 {
-  "pbtResults": {},
+  "pbtResults": {
+    "2.2 Write property test for configuration round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1795528742482
+    }
+  },
   "executionHistory": {
     "1.1 Create project scaffolding": [
       {
@@ -42,6 +47,39 @@
         "executionId": "2cd48691-034b-4a45-9c85-1f749d569a74",
         "chatSessionId": "sess_0c87fec9-5d14-46bb-96b0-d5956ecb587c",
         "timestamp": 1795528455505
+      }
+    ],
+    "2. Implement configuration loading and dumping": [
+      {
+        "executionId": "af7d899f-5329-4d97-ab4d-740e7272b957",
+        "chatSessionId": "sess_9e23e280-b48e-4e3b-8456-1f30d2f4e984",
+        "timestamp": 1795528633050
+      },
+      {
+        "executionId": "af7d899f-5329-4d97-ab4d-740e7272b957",
+        "chatSessionId": "sess_9e23e280-b48e-4e3b-8456-1f30d2f4e984",
+        "timestamp": 1795528753997
+      }
+    ],
+    "2.1 Implement `Config_Loader` in `skeleton/seance/config.py`": [
+      {
+        "executionId": "af7d899f-5329-4d97-ab4d-740e7272b957",
+        "chatSessionId": "sess_9e23e280-b48e-4e3b-8456-1f30d2f4e984",
+        "timestamp": 1795528752955
+      }
+    ],
+    "2.2 Write property test for configuration round-trip": [
+      {
+        "executionId": "af7d899f-5329-4d97-ab4d-740e7272b957",
+        "chatSessionId": "sess_9e23e280-b48e-4e3b-8456-1f30d2f4e984",
+        "timestamp": 1795528753302
+      }
+    ],
+    "2.3 Write unit tests for the Config_Loader": [
+      {
+        "executionId": "af7d899f-5329-4d97-ab4d-740e7272b957",
+        "chatSessionId": "sess_9e23e280-b48e-4e3b-8456-1f30d2f4e984",
+        "timestamp": 1795528753830
       }
     ]
   }

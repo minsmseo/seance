@@ -28,8 +28,8 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Create `skeleton/tests/test_adapter.py`
     - _Requirements: 1.2, 1.4, 1.5, 4.4_
 
-- [ ] 2. Implement configuration loading and dumping
-  - [ ] 2.1 Implement `Config_Loader` in `skeleton/seance/config.py`
+- [x] 2. Implement configuration loading and dumping
+  - [x] 2.1 Implement `Config_Loader` in `skeleton/seance/config.py`
     - `load_config(path) -> Configuration` and `dump_config(config) -> str`
     - `ConfigError(file, device, field, reason)` naming the file, device and field
     - Require name, address, data type and unit on each Point; accept `scale` only when it is a number greater than zero
@@ -37,12 +37,12 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Default `timeout_seconds` to 2.0
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8_
 
-  - [ ] 2.2 Write property test for configuration round-trip
+  - [x] 2.2 Write property test for configuration round-trip
     - **Property 1: Configuration round-trip**
     - **Validates: Requirements 2.9**
     - Create `skeleton/tests/test_config_properties.py` with a `hypothesis` strategy for valid Configurations
 
-  - [ ]* 2.3 Write unit tests for the Config_Loader
+  - [x] 2.3 Write unit tests for the Config_Loader
     - Missing required Point field, duplicate Point name, unsupported data type, invalid scale, default timeout, error messages naming file, device and field
     - Create `skeleton/tests/test_config.py`
     - _Requirements: 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
@@ -90,7 +90,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - **Validates: Requirements 4.5**
     - Add to `skeleton/tests/test_guard_properties.py`
 
-  - [ ]* 5.4 Write unit tests for the guard
+  - [ ] 5.4 Write unit tests for the guard
     - Concrete tool name and argument examples with and without opt-in
     - Create `skeleton/tests/test_guard.py`
     - _Requirements: 4.1, 4.3, 4.5_
@@ -102,7 +102,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Empty strings for missing device or point
     - _Requirements: 6.4, 6.5_
 
-  - [ ]* 6.2 Write unit tests for the audit log
+  - [ ] 6.2 Write unit tests for the audit log
     - Ordering and truncation of `recent(n)`, empty fields, stored fields
     - Create `skeleton/tests/test_audit.py`
     - _Requirements: 6.4, 6.5, 7.4_
@@ -131,7 +131,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Return the guard's plain-sentence rejection for Write_Requests without calling the adapter
     - _Requirements: 1.2, 4.1, 4.3, 5.1_
 
-  - [ ]* 8.4 Write unit tests for the tools
+  - [ ] 8.4 Write unit tests for the tools
     - Shapes for `list_devices` and `list_points`, unknown device and point messages, close-match suggestions, timeout sentence, adapter-error sentence
     - Create `skeleton/tests/test_server.py`
     - _Requirements: 5.2, 5.3, 5.7, 5.8, 5.9, 5.10_
@@ -177,7 +177,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Mount the console app on server startup
     - _Requirements: 7.1, 7.6_
 
-  - [ ]* 10.4 Write route tests for the console
+  - [ ] 10.4 Write route tests for the console
     - Use FastAPI `TestClient` with the Fake_Adapter
     - Check device and point listing, live values, tool invocation with raw result, 50-entry audit view, audit entry written per console call, unchanged names and errors
     - Create `skeleton/tests/test_console.py`
@@ -188,7 +188,7 @@ The Codec has no slot in the requested order, so it is built right after configu
 
 ## Notes
 
-- Tasks marked with `*` are optional and can be skipped for a faster MVP
+- All tasks are required, including test tasks. No task is optional
 - Each task references specific requirements for traceability
 - Property tests use `hypothesis` with at least 100 iterations and are tagged `Feature: skeleton-core, Property N`
 - Property tests live in `test_*_properties.py` files
