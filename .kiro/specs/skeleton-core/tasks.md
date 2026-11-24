@@ -95,14 +95,14 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Create `skeleton/tests/test_guard.py`
     - _Requirements: 4.1, 4.3, 4.5_
 
-- [ ] 6. Implement the audit log
-  - [ ] 6.1 Implement `Audit_Log` in `skeleton/seance/audit.py`
+- [x] 6. Implement the audit log
+  - [x] 6.1 Implement `Audit_Log` in `skeleton/seance/audit.py`
     - `AuditEntry` dataclass with timestamp, tool, device, point, outcome and `duration_ms`
     - `record(entry)` and `recent(n)` returning newest first
     - Empty strings for missing device or point
     - _Requirements: 6.4, 6.5_
 
-  - [ ] 6.2 Write unit tests for the audit log
+  - [x] 6.2 Write unit tests for the audit log
     - Ordering and truncation of `recent(n)`, empty fields, stored fields
     - Create `skeleton/tests/test_audit.py`
     - _Requirements: 6.4, 6.5, 7.4_

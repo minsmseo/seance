@@ -223,6 +223,37 @@
         "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
         "timestamp": 1795529671116
       }
+    ],
+    "6.1 Implement `Audit_Log` in `skeleton/seance/audit.py`": [
+      {
+        "executionId": "09254fbf-7d83-4129-8614-96e545f36ad7",
+        "chatSessionId": "sess_46f9736b-2867-4ae5-a25e-56e9a833aae2",
+        "timestamp": 1795564451657
+      },
+      {
+        "executionId": "09254fbf-7d83-4129-8614-96e545f36ad7",
+        "chatSessionId": "sess_46f9736b-2867-4ae5-a25e-56e9a833aae2",
+        "timestamp": 1795564513220
+      }
+    ],
+    "6.2 Write unit tests for the audit log": [
+      {
+        "executionId": "09254fbf-7d83-4129-8614-96e545f36ad7",
+        "chatSessionId": "sess_46f9736b-2867-4ae5-a25e-56e9a833aae2",
+        "timestamp": 1795564513310
+      },
+      {
+        "executionId": "09254fbf-7d83-4129-8614-96e545f36ad7",
+        "chatSessionId": "sess_46f9736b-2867-4ae5-a25e-56e9a833aae2",
+        "timestamp": 1795564566560
+      }
+    ],
+    "6. Implement the audit log": [
+      {
+        "executionId": "09254fbf-7d83-4129-8614-96e545f36ad7",
+        "chatSessionId": "sess_46f9736b-2867-4ae5-a25e-56e9a833aae2",
+        "timestamp": 1795564566627
+      }
     ]
   }
 }
