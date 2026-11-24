@@ -15,6 +15,14 @@
     "3.4 Write property test for scaling": {
       "status": "passed",
       "lastRunTimestamp": 1795529124022
+    },
+    "5.2 Write property test for guard rejection": {
+      "status": "passed",
+      "lastRunTimestamp": 1795529615755
+    },
+    "5.3 Write property test for opt-in writes": {
+      "status": "passed",
+      "lastRunTimestamp": 1795529663752
     }
   },
   "executionHistory": {
@@ -159,6 +167,61 @@
         "executionId": "e7145c55-2cb8-4aea-a2eb-6fdbce4021ed",
         "chatSessionId": "sess_74c20b18-eca1-4650-8ee1-c7a59b9be192",
         "timestamp": 1795529394127
+      }
+    ],
+    "5.1 Implement `Read_Only_Guard` in `skeleton/seance/guard.py`": [
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529495239
+      },
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529555806
+      }
+    ],
+    "5.4 Write unit tests for the guard": [
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529556587
+      },
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529625976
+      }
+    ],
+    "5.2 Write property test for guard rejection": [
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529556944
+      },
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529625861
+      }
+    ],
+    "5.3 Write property test for opt-in writes": [
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529633641
+      },
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529671063
+      }
+    ],
+    "5. Implement the read-only guard": [
+      {
+        "executionId": "1a046464-4969-4522-9145-05442e8ef383",
+        "chatSessionId": "sess_521c2933-e63f-46d0-9e57-f5a6d1de8541",
+        "timestamp": 1795529671116
       }
     ]
   }

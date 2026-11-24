@@ -72,25 +72,25 @@ The Codec has no slot in the requested order, so it is built right after configu
 - [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement the read-only guard
-  - [ ] 5.1 Implement `Read_Only_Guard` in `skeleton/seance/guard.py`
+- [x] 5. Implement the read-only guard
+  - [x] 5.1 Implement `Read_Only_Guard` in `skeleton/seance/guard.py`
     - `Read_Only_Guard(allowed_write_tools: frozenset[str] = frozenset())`
     - `check(tool_name, args) -> GuardResult` returning `Allowed` or `Rejected(message)`
     - Treat any tool name outside the five read tools as a Write_Request unless opted in
     - Rejection message states that the server is read-only and that no change was made
     - _Requirements: 4.1, 4.2, 4.3, 4.5_
 
-  - [ ] 5.2 Write property test for guard rejection
+  - [x] 5.2 Write property test for guard rejection
     - **Property 5: The guard rejects every write request and the adapter is never called**
     - **Validates: Requirements 4.1, 4.2, 4.3**
     - Create `skeleton/tests/test_guard_properties.py` using the Fake_Adapter call counter
 
-  - [ ] 5.3 Write property test for opt-in writes
+  - [x] 5.3 Write property test for opt-in writes
     - **Property 6: Opt-in write tools are the only tools ever permitted to write**
     - **Validates: Requirements 4.5**
     - Add to `skeleton/tests/test_guard_properties.py`
 
-  - [ ] 5.4 Write unit tests for the guard
+  - [x] 5.4 Write unit tests for the guard
     - Concrete tool name and argument examples with and without opt-in
     - Create `skeleton/tests/test_guard.py`
     - _Requirements: 4.1, 4.3, 4.5_
