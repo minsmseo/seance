@@ -69,7 +69,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - **Validates: Requirements 3.5, 3.6**
     - Add to `skeleton/tests/test_codec_properties.py`
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement the read-only guard
