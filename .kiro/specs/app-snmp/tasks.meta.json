@@ -280,6 +280,68 @@
         "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
         "timestamp": 1795603987497
       }
+    ],
+    "8. Checkpoint - Address parser and adapter": [
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604165741
+      }
+    ],
+    "9.1 Create `apps/snmp/devices.yaml`": [
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604176722
+      },
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604217414
+      }
+    ],
+    "9.2 Write unit tests in `apps/snmp/tests/test_config.py`": [
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604228728
+      },
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604286832
+      }
+    ],
+    "9.3 Write property test for reads in `apps/snmp/tests/test_adapter_properties.py`": [
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604302834
+      },
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604359417
+      }
+    ],
+    "9.4 Write property test for read-only behavior in `apps/snmp/tests/test_readonly_properties.py`": [
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604360227
+      },
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604405532
+      }
+    ],
+    "9. Write the SNMP_Config": [
+      {
+        "executionId": "18445e6c-2335-42e9-bc7f-3d48bf51e713",
+        "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
+        "timestamp": 1795604405575
+      }
     ]
   }
 }

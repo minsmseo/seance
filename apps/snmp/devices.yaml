@@ -1,0 +1,150 @@
+# Seance SNMP app: device description for the simulated network gear.
+# Addresses read <device>:<oid>. The community equals the device name.
+# Points match OID_MAP in simulator.py.
+# Host and port come from SEANCE_SNMP_HOST and SEANCE_SNMP_PORT, not from this file.
+# Uptime is TimeTicks (hundredths of a second), so scale 0.01 gives seconds.
+# Status points carry labels. The interface status words follow ifOperStatus.
+# memory_used is hrStorageUsed. It counts allocation units, and the simulator
+# treats one unit as 1 MiB, so the unit is MiB.
+# on_battery is upsOutputSource: 3 means normal, 5 means running on battery.
+devices:
+  - name: core_switch
+    description: Core switch with four ports and an uplink (SNMP community core_switch)
+    timeout_seconds: 2.0
+    points:
+      - name: uptime
+        address: "core_switch:1.3.6.1.2.1.1.3.0"
+        data_type: uint32
+        unit: s
+        scale: 0.01
+      - name: port1_status
+        address: "core_switch:1.3.6.1.2.1.2.2.1.8.1"
+        data_type: int32
+        unit: state
+        labels:
+          1: up
+          2: down
+          3: testing
+          4: unknown
+          5: dormant
+          6: notPresent
+          7: lowerLayerDown
+      - name: port2_status
+        address: "core_switch:1.3.6.1.2.1.2.2.1.8.2"
+        data_type: int32
+        unit: state
+        labels:
+          1: up
+          2: down
+          3: testing
+          4: unknown
+          5: dormant
+          6: notPresent
+          7: lowerLayerDown
+      - name: port3_status
+        address: "core_switch:1.3.6.1.2.1.2.2.1.8.3"
+        data_type: int32
+        unit: state
+        labels:
+          1: up
+          2: down
+          3: testing
+          4: unknown
+          5: dormant
+          6: notPresent
+          7: lowerLayerDown
+      - name: port4_status
+        address: "core_switch:1.3.6.1.2.1.2.2.1.8.4"
+        data_type: int32
+        unit: state
+        labels:
+          1: up
+          2: down
+          3: testing
+          4: unknown
+          5: dormant
+          6: notPresent
+          7: lowerLayerDown
+      - name: uplink_in_octets
+        address: "core_switch:1.3.6.1.2.1.31.1.1.1.6.5"
+        data_type: uint64
+        unit: B
+      - name: uplink_out_octets
+        address: "core_switch:1.3.6.1.2.1.31.1.1.1.10.5"
+        data_type: uint64
+        unit: B
+      - name: uplink_in_errors
+        address: "core_switch:1.3.6.1.2.1.2.2.1.14.5"
+        data_type: uint32
+        unit: errors
+
+  - name: edge_router
+    description: Edge router with one WAN link (SNMP community edge_router)
+    timeout_seconds: 2.0
+    points:
+      - name: uptime
+        address: "edge_router:1.3.6.1.2.1.1.3.0"
+        data_type: uint32
+        unit: s
+        scale: 0.01
+      - name: cpu_load
+        address: "edge_router:1.3.6.1.2.1.25.3.3.1.2.1"
+        data_type: int32
+        unit: percent
+      - name: memory_used
+        address: "edge_router:1.3.6.1.2.1.25.2.3.1.6.1"
+        data_type: int32
+        unit: MiB
+      - name: wan_link_status
+        address: "edge_router:1.3.6.1.2.1.2.2.1.8.1"
+        data_type: int32
+        unit: state
+        labels:
+          1: up
+          2: down
+          3: testing
+          4: unknown
+          5: dormant
+          6: notPresent
+          7: lowerLayerDown
+      - name: wan_in_octets
+        address: "edge_router:1.3.6.1.2.1.31.1.1.1.6.1"
+        data_type: uint64
+        unit: B
+      - name: wan_out_octets
+        address: "edge_router:1.3.6.1.2.1.31.1.1.1.10.1"
+        data_type: uint64
+        unit: B
+
+  - name: ups
+    description: Uninterruptible power supply (SNMP community ups)
+    timeout_seconds: 2.0
+    points:
+      - name: battery_charge
+        address: "ups:1.3.6.1.2.1.33.1.2.4.0"
+        data_type: int32
+        unit: percent
+      - name: runtime_remaining
+        address: "ups:1.3.6.1.2.1.33.1.2.3.0"
+        data_type: int32
+        unit: min
+      - name: on_battery
+        address: "ups:1.3.6.1.2.1.33.1.4.1.0"
+        data_type: int32
+        unit: state
+        labels:
+          1: other
+          2: none
+          3: normal
+          4: bypass
+          5: battery
+          6: booster
+          7: reducer
+      - name: output_load
+        address: "ups:1.3.6.1.2.1.33.1.4.4.1.5.1"
+        data_type: int32
+        unit: percent
+      - name: temperature
+        address: "ups:1.3.6.1.2.1.33.1.2.7.0"
+        data_type: int32
+        unit: degC

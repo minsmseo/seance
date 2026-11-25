@@ -168,11 +168,11 @@ Verification rules for every task:
     - Run `uv run pytest apps/snmp/tests/test_adapter.py` once only if the user asks for a local run, since pysnmp is verified on GitHub Actions
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 2.15, 2.16, 2.17, 2.18, 2.20, 5.3, 5.4, 5.5, 6.4, 11.1_
 
-- [ ] 8. Checkpoint - Address parser and adapter
+- [x] 8. Checkpoint - Address parser and adapter
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Write the SNMP_Config
-  - [ ] 9.1 Create `apps/snmp/devices.yaml`
+- [x] 9. Write the SNMP_Config
+  - [x] 9.1 Create `apps/snmp/devices.yaml`
     - Define `core_switch`, `edge_router` and `ups` with the 19 Points, OIDs, data types, units, scales and labels from the design tables
     - Every address is `<device>:<oid>` with the community equal to the device name
     - `uptime` points are `uint32` with scale 0.01 and unit `s`, octet counters are `uint64`, and the status points carry labels that cover every value the Simulator can report
@@ -181,21 +181,21 @@ Verification rules for every task:
     - Use ASCII only
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10, 4.15, 5.6_
 
-  - [ ] 9.2 Write unit tests in `apps/snmp/tests/test_config.py`
+  - [x] 9.2 Write unit tests in `apps/snmp/tests/test_config.py`
     - Load the shipped file with `seance.config.load_config`
     - Assert the three devices, 19 Points, the required Points per device, data type coverage, positive scales, the 0.01 scale on uptime, non-empty units and labels on the status Points
     - Assert that every address parses with a community equal to the device name, and that every Point exists in the Simulator's OID map with a compatible type and labels that cover its reachable values
     - Assert that a bad field gives one message naming the file, the device and the field
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10, 4.11, 4.12, 5.6_
 
-  - [ ] 9.3 Write property test for reads in `apps/snmp/tests/test_adapter_properties.py`
+  - [x] 9.3 Write property test for reads in `apps/snmp/tests/test_adapter_properties.py`
     - **Property 2: A read returns the Simulator state after decoding, scaling and labeling**
     - Tag with `Feature: app-snmp, Property 2`
     - Share one module-scoped Simulator with `drift=False`, one adapter and one `ToolServer` wired to `devices.yaml`, generate in-range raw values per Point, call `set_value`, read through the `ToolServer`, and compare with the reference computed by the skeleton helpers
     - Set `deadline=None`, create no event loop per example
     - **Validates: Requirements 2.6, 2.7, 5.1, 5.3, 5.4, 5.5, 7.12**
 
-  - [ ] 9.4 Write property test for read-only behavior in `apps/snmp/tests/test_readonly_properties.py`
+  - [x] 9.4 Write property test for read-only behavior in `apps/snmp/tests/test_readonly_properties.py`
     - **Property 1: Only GET requests reach the Simulator**
     - Tag with `Feature: app-snmp, Property 1`
     - Drive a `ToolServer` wired to the real adapter, `devices.yaml` and a running Simulator with generated tool names and argument sets, including write-shaped ones
