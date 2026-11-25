@@ -39,15 +39,15 @@ The work follows the order set for this spec: the Simulator first, then the skel
 - [x] 2. Checkpoint - Simulator
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Skeleton change: AdapterReadError
-  - [ ] 3.1 Add `AdapterReadError` and handle it in the Tool_Server
+- [x] 3. Skeleton change: AdapterReadError
+  - [x] 3.1 Add `AdapterReadError` and handle it in the Tool_Server
     - In `skeleton/seance/adapter.py` add `AdapterReadError(message: str)` as an additive exception class
     - In `skeleton/seance/server.py`, when an adapter raises `AdapterReadError`, return its message as the tool result with outcome `adapter_error`, clipped to one line and a maximum length
     - Any other exception keeps today's generic sentence
     - No existing signature changes, and the skeleton must not import from `apps/` or import `pymodbus` or `pysnmp`
     - _Requirements: 5.1, 5.2, 5.4, 10.5, Skeleton change 1_
 
-  - [ ] 3.2 Write skeleton unit tests
+  - [x] 3.2 Write skeleton unit tests
     - In `skeleton/tests/test_adapter.py` test that `AdapterReadError` carries its message
     - In `skeleton/tests/test_server.py` test that the message is returned with outcome `adapter_error`, that multi-line and very long messages are clipped, that other exceptions still give the generic sentence, and that the audit log gets exactly one entry for the call
     - Use a fake adapter and no network

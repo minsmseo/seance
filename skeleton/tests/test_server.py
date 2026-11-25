@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from seance.adapter import AdapterRegistrationError, HealthStatus
+from seance.adapter import AdapterReadError, AdapterRegistrationError, HealthStatus
 from seance.config import ConfigError, dump_config
 from seance.guard import Read_Only_Guard
 from seance.points import Configuration, DataType, DeviceConfig, PointConfig
@@ -123,6 +123,64 @@ def test_adapter_error_sentence_hides_exception() -> None:
     assert "Try" in result.text
     assert "secret" not in result.text
     assert "Traceback" not in result.text
+
+
+def test_adapter_read_error_message_is_returned() -> None:
+    message = "press has no register at 100. Check the point address."
+    server, _ = make(Fake_Adapter(error=AdapterReadError(message)))
+    result = server.call("read_point", {"device": "press", "point": "temperature"})
+    assert not result.ok
+    assert result.outcome == "adapter_error"
+    assert result.text == message
+
+
+def test_adapter_read_error_multiline_message_becomes_one_line() -> None:
+    server, _ = make(Fake_Adapter(error=AdapterReadError("first line\n  second\tline\r\nthird")))
+    result = server.call("read_point", {"device": "press", "point": "temperature"})
+    assert result.outcome == "adapter_error"
+    assert result.text == "first line second line third"
+
+
+def test_adapter_read_error_long_message_is_clipped() -> None:
+    server, _ = make(Fake_Adapter(error=AdapterReadError("x" * 500)))
+    result = server.call("read_point", {"device": "press", "point": "temperature"})
+    assert result.outcome == "adapter_error"
+    assert len(result.text) == 200
+    assert result.text.endswith("...")
+    assert result.text == "x" * 197 + "..."
+
+
+def test_adapter_read_error_at_limit_is_not_clipped() -> None:
+    message = "y" * 200
+    server, _ = make(Fake_Adapter(error=AdapterReadError(message)))
+    result = server.call("read_point", {"device": "press", "point": "temperature"})
+    assert result.text == message
+
+
+def test_adapter_read_error_on_health_check_is_returned() -> None:
+    server, _ = make(Fake_Adapter(error=AdapterReadError("press refused the request.")))
+    result = server.call("device_health", {"device": "press"})
+    assert result.outcome == "adapter_error"
+    assert result.text == "press refused the request."
+
+
+def test_adapter_read_error_writes_one_audit_entry() -> None:
+    server, _ = make(Fake_Adapter(error=AdapterReadError("press refused the request.")))
+    server.call("read_point", {"device": "press", "point": "temperature"})
+    entries = server.audit.recent(10)
+    assert len(entries) == 1
+    assert entries[0].tool == "read_point"
+    assert entries[0].device == "press"
+    assert entries[0].outcome == "adapter_error"
+
+
+def test_other_exception_keeps_generic_sentence_and_one_audit_entry() -> None:
+    server, _ = make(Fake_Adapter(error=ValueError("secret detail")))
+    result = server.call("read_point", {"device": "press", "point": "temperature"})
+    assert result.outcome == "adapter_error"
+    assert "press read failed: the adapter reported an error." in result.text
+    assert "secret" not in result.text
+    assert len(server.audit.recent(10)) == 1
 
 
 def test_wrong_length_data_is_an_adapter_error() -> None:

@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Annotated, TypeVar
 from mcp.server.mcpserver import MCPServer
 from pydantic import Field
 
-from seance.adapter import ProtocolAdapter, check_adapter
+from seance.adapter import AdapterReadError, ProtocolAdapter, check_adapter
 from seance.audit import Audit_Log, AuditEntry
 from seance.codec import RawValue, apply_scale, decode
 from seance.config import load_config
@@ -43,6 +43,7 @@ TOOL_NAMES: tuple[str, ...] = (
 )
 
 _MAX_NAME_CHARS = 40
+_MAX_MESSAGE_CHARS = 200
 _MAX_SUGGESTIONS = 3
 _MAX_LISTED = 5
 _MAX_WORKERS = 8
@@ -88,6 +89,16 @@ def _clip(name: str) -> str:
     flat = " ".join(name.split())
     if len(flat) > _MAX_NAME_CHARS:
         return flat[: _MAX_NAME_CHARS - 3] + "..."
+    return flat
+
+
+def _clip_message(message: str) -> str:
+    """Make an adapter's sentence one line, at most 200 characters."""
+    flat = " ".join(message.split())
+    if not flat:
+        return "The adapter reported an error. Try again, or check the device connection."
+    if len(flat) > _MAX_MESSAGE_CHARS:
+        return flat[: _MAX_MESSAGE_CHARS - 3] + "..."
     return flat
 
 
@@ -263,6 +274,9 @@ class ToolServer:
                 f"{_clip(device.name)} did not respond within {device.timeout_seconds:g}s. "
                 "Try again or check the device connection.",
             ) from None
+        except AdapterReadError as err:
+            logger.warning("Adapter %s failed for device %s: %s", action, device.name, err.message)
+            raise _ToolFailure("adapter_error", _clip_message(err.message)) from None
         except Exception:
             logger.exception("Adapter %s failed for device %s", action, device.name)
             raise _ToolFailure(

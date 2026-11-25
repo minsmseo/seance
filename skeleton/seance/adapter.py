@@ -44,6 +44,18 @@ class AdapterRegistrationError(Exception):
         )
 
 
+class AdapterReadError(Exception):
+    """Raised by an adapter to give the agent its own short failure sentence.
+
+    The Tool_Server returns the message with outcome adapter_error, clipped to one
+    line and a maximum length. Any other exception gets a generic sentence.
+    """
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        self.message = message
+
+
 def check_adapter(adapter: object) -> None:
     """Raise AdapterRegistrationError naming the class and the first missing method."""
     for method in REQUIRED_METHODS:

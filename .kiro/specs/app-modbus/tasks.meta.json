@@ -60,6 +60,37 @@
         "chatSessionId": "sess_861754bb-85dc-4843-8edb-8a9cb983085b",
         "timestamp": 1795573145171
       }
+    ],
+    "3.1 Add `AdapterReadError` and handle it in the Tool_Server": [
+      {
+        "executionId": "fe42c225-cea0-443e-81b7-54edcf5ad4a8",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795573194597
+      },
+      {
+        "executionId": "fe42c225-cea0-443e-81b7-54edcf5ad4a8",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795573234964
+      }
+    ],
+    "3.2 Write skeleton unit tests": [
+      {
+        "executionId": "fe42c225-cea0-443e-81b7-54edcf5ad4a8",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795573235272
+      },
+      {
+        "executionId": "fe42c225-cea0-443e-81b7-54edcf5ad4a8",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795573288809
+      }
+    ],
+    "3. Skeleton change: AdapterReadError": [
+      {
+        "executionId": "fe42c225-cea0-443e-81b7-54edcf5ad4a8",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795573288894
+      }
     ]
   }
 }

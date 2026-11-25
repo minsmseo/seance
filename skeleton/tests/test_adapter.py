@@ -7,6 +7,7 @@ import pytest
 
 from seance.adapter import (
     REQUIRED_METHODS,
+    AdapterReadError,
     AdapterRegistrationError,
     ProtocolAdapter,
     check_adapter,
@@ -82,3 +83,10 @@ def test_protocol_adapter_exposes_no_write_method() -> None:
     public = {name for name in vars(ProtocolAdapter) if not name.startswith("_")}
     assert public == set(REQUIRED_METHODS)
     assert not [n for n in public if n.lower().startswith(WRITE_PREFIXES)]
+
+
+def test_adapter_read_error_carries_its_message() -> None:
+    err = AdapterReadError("press has no register at 100. Check the point address.")
+    assert err.message == "press has no register at 100. Check the point address."
+    assert str(err) == err.message
+    assert isinstance(err, Exception)
