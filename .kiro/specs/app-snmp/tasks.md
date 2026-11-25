@@ -233,11 +233,11 @@ Verification rules for every task:
     - A plain test that the SNMP tool names and the Modbus tool names are the same set of exactly `list_devices`, `list_points`, `read_point`, `read_points` and `device_health`
     - _Requirements: 2.19, 5.1, 5.7, 5.8, 5.9, 7.11, 7.12, 8.1, 8.2, 8.3, 10.11_
 
-- [ ] 11. Checkpoint - Config and Entry_Point
+- [x] 11. Checkpoint - Config and Entry_Point
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Write the README
-  - [ ] 12.1 Create `apps/snmp/README.md`
+- [x] 12. Write the README
+  - [x] 12.1 Create `apps/snmp/README.md`
     - Use the same section headings as `apps/modbus/README.md`, in the same order: the title, "Run it", "Points", "Tools", "Example questions", "Run the tests" and "Use it from Kiro"
     - State the command `uv run python -m apps.snmp` and the four environment variables with their defaults
     - Explain that the default port is 1161 because port 161 needs elevated privileges
@@ -248,7 +248,7 @@ Verification rules for every task:
     - Use ASCII only
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9_
 
-  - [ ] 12.2 Write unit tests in `apps/snmp/tests/test_readme.py`
+  - [x] 12.2 Write unit tests in `apps/snmp/tests/test_readme.py`
     - The README is ASCII only and its headings equal those of `apps/modbus/README.md`, in order
     - It contains the command, the four variable names with defaults, the port 1161 explanation and the community statement
     - Every Point in `devices.yaml` appears with its address, type, unit, scale and labels
