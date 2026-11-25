@@ -19,6 +19,8 @@ Check the current documentation of a library before using an API from memory.
 - Test: `uv run pytest`
 - Lint: `uv run ruff check .`
 - Format: `uv run ruff format .`
+- The shell is Windows PowerShell. Run each command directly, one per call.
+- Never redirect output to a temporary file, and never chain commands with `;`.
 
 ## Rules
 
