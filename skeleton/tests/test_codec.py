@@ -4,7 +4,15 @@ import math
 
 import pytest
 
-from seance.codec import apply_scale, round_value
+from seance.codec import (
+    CodecLengthError,
+    CodecValueError,
+    apply_scale,
+    decode,
+    encode,
+    required_length,
+    round_value,
+)
 from seance.points import DataType
 
 F32 = DataType.FLOAT32
@@ -66,3 +74,25 @@ def test_bool_unchanged(decimals: int | None) -> None:
 def test_non_float32_without_decimals_unchanged(data_type: DataType) -> None:
     assert round_value(39.4000001234, data_type, None) == 39.4000001234
     assert round_value(123456789, data_type, None) == 123456789
+
+
+def test_uint64_required_length() -> None:
+    assert required_length(DataType.UINT64) == 8
+
+
+@pytest.mark.parametrize("value", [0, 2**64 - 1])
+def test_uint64_decode_encode_bounds(value: int) -> None:
+    raw = value.to_bytes(8, "big")
+    assert decode(DataType.UINT64, raw) == value
+    assert encode(DataType.UINT64, value) == raw
+
+
+def test_uint64_rejects_value_above_range() -> None:
+    with pytest.raises(CodecValueError):
+        encode(DataType.UINT64, 2**64)
+
+
+@pytest.mark.parametrize("length", [0, 4, 7, 9])
+def test_uint64_rejects_wrong_length(length: int) -> None:
+    with pytest.raises(CodecLengthError):
+        decode(DataType.UINT64, bytes(length))

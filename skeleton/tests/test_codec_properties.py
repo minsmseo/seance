@@ -114,3 +114,31 @@ def test_apply_scale_power_of_ten_has_at_most_n_places(raw: int, n: int) -> None
     assert isinstance(exponent, int)
     assert exponent >= -n
     assert math.isclose(result, raw * scale, rel_tol=1e-9, abs_tol=1e-12)
+
+
+# Feature: app-snmp, Property 4
+# **Validates: Requirements 4.9, 5.4**
+def test_uint64_is_covered_by_codec_generators() -> None:
+    assert DataType.UINT64 in list(DataType)
+    assert required_length(DataType.UINT64) == 8
+
+
+# Feature: app-snmp, Property 4
+# **Validates: Requirements 4.9, 5.4**
+@settings(max_examples=200)
+@given(raw=st.binary(min_size=8, max_size=8))
+def test_uint64_decode_then_encode_returns_original_bytes(raw: bytes) -> None:
+    assert encode(DataType.UINT64, decode(DataType.UINT64, raw)) == raw
+
+
+# Feature: app-snmp, Property 4
+# **Validates: Requirements 4.9, 5.4**
+@settings(max_examples=200)
+@given(raw=st.binary(min_size=8, max_size=8), scale=_SCALES)
+def test_positive_scale_never_changes_sign_of_uint64(raw: bytes, scale: float) -> None:
+    value = decode(DataType.UINT64, raw)
+    assert isinstance(value, int)
+    assert value >= 0
+    scaled = apply_scale(value, scale)
+    assert (scaled > 0) == (value > 0)
+    assert scaled >= 0

@@ -55,6 +55,56 @@
         "chatSessionId": "sess_774abb1b-e58d-42f8-a950-3958d5428125",
         "timestamp": 1795602376988
       }
+    ],
+    "2. Checkpoint - Simulator": [
+      {
+        "executionId": "94413d99-5cfd-4399-b268-8e6614204ca0",
+        "chatSessionId": "sess_774abb1b-e58d-42f8-a950-3958d5428125",
+        "timestamp": 1795602518851
+      }
+    ],
+    "3.1 Add `DataType.UINT64` to the points model and the Codec": [
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602589589
+      },
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602622527
+      }
+    ],
+    "3.2 Write skeleton unit tests": [
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602623095
+      },
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602663838
+      }
+    ],
+    "3.3 Write property tests for `uint64`": [
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602623670
+      },
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602664235
+      }
+    ],
+    "3. Skeleton change: `uint64`": [
+      {
+        "executionId": "e06024ea-dca7-4d75-9bc5-2469403cb3dc",
+        "chatSessionId": "sess_a5ad8824-8959-46ff-a2b6-a06ddb1d16bb",
+        "timestamp": 1795602664283
+      }
     ]
   }
 }

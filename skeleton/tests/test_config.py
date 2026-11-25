@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from seance.config import ConfigError, dump_config, load_config
+from seance.points import DataType
 
 VALID = """
 devices:
@@ -64,6 +65,13 @@ def test_unsupported_data_type(tmp_path: Path) -> None:
     assert "temp" in info.value.field
     assert "data_type" in info.value.field
     assert "complex128" in info.value.reason
+    assert "uint64" in info.value.reason
+
+
+def test_uint64_data_type_loads(tmp_path: Path) -> None:
+    text = VALID.replace("int16", "uint64").replace(", scale: 0.1", "")
+    point = load_config(write(tmp_path, text)).devices[0].points[0]
+    assert point.data_type is DataType.UINT64
 
 
 @pytest.mark.parametrize("scale", ["0", "-1.5", "abc", "true"])

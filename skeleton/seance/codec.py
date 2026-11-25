@@ -28,6 +28,7 @@ _LENGTHS: dict[DataType, int] = {
     DataType.UINT16: 2,
     DataType.INT32: 4,
     DataType.UINT32: 4,
+    DataType.UINT64: 8,
     DataType.FLOAT32: 4,
     DataType.BOOL: 1,
 }
@@ -37,6 +38,7 @@ _INT_FORMATS: dict[DataType, str] = {
     DataType.UINT16: ">H",
     DataType.INT32: ">i",
     DataType.UINT32: ">I",
+    DataType.UINT64: ">Q",
 }
 
 _INT_RANGES: dict[DataType, tuple[int, int]] = {
@@ -44,6 +46,7 @@ _INT_RANGES: dict[DataType, tuple[int, int]] = {
     DataType.UINT16: (0, 2**16 - 1),
     DataType.INT32: (-(2**31), 2**31 - 1),
     DataType.UINT32: (0, 2**32 - 1),
+    DataType.UINT64: (0, 2**64 - 1),
 }
 
 _F32_EXP_MASK = 0x7F800000

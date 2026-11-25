@@ -11,6 +11,7 @@ class DataType(StrEnum):
     UINT16 = "uint16"
     INT32 = "int32"
     UINT32 = "uint32"
+    UINT64 = "uint64"
     FLOAT32 = "float32"
     BOOL = "bool"
 

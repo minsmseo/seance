@@ -54,25 +54,25 @@ Verification rules for every task:
     - Tag each test with `Feature: app-snmp, Property N`, run at least 100 examples, and use no socket and no event loop
     - Property 8 drives `drift_step()` on an unstarted Simulator for 0 to 200 steps
 
-- [ ] 2. Checkpoint - Simulator
+- [x] 2. Checkpoint - Simulator
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Skeleton change: `uint64`
-  - [ ] 3.1 Add `DataType.UINT64` to the points model and the Codec
+- [x] 3. Skeleton change: `uint64`
+  - [x] 3.1 Add `DataType.UINT64` to the points model and the Codec
     - In `skeleton/seance/points.py` add `UINT64 = "uint64"`
     - In `skeleton/seance/codec.py` add length 8, format `>Q` and range 0 to 2**64 - 1
     - Check that `skeleton/seance/config.py` needs no change and that its error message lists `uint64`
     - Change nothing that mentions SNMP, and import no protocol library
     - _Requirements: Skeleton change 1, 4.9, 5.4, 11.1, 11.4_
 
-  - [ ] 3.2 Write skeleton unit tests
+  - [x] 3.2 Write skeleton unit tests
     - In `skeleton/tests/test_codec.py` test decode, encode and required length for `uint64` at 0 and 2**64 - 1, and that a value above the range and bytes of the wrong length are rejected
     - In `skeleton/tests/test_config.py` test that `type: uint64` loads and that the bad-type message lists `uint64`
     - Fix any skeleton test that hard-codes the list of data types
     - Run `uv run pytest skeleton/tests/test_codec.py` once
     - _Requirements: Skeleton change 1_
 
-  - [ ] 3.3 Write property tests for `uint64`
+  - [x] 3.3 Write property tests for `uint64`
     - **Property 4: `uint64` decode then encode returns the original bytes**
     - **Validates: Requirements 4.9, 5.4**
     - In `skeleton/tests/test_codec_properties.py` check that the existing generators over `list(DataType)` cover `uint64`, and add one property that a positive scale never changes the sign of a decoded `uint64` value
