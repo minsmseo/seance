@@ -158,7 +158,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - **Validates: Requirements 6.4, 6.5**
     - Add to `skeleton/tests/test_audit_properties.py`
 
-- [ ] 9. Checkpoint - Ensure all tests pass
+- [x] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Implement the web console
