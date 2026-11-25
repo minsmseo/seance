@@ -134,7 +134,7 @@ Verification rules for every task:
     - Generate text with exactly one defect and check that the message names the form, `community` or `oid` that matches it
     - **Validates: Requirements 3.4, 3.5, 3.6, 3.7, 3.8, 3.9**
 
-- [~] 7. Implement the SNMP_Adapter
+- [x] 7. Implement the SNMP_Adapter
   - [x] 7.1 Add the pysnmp dependency and write the three pysnmp verification tests
     - Check the current pysnmp 7.1 documentation for `get_cmd`, `UdpTransportTarget.create`, `CommunityData` and `lookupMib`
     - Add `pysnmp>=7.1,<8` to `dependencies` in `pyproject.toml` and run `uv sync`
@@ -146,7 +146,7 @@ Verification rules for every task:
     - Stop and ask the user to push the branch and report the GitHub Actions (ubuntu) result of the three tests, with the failure text if any fails
     - _Requirements: 2.16, 2.18, 2.21, 12.5, 12.10_
 
-  - [ ] 7.2 Create `apps/snmp/adapter.py` after the GitHub Actions result of 7.1 is known
+  - [x] 7.2 Create `apps/snmp/adapter.py` after the GitHub Actions result of 7.1 is known
     - Write the exception-value imports, the `varBinds` reading and the loop handling exactly as the 7.1 result shows, and if a result differs from the design, record it and stop for a decision before writing code that relies on it
     - `SnmpAdapter(host, port)` implements `connect`, `close`, `read` and `health` of `ProtocolAdapter` and no write method
     - Import only `get_cmd` from the pysnmp command generators, and use `CommunityData(community, mpModel=1)`, `lookupMib=False` and numeric OID text
@@ -158,7 +158,7 @@ Verification rules for every task:
     - Import nothing from `apps/` except `apps/snmp/address.py`. Type hints on every public function, no `Any`
     - _Requirements: 2.1, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 2.14, 2.15, 2.16, 2.17, 2.18, 2.19, 2.20, 5.3, 5.4, 5.5, 6.4_
 
-  - [ ] 7.3 Add adapter unit tests to `apps/snmp/tests/test_adapter.py`
+  - [x] 7.3 Add adapter unit tests to `apps/snmp/tests/test_adapter.py`
     - Keep the three tests from 7.1 and share one module-scoped Simulator and one module-scoped adapter
     - One read per SNMP type with the expected bytes, and the Codec decoding them to the Simulator's state
     - Failures: noSuchObject, silence within the timeout (a socket that never answers), a type mismatch, and a data type that fits no SNMP type, each sentence naming the device and the point and containing no stack trace and no `pysnmp`
