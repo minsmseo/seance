@@ -107,7 +107,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Create `skeleton/tests/test_audit.py`
     - _Requirements: 6.4, 6.5, 7.4_
 
-- [ ] 7. Checkpoint - Ensure all tests pass
+- [x] 7. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Implement the MCP tools
