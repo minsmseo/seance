@@ -197,7 +197,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Assert that `.gitignore` does not list `.kiro`
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
 
-- [ ] 13. Final checkpoint - Ensure all tests pass
+- [x] 13. Final checkpoint - Ensure all tests pass
   - Run `uv run pytest`, `uv run ruff check .` and `uv run ruff format --check .`
   - Ensure all tests pass, ask the user if questions arise.
   - _Requirements: 10.8_
