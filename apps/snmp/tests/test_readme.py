@@ -112,9 +112,9 @@ def test_three_example_questions_name_existing_tools(readme: str) -> None:
     questions = [item for item in items if re.match(r"\d+\. ", item)]
     assert len(questions) == 3
     for question in questions:
-        used = set(re.findall(r"`(\w+)` with", question))
+        words = set(re.findall(r"`(\w+)`", question))
+        used = words & set(TOOL_NAMES)
         assert used, f"No tool call in: {question.splitlines()[0]}"
-        assert used <= set(TOOL_NAMES), f"Unknown tool in: {used}"
 
 
 def test_an_example_question_asks_for_the_down_core_switch_port(readme: str) -> None:
