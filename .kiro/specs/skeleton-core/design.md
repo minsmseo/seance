@@ -39,19 +39,26 @@ sequenceDiagram
     participant AL as Audit_Log
 
     A->>TS: call tool (name, args)
-    TS->>TS: validate arguments against Configuration
     TS->>G: check(tool_name, args)
     alt is a Write_Request and not permitted
         G-->>TS: rejected
         TS->>AL: record entry (rejected)
         TS-->>A: plain-sentence rejection message
     else allowed
-        TS->>AD: read(...) / health(...)
-        AD-->>TS: value or error (within Timeout)
-        TS->>AL: record entry (success or failure)
-        TS-->>A: result or short error sentence
+        TS->>TS: validate arguments against Configuration
+        alt arguments invalid
+            TS->>AL: record entry (validation error)
+            TS-->>A: "Invalid argument" sentence
+        else arguments valid
+            TS->>AD: read(...) / health(...)
+            AD-->>TS: value or error (within Timeout)
+            TS->>AL: record entry (success or failure)
+            TS-->>A: result or short error sentence
+        end
     end
 ```
+
+The guard runs before argument validation. A write request must be rejected whatever its arguments look like, so a malformed or incomplete write request gets the read-only rejection and never an argument error that could suggest a corrected retry.
 
 ### Layering rules
 
@@ -132,7 +139,7 @@ These are plain, immutable, hashable dataclasses with full type hints and no `An
 
 ### `server.py` — `Tool_Server`
 
-- Builds the MCP server and registers the five tools, each tool handler following the same shape: validate arguments against the `Configuration` → ask the `Read_Only_Guard` → call the adapter within `Timeout` → decode/scale via the `Codec` → record one `Audit_Entry` → return a result or a short error sentence.
+- Builds the MCP server and registers the five tools, each tool handler following the same shape: ask the `Read_Only_Guard` → validate arguments against the `Configuration` → call the adapter within `Timeout` → decode/scale via the `Codec` → record one `Audit_Entry` → return a result or a short error sentence.
 - `list_devices()` returns `[{name, description}]` for every configured device.
 - `list_points(device)` returns `[{name, data_type, unit}]` for every point on that device, or an unknown-device error listing the closest matching device names (using `difflib.get_close_matches` against configured device names).
 - `read_point(device, point)` returns `{value, unit, timestamp}` with `timestamp` in ISO 8601 (`datetime.now(timezone.utc).isoformat()`).
@@ -289,7 +296,7 @@ For any tool call, the resulting `AuditEntry` stores the device name when a devi
 - **Timeouts** are caught at the tool-handler boundary (wrapping the adapter call) and converted to `"<device> did not respond within <n>s. Try again or check the device connection."`.
 - **Unknown device/point** is detected before calling the adapter, using exact-name lookup against the `Configuration`; on miss, the handler returns an error listing the closest matching names via fuzzy matching, and the adapter is not called.
 - **Adapter exceptions** are caught at the tool-handler boundary, logged internally with full detail for operators, but surfaced to the agent only as `"<device> read failed: <short reason>. Try <next step>."` — never the raw exception text or a traceback.
-- **Argument validation failures** (e.g. missing required argument, wrong type) are caught before the guard or adapter is invoked and return `"Invalid argument '<name>': <reason>."`.
+- **Argument validation failures** (e.g. missing required argument, wrong type) are caught after the guard has allowed the request and before the adapter is invoked, and return `"Invalid argument '<name>': <reason>."`.
 - In every one of the above cases, exactly one `AuditEntry` is still written, with `outcome` set to a value describing which branch fired (`"rejected"`, `"timeout"`, `"unknown_target"`, `"adapter_error"`, `"invalid_argument"`), so the audit-count invariant (Property 10) holds across all failure modes, not only the success path.
 
 ## Testing Strategy
