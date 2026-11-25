@@ -148,7 +148,9 @@ def _read_entry(client: ModbusTcpClient, entry: MapEntry) -> int | float | bool:
     if entry.table == "discrete":
         bits = client.read_discrete_inputs(entry.offset, count=1, device_id=entry.unit).bits
         return bool(bits[0])
-    read = client.read_holding_registers if entry.table == "holding" else client.read_input_registers
+    read = (
+        client.read_holding_registers if entry.table == "holding" else client.read_input_registers
+    )
     words = read(entry.offset, count=_words(entry), device_id=entry.unit).registers
     raw = b"".join(word.to_bytes(2, "big") for word in words)
     if entry.data_type == "uint16":
