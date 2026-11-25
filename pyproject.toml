@@ -30,7 +30,7 @@ build-backend = "hatchling.build"
 packages = ["skeleton/seance"]
 
 [tool.pytest.ini_options]
-testpaths = ["skeleton/tests", "apps/modbus/tests"]
+testpaths = ["skeleton/tests", "apps/modbus/tests", "apps/snmp/tests"]
 pythonpath = ["skeleton"]
 
 [tool.ruff]

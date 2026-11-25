@@ -166,13 +166,16 @@ The lookup uses the decoded, unscaled integer (skeleton AC 1). A label point wit
 ```python
 OID_ARC_MAX = 4294967295
 
+
 @dataclass(frozen=True)
 class SnmpAddress:
     community: str
     oid: tuple[int, ...]
 
+
 class AddressError(ValueError):
     """A short sentence naming the bad field and the allowed values."""
+
 
 def parse_address(text: str) -> SnmpAddress: ...
 def format_address(address: SnmpAddress) -> str: ...
@@ -215,25 +218,36 @@ class PduType(StrEnum):
     GETBULK = "GETBULK"
     SET = "SET"
 
+
 @dataclass(frozen=True)
 class PduRecord:
     pdu_type: PduType
     community: str
     oids: tuple[str, ...]
 
+
 class SimulatorError(RuntimeError): ...
+
 
 class Simulator:
     def __init__(self, host: str, port: int, seed: int, drift: bool = True) -> None: ...
-    host: str; port: int; seed: int; running: bool          # properties
-    pdus_seen: tuple[PduRecord, ...]                         # snapshot
+
+    host: str
+    port: int
+    seed: int
+    running: bool  # properties
+    pdus_seen: tuple[PduRecord, ...]  # snapshot
+
     def start(self) -> None: ...
     def stop(self) -> None: ...
     def get_value(self, device: str, name: str) -> int: ...
     def set_value(self, device: str, name: str, value: int) -> None: ...  # tests, clamps
     def drift_step(self) -> None: ...
 
-def encode_request(pdu_type: PduType, community: str, oids: tuple[str, ...], request_id: int = 1) -> bytes: ...
+
+def encode_request(
+    pdu_type: PduType, community: str, oids: tuple[str, ...], request_id: int = 1
+) -> bytes: ...
 def decode_response(data: bytes) -> Response: ...
 ```
 
@@ -244,14 +258,14 @@ def decode_response(data: bytes) -> Response: ...
 ```python
 @dataclass(frozen=True)
 class OidEntry:
-    device: str            # also the community
+    device: str  # also the community
     name: str
     oid: tuple[int, ...]
-    snmp_type: SnmpType    # INTEGER, COUNTER32, GAUGE32, TIMETICKS, COUNTER64
+    snmp_type: SnmpType  # INTEGER, COUNTER32, GAUGE32, TIMETICKS, COUNTER64
     initial: int
     minimum: int
     maximum: int
-    step: int              # largest drift per tick; 0 for static status values
+    step: int  # largest drift per tick; 0 for static status values
 ```
 
 | Kind | Behavior per drift tick (0.5 s) |
@@ -417,20 +431,29 @@ Skeleton additions: `DataType.UINT64` and `PointConfig.labels` (above). App-loca
 
 ```python
 @dataclass(frozen=True)
-class SnmpAddress:       # address.py
+class SnmpAddress:  # address.py
     community: str
     oid: tuple[int, ...]
 
-class AddressError(ValueError): ...            # address.py
 
-class PduType(StrEnum): ...                    # simulator.py
-@dataclass(frozen=True)
-class PduRecord: ...                           # simulator.py
-@dataclass(frozen=True)
-class OidEntry: ...                            # simulator.py
-class SimulatorError(RuntimeError): ...        # simulator.py
+class AddressError(ValueError): ...  # address.py
 
-class StartupError(Exception): ...             # __main__.py
+
+class PduType(StrEnum): ...  # simulator.py
+
+
+@dataclass(frozen=True)
+class PduRecord: ...  # simulator.py
+
+
+@dataclass(frozen=True)
+class OidEntry: ...  # simulator.py
+
+
+class SimulatorError(RuntimeError): ...  # simulator.py
+
+
+class StartupError(Exception): ...  # __main__.py
 ```
 
 `PointConfig`, `DeviceConfig` and `Configuration` are otherwise used as the skeleton defines them. The `address` field stores the plain `<community>:<oid>` string.

@@ -13,8 +13,8 @@ Verification rules for every task:
 
 ## Tasks
 
-- [ ] 1. Build the Simulator
-  - [ ] 1.1 Create the app package, the OID map and the v2c responder
+- [x] 1. Build the Simulator
+  - [x] 1.1 Create the app package, the OID map and the v2c responder
     - Create `apps/snmp/__init__.py` and `apps/snmp/tests/__init__.py` if the repo layout needs them
     - Add `apps/snmp/tests` to `testpaths` in `pyproject.toml`
     - Create `apps/snmp/simulator.py` with `PduType`, `PduRecord`, `OidEntry`, `SimulatorError` and the single `OidEntry` tuple holding the 19 OIDs, types, initial values, ranges and steps from the design table
@@ -24,7 +24,7 @@ Verification rules for every task:
     - Do not import `pysnmp`. Type hints on every public function, no `Any`
     - _Requirements: 1.1, 1.2, 1.4, 1.8, 1.9, 1.10, 1.11, 1.12, 4.15, 12.7, 12.8_
 
-  - [ ] 1.2 Add drift, seeding, lifecycle and test helpers
+  - [x] 1.2 Add drift, seeding, lifecycle and test helpers
     - `Simulator(host, port, seed, drift=True)` with `host`, `port`, `seed`, `running` and `pdus_seen`
     - `drift_step()` takes the state lock and applies the rules in the design table: bounded random step for gauges and integers, non-negative step with wraparound for counters, plus 50 ticks for TimeTicks, status values unchanged
     - One `random.Random(seed)`, drawn in map order, so equal seeds give equal sequences
@@ -34,7 +34,7 @@ Verification rules for every task:
     - `get_value` and `set_value` (clamped) for tests
     - _Requirements: 1.3, 1.5, 1.6, 1.7, 1.13, 1.14, 1.15, 7.8_
 
-  - [ ] 1.3 Write unit tests in `apps/snmp/tests/test_simulator.py`
+  - [x] 1.3 Write unit tests in `apps/snmp/tests/test_simulator.py`
     - Share one module-scoped Simulator on a free localhost UDP port, make no other network call, and create no event loop per test
     - Three devices answer by community, and an unknown community gets silence
     - An undefined OID gets noSuchObject
@@ -46,7 +46,7 @@ Verification rules for every task:
     - `stop()` returns within 2 seconds, a new Simulator binds the same port at once, a second `start()` raises, and a busy port gives the message naming the port
     - _Requirements: 1.1, 1.2, 1.4, 1.5, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 12.1, 12.4_
 
-  - [ ] 1.4 Write property tests in `apps/snmp/tests/test_simulator_properties.py`
+  - [x] 1.4 Write property tests in `apps/snmp/tests/test_simulator_properties.py`
     - **Property 7: BER values round trip**
     - **Validates: Requirements 1.9, 1.10**
     - **Property 8: Drift is deterministic, bounded and monotonic**
