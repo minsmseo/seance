@@ -1,6 +1,6 @@
 """Unit tests for the Modbus Entry_Point (apps/modbus/__main__.py).
 
-The MCP stdio loop, the adapter and the dry-run tool server are replaced by fakes
+The MCP stdio loop and the adapter are replaced by fakes
 that record events, so no test touches the network. The one exception is the
 port-in-use test: it binds a real localhost socket on an OS-assigned port and
 starts the real Simulator on that port, which fails before any event loop exists.
@@ -48,16 +48,11 @@ class FakeAdapter:
         self.host = host
         self.port = port
 
+    def connect(self) -> None:
+        self.events.append("adapter.connect")
+
     def close(self) -> None:
         self.events.append("adapter.close")
-
-
-class FakeToolServer:
-    def __init__(self, events: list[str]) -> None:
-        self.events = events
-
-    def close(self) -> None:
-        self.events.append("dry_run.close")
 
 
 class Harness:
@@ -78,8 +73,13 @@ class Harness:
     def serve_fn(self, config_path: Path, adapter: object, **kwargs: object) -> None:
         self.events.append("serve")
         self.serve_kwargs = dict(kwargs)
-        if self.serve_error is not None:
-            raise self.serve_error
+        # Like the real serve: connect once, and close the adapter when it returns.
+        adapter.connect()  # type: ignore[attr-defined]
+        try:
+            if self.serve_error is not None:
+                raise self.serve_error
+        finally:
+            adapter.close()  # type: ignore[attr-defined]
 
     def run(self, env: dict[str, str], config_path: Path = DEVICES_YAML) -> int:
         return entry.main(
@@ -100,12 +100,7 @@ def harness(monkeypatch: pytest.MonkeyPatch) -> Harness:
         h.events.append("adapter.create")
         return FakeAdapter(h.events, host, port)
 
-    def fake_build(config_path: Path, adapter: object) -> FakeToolServer:
-        h.events.append("dry_run.build")
-        return FakeToolServer(h.events)
-
     monkeypatch.setattr(entry, "ModbusAdapter", make_adapter)
-    monkeypatch.setattr(entry, "build_tool_server", fake_build)
     return h
 
 
@@ -226,7 +221,7 @@ def test_invalid_address_names_device_point_and_reason(
 def test_config_error_from_serve_is_one_message_and_stops_the_simulator(
     harness: Harness,
 ) -> None:
-    harness.serve_error = ConfigError("devices.yaml: device 'x': field 'name' is missing.")
+    harness.serve_error = ConfigError("devices.yaml", "x", "name", "is required")
     assert harness.run({}) == 1
     assert harness.stderr.getvalue().strip() == str(harness.serve_error)
     assert harness.events[-1] == "simulator.stop"
@@ -250,9 +245,48 @@ def test_simulator_stops_after_serve_returns(harness: Harness) -> None:
 
 
 def test_simulator_stops_when_serve_raises_a_config_error_only_once(harness: Harness) -> None:
-    harness.serve_error = ConfigError("bad config.")
+    harness.serve_error = ConfigError("devices.yaml", "x", "name", "is required")
     harness.run({})
     assert harness.events.count("simulator.stop") == 1
+
+
+# --- Adapter connect and close -------------------------------------------------------------
+
+
+def test_adapter_connect_is_called_exactly_once_on_success(harness: Harness) -> None:
+    assert harness.run({}) == 0
+    assert harness.events.count("adapter.connect") == 1
+
+
+def test_adapter_is_closed_when_serve_raises(harness: Harness) -> None:
+    harness.serve_error = ConfigError("devices.yaml", "x", "name", "is required")
+    assert harness.run({}) == 1
+    assert "adapter.close" in harness.events
+    assert harness.events.count("simulator.stop") == 1
+    assert harness.events[-1] == "simulator.stop"
+
+
+def test_adapter_is_closed_when_the_address_check_fails(harness: Harness, tmp_path: Path) -> None:
+    config = tmp_path / "devices.yaml"
+    config.write_text(
+        "devices:\n"
+        "  - name: boiler\n"
+        "    description: Test boiler\n"
+        "    points:\n"
+        "      - name: pressure\n"
+        '        address: "1:holding:99999"\n'
+        "        data_type: uint16\n"
+        "        unit: kPa\n",
+        encoding="utf-8",
+    )
+    assert harness.run({}, config_path=config) == 1
+    assert harness.events.count("adapter.close") == 1
+    assert "adapter.connect" not in harness.events
+
+
+def test_adapter_is_not_closed_again_after_a_successful_serve(harness: Harness) -> None:
+    assert harness.run({}) == 0
+    assert harness.events.count("adapter.close") == 1
 
 
 # --- Standard output (7.9) -----------------------------------------------------------------

@@ -19,7 +19,7 @@ from seance.adapter import ProtocolAdapter
 from seance.audit import Audit_Log
 from seance.config import ConfigError, load_config
 from seance.guard import Read_Only_Guard
-from seance.server import build_tool_server, serve
+from seance.server import serve
 
 ENV_HOST = "SEANCE_MODBUS_HOST"
 ENV_PORT = "SEANCE_MODBUS_PORT"
@@ -119,17 +119,18 @@ def main(
         adapter = ModbusAdapter(simulator.host, simulator.port)
         try:
             check_addresses(config_path)
-            # Dry run of the start-up sequence: checks the adapter and connects it.
-            build_tool_server(config_path, adapter).close()
+            # serve() connects the adapter once and closes it when it returns.
+            serve_fn(
+                config_path,
+                adapter,
+                console_host=console_host,
+                console_port=console_port,
+            )
         except BaseException:
+            # A failure before or inside serve(). Closing twice is harmless: the
+            # Modbus client ignores a close on a closed connection.
             adapter.close()
             raise
-        serve_fn(
-            config_path,
-            adapter,
-            console_host=console_host,
-            console_port=console_port,
-        )
     except StartupError as error:
         print(str(error), file=out)
         return EXIT_STARTUP_ERROR
