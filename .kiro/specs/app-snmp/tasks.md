@@ -107,7 +107,7 @@ Verification rules for every task:
     - Tag with `Feature: app-snmp, Property 5`, and run at least 100 examples
     - Add labels for integer types to the generator in `skeleton/tests/test_config_properties.py` so the config round trip still holds
 
-- [ ] 5. Checkpoint - Skeleton changes
+- [x] 5. Checkpoint - Skeleton changes
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement the Address_Parser and Address_Formatter

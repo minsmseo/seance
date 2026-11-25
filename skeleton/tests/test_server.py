@@ -165,6 +165,7 @@ def test_labeled_calls_write_one_audit_entry_each() -> None:
     assert len(server.audit.recent(10)) == 1
     server.call("read_points", {"device": "switch", "points": ["status", "scaled"]})
     entries = server.audit.recent(10)
+    assert len(entries) == 2
     assert sorted(e.tool for e in entries) == ["read_point", "read_points"]
 
 
