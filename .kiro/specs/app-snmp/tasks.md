@@ -110,25 +110,25 @@ Verification rules for every task:
 - [x] 5. Checkpoint - Skeleton changes
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement the Address_Parser and Address_Formatter
-  - [ ] 6.1 Create `apps/snmp/address.py`
+- [x] 6. Implement the Address_Parser and Address_Formatter
+  - [x] 6.1 Create `apps/snmp/address.py`
     - Define `OID_ARC_MAX = 4294967295`, the frozen `SnmpAddress` dataclass and `AddressError`
     - `parse_address(text)` checks in order: exactly two colon-separated parts, the community (non-empty, lowercase letter first, then lowercase letters, digits and underscores), the OID shape (at least two arcs, no empty arc, digits only, no leading zero), the arc maximum, then the first and second arc limits
     - Error sentences name the form `<community>:<oid>`, the field `community` and its characters, the field `oid` and an example OID, or the allowed arc values
     - `format_address` and `format_oid` return the dotted text
     - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 12.7_
 
-  - [ ] 6.2 Write unit tests in `apps/snmp/tests/test_address.py`
+  - [x] 6.2 Write unit tests in `apps/snmp/tests/test_address.py`
     - Valid addresses, including arcs at 0 and 4294967295
     - The exact expected message content for each defect, a name used as an OID (`sysUpTime`), leading zeros, a first arc of 3 and a second arc of 40 under first arc 1
     - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9_
 
-  - [ ] 6.3 Write property test for address round-trip in `apps/snmp/tests/test_address_properties.py`
+  - [x] 6.3 Write property test for address round-trip in `apps/snmp/tests/test_address_properties.py`
     - **Property 3: Address round trip**
     - Tag with `Feature: app-snmp, Property 3`, and run at least 100 examples
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
-  - [ ] 6.4 Write property test for malformed addresses in `apps/snmp/tests/test_address_properties.py`
+  - [x] 6.4 Write property test for malformed addresses in `apps/snmp/tests/test_address_properties.py`
     - **Property 6: A malformed address is rejected with a sentence naming the bad field**
     - Tag with `Feature: app-snmp, Property 6`
     - Generate text with exactly one defect and check that the message names the form, `community` or `oid` that matches it

@@ -182,6 +182,61 @@
         "chatSessionId": "sess_5b3f8dfa-1c1e-4caa-af52-7699115dc8c2",
         "timestamp": 1795603189685
       }
+    ],
+    "6.1 Create `apps/snmp/address.py`": [
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603332431
+      },
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603375300
+      }
+    ],
+    "6.2 Write unit tests in `apps/snmp/tests/test_address.py`": [
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603376079
+      },
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603419879
+      }
+    ],
+    "6.3 Write property test for address round-trip in `apps/snmp/tests/test_address_properties.py`": [
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603376594
+      },
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603419971
+      }
+    ],
+    "6.4 Write property test for malformed addresses in `apps/snmp/tests/test_address_properties.py`": [
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603422745
+      },
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603486879
+      }
+    ],
+    "6. Implement the Address_Parser and Address_Formatter": [
+      {
+        "executionId": "76eb5ff5-79ac-4b3e-aebf-cb1b841ad44a",
+        "chatSessionId": "sess_34ffabb2-bd82-48a2-9ffa-5a88a3129d3e",
+        "timestamp": 1795603486958
+      }
     ]
   }
 }
