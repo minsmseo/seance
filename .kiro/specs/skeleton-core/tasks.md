@@ -161,23 +161,23 @@ The Codec has no slot in the requested order, so it is built right after configu
 - [x] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Implement the web console
-  - [ ] 10.1 Implement FastAPI routes in `skeleton/seance/console/app.py`
+- [x] 10. Implement the web console
+  - [x] 10.1 Implement FastAPI routes in `skeleton/seance/console/app.py`
     - `GET /`, `GET /points/{device}/{point}`, `POST /tools/{tool_name}`, `GET /audit` (50 most recent, newest first)
     - Calls go through the Tool_Server so each writes one Audit_Entry
     - No API key
     - _Requirements: 6.6, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [ ] 10.2 Add plain HTML, CSS and JavaScript assets
+  - [x] 10.2 Add plain HTML, CSS and JavaScript assets
     - Templates and static files under `skeleton/seance/console/` with no frontend framework
     - Seance theme on labels only; device names, values and error sentences render unchanged
     - _Requirements: 7.1, 7.2, 7.7, 7.8_
 
-  - [ ] 10.3 Mount the console in `skeleton/seance/server.py`
+  - [x] 10.3 Mount the console in `skeleton/seance/server.py`
     - Mount the console app on server startup
     - _Requirements: 7.1, 7.6_
 
-  - [ ] 10.4 Write route tests for the console
+  - [x] 10.4 Write route tests for the console
     - Use FastAPI `TestClient` with the Fake_Adapter
     - Check device and point listing, live values, tool invocation with raw result, 50-entry audit view, audit entry written per console call, unchanged names and errors
     - Create `skeleton/tests/test_console.py`

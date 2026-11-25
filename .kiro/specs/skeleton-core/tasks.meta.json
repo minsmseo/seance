@@ -285,6 +285,61 @@
         "chatSessionId": "sess_32b0b7ad-f9d0-4c7c-b8b5-60af31f6ab5e",
         "timestamp": 1795565509787
       }
+    ],
+    "10.1 Implement FastAPI routes in `skeleton/seance/console/app.py`": [
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795565554586
+      },
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795565681696
+      }
+    ],
+    "10.2 Add plain HTML, CSS and JavaScript assets": [
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795565684948
+      },
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795565812355
+      }
+    ],
+    "10.3 Mount the console in `skeleton/seance/server.py`": [
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795565816162
+      },
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795566025836
+      }
+    ],
+    "10.4 Write route tests for the console": [
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795566029815
+      },
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795566341251
+      }
+    ],
+    "10. Implement the web console": [
+      {
+        "executionId": "618b2c0e-72b9-4d1e-b651-df9edcb48295",
+        "chatSessionId": "sess_e60140b0-48a2-4400-8678-2fe94f126116",
+        "timestamp": 1795566341392
+      }
     ]
   }
 }

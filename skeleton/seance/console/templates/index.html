@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seance console</title>
+<link rel="stylesheet" href="/static/console.css">
+</head>
+<body>
+<header>
+  <h1>Seance</h1>
+  <p class="motif">Ask the old machines what they are doing.</p>
+  <button type="button" id="resummon">Summon again (refresh values)</button>
+</header>
+<main>
+  <section id="spirits">
+    <h2 class="label">The spirits (devices)</h2>
+    {{DEVICES}}
+  </section>
+  <section id="ask">
+    <h2 class="label">Ask a question (call a tool)</h2>
+    <form id="tool-form">
+      <label for="tool-name">Tool</label>
+      <select id="tool-name" name="tool">{{TOOL_OPTIONS}}</select>
+      <label for="tool-args">Arguments (JSON object)</label>
+      <textarea id="tool-args" name="args" rows="4" spellcheck="false">{}</textarea>
+      <button type="submit">Send</button>
+    </form>
+    <h3 class="label">Raw reply</h3>
+    <pre id="tool-result" aria-live="polite">No call made yet.</pre>
+  </section>
+  <section id="ledger">
+    <h2 class="label">The ledger (audit log, 50 most recent)</h2>
+    <table id="audit-table">
+      <thead>
+        <tr><th>Time</th><th>Tool</th><th>Device</th><th>Point</th><th>Outcome</th><th>ms</th></tr>
+      </thead>
+      <tbody id="audit-body"></tbody>
+    </table>
+  </section>
+</main>
+<script src="/static/console.js"></script>
+</body>
+</html>

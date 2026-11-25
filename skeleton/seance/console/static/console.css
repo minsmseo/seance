@@ -1,0 +1,109 @@
+:root {
+  --bg: #14121a;
+  --panel: #1e1b27;
+  --text: #e8e6ee;
+  --muted: #a39fb3;
+  --accent: #9b7fd4;
+  --line: #3a3548;
+}
+
+body {
+  margin: 0;
+  padding: 1rem 1.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.4;
+}
+
+header {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  margin: 0;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+
+.motif {
+  color: var(--muted);
+  font-style: italic;
+}
+
+section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+a {
+  color: var(--accent);
+}
+
+label {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+select,
+textarea,
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, monospace;
+}
+
+button {
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus {
+  border-color: var(--accent);
+}
+
+pre {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 0.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

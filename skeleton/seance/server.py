@@ -7,13 +7,14 @@ handler, and records exactly one AuditEntry in a finally block.
 import difflib
 import json
 import logging
+import threading
 import time
 from collections.abc import Callable, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Annotated, TypeVar
+from typing import TYPE_CHECKING, Annotated, TypeVar
 
 from mcp.server.mcpserver import MCPServer
 from pydantic import Field
@@ -24,6 +25,10 @@ from seance.codec import RawValue, apply_scale, decode
 from seance.config import load_config
 from seance.guard import READ_TOOLS, Read_Only_Guard, Rejected
 from seance.points import Configuration, DeviceConfig, PointConfig
+
+if TYPE_CHECKING:
+    import uvicorn
+    from fastapi import FastAPI
 
 logger = logging.getLogger("seance.server")
 
@@ -41,6 +46,10 @@ _MAX_NAME_CHARS = 40
 _MAX_SUGGESTIONS = 3
 _MAX_LISTED = 5
 _MAX_WORKERS = 8
+_CONSOLE_STOP_SECONDS = 5.0
+
+DEFAULT_CONSOLE_HOST = "127.0.0.1"
+DEFAULT_CONSOLE_PORT = 8080
 
 T = TypeVar("T")
 
@@ -321,6 +330,18 @@ class ToolServer:
         status = self._with_timeout(device, "health check", lambda: self._adapter.health(device))
         return "ok", {"device": device.name, "status": str(status.value), "timestamp": _now()}
 
+    # ----- console --------------------------------------------------------
+
+    def build_console(self) -> "FastAPI":
+        """Build the web console app over this server. It needs no API key.
+
+        Calls made through the console use ToolServer.call, so each writes one AuditEntry.
+        The console module imports this one, so it is imported here, not at the top.
+        """
+        from seance.console.app import create_app
+
+        return create_app(self)
+
     # ----- MCP ------------------------------------------------------------
 
     def build_mcp(self, name: str = "seance") -> MCPServer:
@@ -390,11 +411,40 @@ def serve(
     adapter: ProtocolAdapter,
     guard: Read_Only_Guard | None = None,
     audit: Audit_Log | None = None,
+    console_host: str = DEFAULT_CONSOLE_HOST,
+    console_port: int = DEFAULT_CONSOLE_PORT,
 ) -> None:
-    """Run the MCP server over stdio until it stops, then close the adapter."""
+    """Run the MCP server over stdio and the web console, until stdio stops.
+
+    The console runs in a background thread on console_host:console_port and is
+    stopped, then the adapter is closed, when the MCP server returns.
+    """
     server = build_tool_server(config_path, adapter, guard, audit)
+    console = _start_console(server.build_console(), console_host, console_port)
     try:
         server.build_mcp().run()
     finally:
+        _stop_console(console)
         server.close()
         adapter.close()
+
+
+def _start_console(app: "FastAPI", host: str, port: int) -> "_ConsoleThread":
+    import uvicorn
+
+    config = uvicorn.Config(app, host=host, port=port, log_level="warning")
+    uv_server = uvicorn.Server(config)
+    thread = threading.Thread(target=uv_server.run, name="seance-console", daemon=True)
+    thread.start()
+    return _ConsoleThread(uv_server, thread)
+
+
+def _stop_console(console: "_ConsoleThread") -> None:
+    console.server.should_exit = True
+    console.thread.join(timeout=_CONSOLE_STOP_SECONDS)
+
+
+@dataclass(frozen=True)
+class _ConsoleThread:
+    server: "uvicorn.Server"
+    thread: threading.Thread

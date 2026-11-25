@@ -223,3 +223,9 @@ def test_startup_fails_on_missing_config(tmp_path: Path) -> None:
     with pytest.raises(ConfigError):
         build_tool_server(tmp_path / "missing.yaml", fake)
     assert fake.call_count == 0
+
+
+def test_build_console_has_expected_routes() -> None:
+    server, _ = make()
+    paths = {getattr(route, "path", "") for route in server.build_console().routes}
+    assert {"/", "/points/{device}/{point}", "/tools/{tool_name}", "/audit"} <= paths
