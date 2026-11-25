@@ -6,10 +6,8 @@ exactly one Audit_Entry. The console needs no API key.
 
 from __future__ import annotations
 
-import html
 import json
 from pathlib import Path
-from urllib.parse import quote
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -45,60 +43,24 @@ def _status_for(result: ToolResult) -> int:
     return _STATUS_BY_OUTCOME.get(result.outcome, 500)
 
 
-def _esc(value: object) -> str:
-    return html.escape(str(value), quote=True)
+def _index_html() -> str:
+    return (_TEMPLATE_DIR / "index.html").read_text(encoding="utf-8")
 
 
-def _point_rows(server: ToolServer, device_name: str) -> str:
-    """Render one table row per point of a device, reading all points in one call."""
-    device = next(d for d in server.config.devices if d.name == device_name)
-    if not device.points:
-        return "<tr><td colspan='5'>No points configured.</td></tr>"
-    names = [p.name for p in device.points]
-    result = server.call("read_points", {"device": device_name, "points": names})
-    readings: dict[str, dict[str, JsonValue]] = {}
-    if isinstance(result.payload, dict):
-        items = result.payload.get("results")
-        if isinstance(items, list):
-            for item in items:
-                if isinstance(item, dict) and isinstance(item.get("point"), str):
-                    readings[str(item["point"])] = item
-    rows: list[str] = []
-    for point in device.points:
-        reading = readings.get(point.name)
-        if reading is not None and "value" in reading:
-            value = _esc(reading["value"])
-            timestamp = _esc(reading.get("timestamp", ""))
-        elif reading is not None:
-            value = _esc(reading.get("error", ""))
-            timestamp = ""
-        else:
-            value = _esc(result.payload if isinstance(result.payload, str) else "")
-            timestamp = ""
-        link = _esc(f"/points/{quote(device.name, safe='')}/{quote(point.name, safe='')}")
-        rows.append(
-            f"<tr><td><a href='{link}'>{_esc(point.name)}</a></td>"
-            f"<td>{value}</td><td>{_esc(point.unit)}</td><td>{timestamp}</td>"
-            f"<td>{_esc(point.data_type.value)}</td></tr>"
-        )
-    return "".join(rows)
-
-
-def _index_html(server: ToolServer) -> str:
-    sections: list[str] = []
-    for device in server.config.devices:
-        sections.append(
-            f"<article><h3>{_esc(device.name)}</h3><p>{_esc(device.description)}</p>"
-            "<table><thead><tr><th>Point</th><th>Value</th><th>Unit</th><th>Timestamp</th>"
-            f"<th>Type</th></tr></thead><tbody>{_point_rows(server, device.name)}</tbody>"
-            "</table></article>"
-        )
-    body = "".join(sections) or "<p>No devices are configured.</p>"
-    options = "".join(
-        f"<option value='{_esc(name)}'>{_esc(name)}</option>" for name in sorted(READ_TOOLS)
-    )
-    template = (_TEMPLATE_DIR / "index.html").read_text(encoding="utf-8")
-    return template.replace("{{DEVICES}}", body).replace("{{TOOL_OPTIONS}}", options)
+def _config_body(server: ToolServer) -> dict[str, JsonValue]:
+    """Describe devices and points for the page. Exposes no addresses or decoding details."""
+    devices: list[JsonValue] = [
+        {
+            "name": device.name,
+            "description": device.description,
+            "points": [
+                {"name": p.name, "unit": p.unit, "healthy": p.healthy} for p in device.points
+            ],
+        }
+        for device in server.config.devices
+    ]
+    tools: list[JsonValue] = list(sorted(READ_TOOLS))
+    return {"devices": devices, "tools": tools}
 
 
 def create_app(server: ToolServer) -> FastAPI:
@@ -108,7 +70,11 @@ def create_app(server: ToolServer) -> FastAPI:
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
-        return _index_html(server)
+        return _index_html()
+
+    @app.get("/config")
+    def config() -> JSONResponse:
+        return JSONResponse(_config_body(server))
 
     @app.get("/points/{device}/{point}")
     def point_value(device: str, point: str) -> JSONResponse:

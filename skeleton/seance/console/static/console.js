@@ -1,67 +1,44 @@
 "use strict";
 
-// All dynamic text is written with textContent, so nothing is parsed as HTML.
-// Device names, values and error sentences are shown exactly as received.
+// Builds the page structure from /config. Tiles, summary, ledger and the tool
+// panel are filled in by later steps.
 
-function cell(text) {
-  const td = document.createElement("td");
-  td.textContent = String(text);
-  return td;
+function addText(parent, tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) {
+    el.className = className;
+  }
+  el.textContent = text;
+  parent.appendChild(el);
+  return el;
 }
 
-async function loadAudit() {
-  const body = document.getElementById("audit-body");
-  try {
-    const response = await fetch("/audit");
-    const entries = await response.json();
-    body.replaceChildren();
-    for (const e of entries) {
-      const tr = document.createElement("tr");
-      for (const key of ["timestamp", "tool", "device", "point", "outcome", "duration_ms"]) {
-        tr.appendChild(cell(e[key]));
-      }
-      body.appendChild(tr);
+function renderDevices(config) {
+  const host = document.getElementById("devices");
+  host.textContent = "";
+  if (!config.devices || config.devices.length === 0) {
+    addText(host, "p", "empty", "No devices are configured.");
+    return;
+  }
+  for (const device of config.devices) {
+    const section = document.createElement("section");
+    section.className = "device";
+    addText(section, "h2", "device-name mono", device.name);
+    addText(section, "p", "device-description", device.description);
+    const grid = document.createElement("div");
+    grid.className = "tile-grid";
+    section.appendChild(grid);
+    if (!device.points || device.points.length === 0) {
+      addText(section, "p", "empty", "No points configured.");
     }
-  } catch (err) {
-    body.replaceChildren();
-    const tr = document.createElement("tr");
-    const td = cell("The ledger could not be loaded. Reload the page to try again.");
-    td.colSpan = 6;
-    tr.appendChild(td);
-    body.appendChild(tr);
+    host.appendChild(section);
   }
 }
 
-async function sendTool(event) {
-  event.preventDefault();
-  const out = document.getElementById("tool-result");
-  const tool = document.getElementById("tool-name").value;
-  const text = document.getElementById("tool-args").value.trim() || "{}";
-  let args;
-  try {
-    args = JSON.parse(text);
-  } catch (err) {
-    out.textContent = "The arguments are not valid JSON. Fix the text and send again.";
-    return;
-  }
-  if (args === null || typeof args !== "object" || Array.isArray(args)) {
-    out.textContent = "The arguments must be a JSON object such as {}. Fix the text and send again.";
-    return;
-  }
-  try {
-    const response = await fetch("/tools/" + encodeURIComponent(tool), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(args),
-    });
-    const data = await response.json();
-    out.textContent = JSON.stringify(data, null, 2);
-  } catch (err) {
-    out.textContent = "The console server did not answer. Check that it is running and try again.";
-  }
-  loadAudit();
+async function start() {
+  const response = await fetch("/config");
+  const config = await response.json();
+  renderDevices(config);
 }
 
-document.getElementById("tool-form").addEventListener("submit", sendTool);
-document.getElementById("resummon").addEventListener("click", () => window.location.reload());
-loadAudit();
+start();

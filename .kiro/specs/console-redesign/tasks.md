@@ -48,23 +48,23 @@ Constraints that apply to every task:
     - Run `uv run ruff check .`, then `uv run ruff format .`, then `uv run pytest skeleton/tests/test_config.py` once.
     - _Requirements: 12.10_
 
-- [ ] 2. Checkpoint - Ensure the healthy field is correct
+- [x] 2. Checkpoint - Ensure the healthy field is correct
   - Ensure ruff is clean and the one targeted test file passed. Ask the user if questions arise.
 
-- [ ] 3. Build the static HTML shell, the CSS tokens and the `/config` route
-  - [ ] 3.1 Add `GET /config` and simplify `_index_html` in `skeleton/seance/console/app.py`
+- [x] 3. Build the static HTML shell, the CSS tokens and the `/config` route
+  - [x] 3.1 Add `GET /config` and simplify `_index_html` in `skeleton/seance/console/app.py`
     - `GET /config` returns `{"devices": [{"name", "description", "points": [{"name", "unit", "healthy"}]}], "tools": [...]}` built from `server.config`, with `tools` taken from `READ_TOOLS`. Expose no `address`, `data_type`, `scale`, `decimals` or `labels`.
     - The route does not call the adapter and does not call `ToolServer.call`.
     - `_index_html` reads `templates/index.html` and returns it unchanged. It no longer walks the configuration or calls `read_points`.
     - Leave `GET /points/{device}/{point}`, `POST /tools/{tool_name}` and `GET /audit` untouched.
     - _Requirements: 3.12, 9.13, 10.1, 10.2, 10.8_
-  - [ ] 3.2 Rewrite `skeleton/seance/console/templates/index.html` as the static shell
+  - [x] 3.2 Rewrite `skeleton/seance/console/templates/index.html` as the static shell
     - Document order: header (wordmark `Seance` once, app name, chip `READ-ONLY, 5 TOOLS`, last-read time, `Read again` button), Summary_Strip, `<main>` with an empty `<div id="devices">` and the Tool_Panel markup, then the Ledger `<aside>`.
     - Tool_Panel: heading `Call a tool yourself`, three labelled `select` elements (tool, device, point), a `Send` button and an output area for the raw reply. No textarea.
     - Load Fraunces, Inter and JetBrains Mono from Google Fonts with `display=swap`, then `console.css`, then `console.js` at the end of `<body>`.
     - Headings and buttons use sentence case and no parentheses. The only theme words are `Seance` and `Ledger`. No emoji, no device or point names, no `data-device` attributes.
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.10, 3.11, 4.5, 4.7, 4.9, 9.3, 9.10, 10.8_
-  - [ ] 3.3 Rewrite `skeleton/seance/console/static/console.css` against the steering tokens
+  - [x] 3.3 Rewrite `skeleton/seance/console/static/console.css` against the steering tokens
     - Define the nine tokens once on `:root` with the exact hex values from `.kiro/steering/design.md`. Use colors elsewhere only as `var(--token)`.
     - Radius 3px on every element that has one. No `box-shadow`, `text-shadow` or gradient.
     - Wordmark in Fraunces italic 500 at 30px, text in Inter 400/500/600, numbers, names, timestamps and code in JetBrains Mono. Every `font-family` ends with a system fallback.
@@ -72,12 +72,12 @@ Constraints that apply to every task:
     - Define the tile rules now: grid `repeat(auto-fill, minmax(196px, 1fr))` with a 10px gap, one shared `.tile` rule with `height: 108px`, ellipsis clipping on tile lines, and the attention style (`--alert-ground` background, 2px `--alert` border, `--alert-ink` text). Nothing else sets a height on a tile or its content.
     - Check the text and surface pairs, including the 11px detail line, for 4.5:1 contrast.
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.6, 4.8, 4.9, 4.10, 5.3, 5.4, 5.5, 5.9_
-  - [ ] 3.4 Create a minimal `skeleton/seance/console/static/console.js` entry point
+  - [x] 3.4 Create a minimal `skeleton/seance/console/static/console.js` entry point
     - Fetch `/config` and create one `<section>` per device inside `#devices` with an `h2` (device name), the description and an empty tile grid. Write all text with `textContent`.
     - Write `No devices are configured.` when the list is empty and `No points configured.` for a device with no points.
     - Contain no point names or device names, including in comments.
     - _Requirements: 3.5, 3.6, 3.7, 3.8, 3.9, 10.8_
-  - [ ] 3.5 Update the old tests in `skeleton/tests/test_console.py` that assert the removed server-rendered markup
+  - [x] 3.5 Update the old tests in `skeleton/tests/test_console.py` that assert the removed server-rendered markup
     - `GET /` no longer embeds device sections or point values, so these four tests change. Keep each test's intent and move the assertion to the new data source.
     - `test_index_lists_devices_and_points_with_live_values` asserted that `GET /` contained device names, descriptions, point names and the value `10.0`. Change it to assert `GET /config` lists both devices and the points `temperature` and `running`, and that `POST /tools/read_points` for `press` returns the value `10.0` (100 * 0.1 from the fake bytes).
     - `test_index_keeps_device_names_readable_after_escaping` asserted `&lt;main&gt;` in the HTML. Change it to assert that `GET /` contains neither `ODD_NAME` nor its escaped form (the shell is name-free), and that `GET /config` returns `ODD_NAME` and `Odd & <unusual> name` as exact JSON strings.
@@ -87,7 +87,7 @@ Constraints that apply to every task:
     - Add tests for the `GET /config` shape: `healthy` is `null` for a point without one and the configured text otherwise (add a point with `labels` and `healthy` to the test `CONFIG`, or build a second configuration), and `tools` lists the five read tools.
     - Record in the completion note exactly which tests changed and why.
     - _Requirements: 3.8, 10.1, 10.2, 10.8, 12.8, 12.9_
-  - [ ] 3.6 Run ruff and one targeted test file
+  - [x] 3.6 Run ruff and one targeted test file
     - Run `uv run ruff check .`, then `uv run ruff format .`, then `uv run pytest skeleton/tests/test_console.py` once.
     - _Requirements: 12.10_
 

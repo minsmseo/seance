@@ -1,6 +1,7 @@
 """Route tests for the web console. Uses the Fake_Adapter and TestClient; no network."""
 
 import html
+import json
 from collections.abc import Callable, Iterator
 from contextlib import ExitStack
 
@@ -24,6 +25,14 @@ CONFIG = Configuration(
             points=(
                 PointConfig("temperature", "100", DataType.INT16, "C", 0.1),
                 PointConfig("running", "101", DataType.BOOL, "bool"),
+                PointConfig(
+                    "mode",
+                    "102",
+                    DataType.UINT16,
+                    "state",
+                    labels=((100, "up"), (2, "down")),
+                    healthy="up",
+                ),
             ),
         ),
         DeviceConfig(ODD_NAME, "Odd & <unusual> name", 0.2, ()),
@@ -59,37 +68,68 @@ def make(session_portal: BlockingPortal) -> Iterator[MakeClient]:
 
 def test_index_lists_devices_and_points_with_live_values(make: MakeClient) -> None:
     client, server, _ = make()
-    response = client.get("/")
-    assert response.status_code == 200
-    text = html.unescape(response.text)
-    assert "press" in text
-    assert "Hydraulic press" in text
-    assert "temperature" in text
-    assert "running" in text
-    assert "10.0" in text  # 100 * 0.1 from the fake bytes
+    config = client.get("/config").json()
+    by_name = {d["name"]: d for d in config["devices"]}
+    assert set(by_name) == {"press", ODD_NAME}
+    assert by_name["press"]["description"] == "Hydraulic press"
+    assert {"temperature", "running"} <= {p["name"] for p in by_name["press"]["points"]}
+    reply = client.post(
+        "/tools/read_points", json={"device": "press", "points": ["temperature"]}
+    ).json()
+    assert reply["ok"] is True
+    assert reply["result"]["results"][0]["value"] == pytest.approx(10.0)  # 100 * 0.1
     server.close()
 
 
 def test_index_keeps_device_names_readable_after_escaping(make: MakeClient) -> None:
     client, server, _ = make()
     raw = client.get("/").text
-    assert "&lt;main&gt;" in raw
     assert ODD_NAME not in raw
-    assert ODD_NAME in html.unescape(raw)
-    assert "Odd & <unusual> name" in html.unescape(raw)
+    assert html.escape(ODD_NAME) not in raw
+    config = client.get("/config").json()
+    names = [d["name"] for d in config["devices"]]
+    descriptions = [d["description"] for d in config["devices"]]
+    assert ODD_NAME in names
+    assert "Odd & <unusual> name" in descriptions
     server.close()
 
 
 def test_index_shows_adapter_error_sentence_unchanged(make: MakeClient) -> None:
     client, server, _ = make(Fake_Adapter(error=RuntimeError("boom")))
-    text = html.unescape(client.get("/").text)
+    body = {"device": "press", "points": ["temperature"]}
+    response = client.post("/tools/read_points", json=body)
+    text = response.text
     expected = (
         "press read failed: the adapter reported an error. "
         "Try again, or check the device connection and the server log."
     )
-    assert expected in text
+    assert expected in json.dumps(response.json()["result"])
     assert "boom" not in text
     assert "Traceback" not in text
+    server.close()
+
+
+def test_config_route_hides_decoding_details_and_reports_healthy(make: MakeClient) -> None:
+    client, server, _ = make()
+    config = client.get("/config").json()
+    press = next(d for d in config["devices"] if d["name"] == "press")
+    points = {p["name"]: p for p in press["points"]}
+    assert points["temperature"] == {"name": "temperature", "unit": "C", "healthy": None}
+    assert points["mode"] == {"name": "mode", "unit": "state", "healthy": "up"}
+    for banned in ("address", "data_type", "scale", "decimals", "labels"):
+        assert banned not in json.dumps(config)
+    server.close()
+
+
+def test_config_route_lists_the_five_read_tools(make: MakeClient) -> None:
+    client, server, _ = make()
+    assert sorted(client.get("/config").json()["tools"]) == [
+        "device_health",
+        "list_devices",
+        "list_points",
+        "read_point",
+        "read_points",
+    ]
     server.close()
 
 
@@ -194,10 +234,11 @@ def test_each_console_call_writes_one_audit_entry(make: MakeClient) -> None:
 
 
 def test_index_writes_one_audit_entry_per_device_with_points(make: MakeClient) -> None:
-    client, server, _ = make()
+    client, server, fake = make()
     client.get("/")
-    entries = server.audit.recent(100)
-    assert [(e.tool, e.device) for e in entries] == [("read_points", "press")]
+    client.get("/config")
+    assert server.audit.recent(100) == []
+    assert fake.call_count == 0
     server.close()
 
 

@@ -61,6 +61,67 @@
         "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
         "timestamp": 1795609176622
       }
+    ],
+    "2. Checkpoint - Ensure the healthy field is correct": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609357489
+      }
+    ],
+    "3. Build the static HTML shell, the CSS tokens and the `/config` route": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609358081
+      },
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609488703
+      }
+    ],
+    "3.1 Add `GET /config` and simplify `_index_html` in `skeleton/seance/console/app.py`": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609485001
+      }
+    ],
+    "3.2 Rewrite `skeleton/seance/console/templates/index.html` as the static shell": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609485477
+      }
+    ],
+    "3.3 Rewrite `skeleton/seance/console/static/console.css` against the steering tokens": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609486266
+      }
+    ],
+    "3.4 Create a minimal `skeleton/seance/console/static/console.js` entry point": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609487145
+      }
+    ],
+    "3.5 Update the old tests in `skeleton/tests/test_console.py` that assert the removed server-rendered markup": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609487948
+      }
+    ],
+    "3.6 Run ruff and one targeted test file": [
+      {
+        "executionId": "19c52014-841b-4e77-900e-7d5e29399be8",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609488656
+      }
     ]
   }
 }
