@@ -158,6 +158,61 @@
         "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
         "timestamp": 1795577863566
       }
+    ],
+    "6.1 Create `apps/modbus/adapter.py`": [
+      {
+        "executionId": "57506f63-ce4c-4817-a203-bfae39e8ce0a",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795577933309
+      },
+      {
+        "executionId": "57506f63-ce4c-4817-a203-bfae39e8ce0a",
+        "chatSessionId": "sess_5af429e2-de22-4de3-b046-79cebad25e36",
+        "timestamp": 1795578030265
+      }
+    ],
+    "6.2 Write unit tests in `apps/modbus/tests/test_adapter.py`": [
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578107417
+      },
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578296851
+      }
+    ],
+    "6.3 Write property test for adapter reads in `apps/modbus/tests/test_adapter_properties.py`": [
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578296924
+      },
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578356588
+      }
+    ],
+    "6.4 Write property test for read-only behavior in `apps/modbus/tests/test_readonly_properties.py`": [
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578357361
+      },
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578412219
+      }
+    ],
+    "6. Implement the Modbus_Adapter": [
+      {
+        "executionId": "bb1f16c0-9509-4dc1-bb33-a2610e1878e9",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578412292
+      }
     ]
   }
 }

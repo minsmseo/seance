@@ -82,8 +82,8 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Generate text malformed in exactly one of: part count, unit range, offset range, table name
     - **Validates: Requirements 3.4, 3.5, 3.6, 3.7**
 
-- [ ] 6. Implement the Modbus_Adapter
-  - [ ] 6.1 Create `apps/modbus/adapter.py`
+- [x] 6. Implement the Modbus_Adapter
+  - [x] 6.1 Create `apps/modbus/adapter.py`
     - Check the current pymodbus client documentation for method names and the `device_id` parameter before writing code
     - `ModbusAdapter(host, port)` implements `connect`, `close`, `read` and `health` of `ProtocolAdapter` and no write method
     - `read` parses the address, checks that the data type fits the table (`bool` only with `coil` and `discrete`, the other four types only with `holding` and `input`), and calls `read_coils`, `read_discrete_inputs`, `read_holding_registers` or `read_input_registers` (function codes 1, 2, 3, 4)
@@ -94,7 +94,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Import nothing from `apps/` except `apps/modbus/address.py`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 3.8, 5.1, 5.2, 5.4, 10.6_
 
-  - [ ] 6.2 Write unit tests in `apps/modbus/tests/test_adapter.py`
+  - [x] 6.2 Write unit tests in `apps/modbus/tests/test_adapter.py`
     - One read per table showing the right function code, using `Simulator.function_codes_seen`
     - All 24 data type and table combinations, as a parametrized test, with the expected fit or the error naming point, type and table
     - The three `health` outcomes against a running Simulator, a Simulator that answers with an exception, and a stopped Simulator
@@ -102,13 +102,13 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - A source scan test that `pymodbus` is imported only by `apps/modbus/adapter.py` and `apps/modbus/simulator.py` and that no file under `apps/modbus/` calls a pymodbus write method
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7, 2.9, 2.10, 2.11, 2.12, 3.8, 5.1, 5.2, 5.4, 6.4_
 
-  - [ ] 6.3 Write property test for adapter reads in `apps/modbus/tests/test_adapter_properties.py`
+  - [x] 6.3 Write property test for adapter reads in `apps/modbus/tests/test_adapter_properties.py`
     - **Property 2: Adapter reads match the simulator's memory**
     - Tag with `Feature: app-modbus, Property 2`
     - Generate in-range values for uint16, int16, uint32, float32 and bool, set them in the Simulator memory, read through the adapter, and compare with the value decoded and scaled directly from the memory
     - **Validates: Requirements 2.6, 7.12**
 
-  - [ ] 6.4 Write property test for read-only behavior in `apps/modbus/tests/test_readonly_properties.py`
+  - [x] 6.4 Write property test for read-only behavior in `apps/modbus/tests/test_readonly_properties.py`
     - **Property 3: The Simulator observes only read function codes**
     - Tag with `Feature: app-modbus, Property 3`
     - Drive a `ToolServer` wired to the real adapter and a running Simulator with generated tool names and argument sets, including write-shaped ones, and assert that `function_codes_seen` is a subset of 1 to 4 and that a guard-rejected call adds no request
