@@ -213,6 +213,87 @@
         "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
         "timestamp": 1795578412292
       }
+    ],
+    "7. Checkpoint - Address parser and adapter": [
+      {
+        "executionId": "c480b697-3272-4613-8776-4814d7a18a69",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578439747
+      }
+    ],
+    "8.1 Create `apps/modbus/devices.yaml`": [
+      {
+        "executionId": "c480b697-3272-4613-8776-4814d7a18a69",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578444797
+      },
+      {
+        "executionId": "c480b697-3272-4613-8776-4814d7a18a69",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578478372
+      }
+    ],
+    "8.2 Write unit tests in `apps/modbus/tests/test_config.py`": [
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578517932
+      },
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578580030
+      }
+    ],
+    "9.1 Create `apps/modbus/__main__.py`": [
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578518066
+      },
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578580151
+      }
+    ],
+    "8. Write the Modbus_Config": [
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578580084
+      }
+    ],
+    "9.2 Write unit tests in `apps/modbus/tests/test___main__.py`": [
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578584023
+      },
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578711316
+      }
+    ],
+    "9.3 Write integration tests in `apps/modbus/tests/test_server_integration.py`": [
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578584232
+      },
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578711551
+      }
+    ],
+    "9. Implement the Entry_Point": [
+      {
+        "executionId": "457216fa-2f62-403b-a2e8-9cd59a8554cf",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795578711617
+      }
     ]
   }
 }

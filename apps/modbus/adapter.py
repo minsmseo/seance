@@ -33,8 +33,11 @@ _EXCEPTION_WORDS: dict[int, str] = {
 }
 
 
-class _DeviceSilent(AdapterReadError):
-    """The device did not answer: refused, reset or timed out. Health maps it to unreachable."""
+class _DeviceSilent(AdapterReadError, TimeoutError):
+    """The device did not answer: refused, reset or timed out. Health maps it to unreachable.
+
+    It is also a TimeoutError, so the Tool_Server answers with its Timeout_Sentence.
+    """
 
 
 class ModbusAdapter:

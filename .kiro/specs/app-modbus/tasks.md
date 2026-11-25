@@ -114,11 +114,11 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Drive a `ToolServer` wired to the real adapter and a running Simulator with generated tool names and argument sets, including write-shaped ones, and assert that `function_codes_seen` is a subset of 1 to 4 and that a guard-rejected call adds no request
     - **Validates: Requirements 6.1, 6.2, 6.3**
 
-- [ ] 7. Checkpoint - Address parser and adapter
+- [x] 7. Checkpoint - Address parser and adapter
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Write the Modbus_Config
-  - [ ] 8.1 Create `apps/modbus/devices.yaml`
+- [x] 8. Write the Modbus_Config
+  - [x] 8.1 Create `apps/modbus/devices.yaml`
     - Define `mixing_tank`, `feed_pump` and `chiller` with 11 to 13 points in total
     - Every point has a name, address in `<unit>:<table>:<offset>` form, data type and a non-empty unit
     - At least one point per table and one per data type (uint16, int16, uint32, float32)
@@ -127,15 +127,15 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Use ASCII only
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.10, 10.7_
 
-  - [ ] 8.2 Write unit tests in `apps/modbus/tests/test_config.py`
+  - [x] 8.2 Write unit tests in `apps/modbus/tests/test_config.py`
     - Load the shipped file with `seance.config.load_config`
     - Assert the three devices, the point count, table and data type coverage, positive scales, non-empty units and that every address parses
     - Assert that every point reads through the adapter from a running Simulator without error, so the file and the Simulator memory map agree
     - Assert that a bad field gives one message naming the file, the device and the field
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10_
 
-- [ ] 9. Implement the Entry_Point
-  - [ ] 9.1 Create `apps/modbus/__main__.py`
+- [x] 9. Implement the Entry_Point
+  - [x] 9.1 Create `apps/modbus/__main__.py`
     - Read `SEANCE_MODBUS_HOST` (127.0.0.1), `SEANCE_MODBUS_PORT` (5020), `SEANCE_CONSOLE_HOST` (127.0.0.1) and `SEANCE_CONSOLE_PORT` (8080)
     - A port that is not an integer from 1 to 65535 stops before serving with one message naming the variable and the range
     - Start the Simulator, then build the adapter and call `load_config`, `build_tool_server` and `serve`, in that order
@@ -146,7 +146,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Needs no secret and makes no network call beyond its own host
     - _Requirements: 4.7, 4.8, 4.9, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10, 10.6_
 
-  - [ ] 9.2 Write unit tests in `apps/modbus/tests/test___main__.py`
+  - [x] 9.2 Write unit tests in `apps/modbus/tests/test___main__.py`
     - Defaults and overrides of the four environment variables
     - Invalid ports (text, 0, 65536) give one message naming the variable and the range
     - A port in use gives one message naming the port and `SEANCE_MODBUS_PORT`
@@ -155,7 +155,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Nothing is written to standard output by the Entry_Point itself
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.7, 7.8, 7.9, 7.10, 4.9_
 
-  - [ ] 9.3 Write integration tests in `apps/modbus/tests/test_server_integration.py`
+  - [x] 9.3 Write integration tests in `apps/modbus/tests/test_server_integration.py`
     - Use the skeleton `ToolServer` with the real adapter, `devices.yaml` and a running Simulator on a free port
     - `list_devices` returns three devices, `read_point` returns the value, unit and timestamp, equal to the decoded Simulator memory, and `device_health` returns `ok`
     - A point outside the Device's range gives one sentence naming the device and the point
