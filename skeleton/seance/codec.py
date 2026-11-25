@@ -17,6 +17,7 @@ Round-trip contract (decode then encode returns the original bytes):
 
 import math
 import struct
+from decimal import Decimal
 
 from seance.points import DataType
 
@@ -115,12 +116,30 @@ def apply_scale(value: RawValue, scale: float | None) -> RawValue:
     """Multiply `value` by `scale`. Return `value` unchanged when `scale` is None.
 
     BOOL values are never scaled. `scale` must be greater than zero.
+
+    An integer raw value is rounded to the decimal places of the scale's shortest
+    decimal form (0.1 -> 1, 0.25 -> 2, 10 -> 0), which removes floating point
+    noise such as 39.400000000000006. A scaled non-zero integer is a non-zero
+    multiple of 10**-places, so rounding never turns it into zero or flips its
+    sign. A float raw value (FLOAT32) is returned as `value * scale` unrounded,
+    because the scale's places do not bound the precision of a float.
     """
     if scale is None or isinstance(value, bool):
         return value
     if not scale > 0:
         raise CodecValueError(f"Scale factor must be greater than zero but was {scale}.")
-    return value * scale
+    result = value * scale
+    if isinstance(value, int) and isinstance(result, float) and math.isfinite(result):
+        return round(result, _decimal_places(scale))
+    return result
+
+
+def _decimal_places(scale: float) -> int:
+    """Return the decimal places in the shortest decimal form of `scale`."""
+    if not math.isfinite(scale):
+        return 0
+    exponent = Decimal(repr(scale)).normalize().as_tuple().exponent
+    return max(0, -exponent) if isinstance(exponent, int) else 0
 
 
 def _decode_float32(raw: bytes) -> float:

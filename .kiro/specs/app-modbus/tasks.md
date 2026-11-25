@@ -164,7 +164,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - The console shows the three devices with live values within 5 seconds of start
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 7.11, 7.12, 9.8_
 
-- [ ] 10. Checkpoint - Config and Entry_Point
+- [x] 10. Checkpoint - Config and Entry_Point
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Write the README

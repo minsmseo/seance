@@ -112,6 +112,16 @@
         "executionId": "a99c4557-1c08-484e-a3f7-82ed857785d6",
         "chatSessionId": "sess_5f728ae6-72f0-474d-91a8-f177bd610033",
         "timestamp": 1795528974126
+      },
+      {
+        "executionId": "706e2be0-5ec3-478f-99b1-d26615996817",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795599133334
+      },
+      {
+        "executionId": "706e2be0-5ec3-478f-99b1-d26615996817",
+        "chatSessionId": "sess_d443c0c3-61be-43f7-83e4-949895a6749f",
+        "timestamp": 1795599200974
       }
     ],
     "3.2 Write property test for decode-then-encode round-trip": [
