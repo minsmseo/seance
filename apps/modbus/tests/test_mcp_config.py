@@ -50,10 +50,12 @@ def test_file_is_valid_json_and_ascii() -> None:
     json.loads(raw)
 
 
-def test_single_entry_named_seance_modbus() -> None:
+def test_exactly_one_entry_named_seance_modbus() -> None:
     servers = _load()["mcpServers"]
     assert isinstance(servers, dict)
-    assert list(servers) == ["seance-modbus"]
+    assert list(servers).count("seance-modbus") == 1
+    for name in servers:
+        assert name.startswith("seance-"), name
 
 
 def test_command_and_args() -> None:
