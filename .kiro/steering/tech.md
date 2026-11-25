@@ -21,6 +21,7 @@ Check the current documentation of a library before using an API from memory.
 - Format: `uv run ruff format .`
 - The shell is Windows PowerShell. Run each command directly, one per call.
 - Never redirect output to a temporary file, and never chain commands with `;`.
+- The full test suite is verified on GitHub Actions (ubuntu), not on this machine. Locally run ruff and at most one targeted pytest file, once. Never run the full suite locally and never retry after WinError 10014.
 
 ## Rules
 

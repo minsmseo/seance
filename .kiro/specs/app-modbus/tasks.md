@@ -36,7 +36,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - `function_codes_seen` records the codes of the requests sent
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11, 6.2, 10.1, 10.2_
 
-- [ ] 2. Checkpoint - Simulator
+- [x] 2. Checkpoint - Simulator
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Skeleton change: AdapterReadError

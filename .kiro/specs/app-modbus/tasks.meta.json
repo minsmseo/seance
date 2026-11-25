@@ -48,6 +48,18 @@
         "chatSessionId": "sess_72774787-a609-44d8-a9ea-917ddb8390ea",
         "timestamp": 1795572718149
       }
+    ],
+    "2. Checkpoint - Simulator": [
+      {
+        "executionId": "b6ca5a9c-9d78-48a6-8814-d297816a1edc",
+        "chatSessionId": "sess_861754bb-85dc-4843-8edb-8a9cb983085b",
+        "timestamp": 1795572792181
+      },
+      {
+        "executionId": "8ed426ca-0d88-46dd-812f-4e3e3f56d4f0",
+        "chatSessionId": "sess_861754bb-85dc-4843-8edb-8a9cb983085b",
+        "timestamp": 1795573145171
+      }
     ]
   }
 }
