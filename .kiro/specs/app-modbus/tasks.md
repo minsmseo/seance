@@ -6,7 +6,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
 
 ## Tasks
 
-- [ ] 1. Build the Simulator
+- [x] 1. Build the Simulator
   - [x] 1.1 Create the app package and the Simulator memory map
     - Create `apps/modbus/__init__.py` and `apps/modbus/tests/__init__.py` if the repo layout needs them
     - Create `apps/modbus/simulator.py` with a `Simulator(host, port, seed)` class built on the pymodbus simulator datastore
@@ -26,7 +26,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Expose a way to read and set a point value in the Simulator's memory, for tests
     - _Requirements: 1.5, 1.6, 1.7, 1.8, 1.11_
 
-  - [-] 1.3 Write unit tests in `apps/modbus/tests/test_simulator.py`
+  - [x] 1.3 Write unit tests in `apps/modbus/tests/test_simulator.py`
     - Start the Simulator on a free localhost port picked at test setup, make no other network call
     - Three devices answer on their unit ids
     - An undefined offset answers "illegal data address" and an unsupported function code answers "illegal function"
