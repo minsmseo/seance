@@ -89,6 +89,85 @@ def test_read_point_rounds_float32_with_and_without_decimals() -> None:
     assert rounded.payload["value"] == 44.4
 
 
+LABELS = ((1, "up"), (2, "down"))
+LABEL_CONFIG = Configuration(
+    devices=(
+        DeviceConfig(
+            name="switch",
+            description="Core switch",
+            timeout_seconds=0.2,
+            points=(
+                PointConfig("status", "1", DataType.INT16, "state", labels=LABELS),
+                PointConfig("plain", "2", DataType.INT16, "state"),
+                PointConfig("scaled", "3", DataType.INT16, "C", 0.5, labels=LABELS),
+            ),
+        ),
+    )
+)
+
+
+def labeled(value: int) -> ToolServer:
+    return ToolServer(LABEL_CONFIG, Fake_Adapter(data=struct.pack(">h", value)))
+
+
+def read_dict(server: ToolServer, point: str) -> dict[str, object]:
+    result = server.call("read_point", {"device": "switch", "point": point})
+    assert result.ok
+    assert isinstance(result.payload, dict)
+    return result.payload
+
+
+def test_labeled_read_returns_text_raw_and_unit() -> None:
+    payload = read_dict(labeled(2), "status")
+    assert payload["value"] == "down"
+    assert payload["raw"] == 2
+    assert payload["unit"] == "state"
+    assert isinstance(payload["timestamp"], str)
+
+
+def test_unmapped_integer_keeps_integer_value_without_raw() -> None:
+    payload = read_dict(labeled(7), "status")
+    assert payload["value"] == 7
+    assert "raw" not in payload
+
+
+def test_point_without_labels_has_no_raw_key() -> None:
+    payload = read_dict(labeled(1), "plain")
+    assert payload["value"] == 1
+    assert set(payload) == {"device", "point", "value", "unit", "timestamp"}
+
+
+def test_labeled_point_with_scale_maps_unscaled_integer() -> None:
+    mapped = read_dict(labeled(1), "scaled")
+    assert mapped["value"] == "up"
+    assert mapped["raw"] == 1
+    unmapped = read_dict(labeled(4), "scaled")
+    assert unmapped["value"] == pytest.approx(2.0)
+    assert "raw" not in unmapped
+
+
+def test_read_points_applies_labels() -> None:
+    server = labeled(1)
+    result = server.call("read_points", {"device": "switch", "points": ["status", "plain"]})
+    assert result.ok
+    assert isinstance(result.payload, dict)
+    first, second = result.payload["results"]  # type: ignore[misc]
+    assert first["point"] == "status"
+    assert first["value"] == "up"
+    assert first["raw"] == 1
+    assert second["value"] == 1
+    assert "raw" not in second
+
+
+def test_labeled_calls_write_one_audit_entry_each() -> None:
+    server = labeled(1)
+    server.call("read_point", {"device": "switch", "point": "status"})
+    assert len(server.audit.recent(10)) == 1
+    server.call("read_points", {"device": "switch", "points": ["status", "scaled"]})
+    entries = server.audit.recent(10)
+    assert sorted(e.tool for e in entries) == ["read_point", "read_points"]
+
+
 def test_device_health_shape() -> None:
     server, _ = make(Fake_Adapter(health_status=HealthStatus.DEGRADED))
     result = server.call("device_health", {"device": "press"})

@@ -288,8 +288,9 @@ class ToolServer:
     def _read_value(self, device: DeviceConfig, point: PointConfig) -> dict[str, JsonValue]:
         raw = self._with_timeout(device, "read", lambda: self._adapter.read(device, point))
         try:
+            decoded = decode(point.data_type, raw)
             value: RawValue = round_value(
-                apply_scale(decode(point.data_type, raw), point.scale),
+                apply_scale(decoded, point.scale),
                 point.data_type,
                 point.decimals,
             )
@@ -301,13 +302,19 @@ class ToolServer:
                 f"did not match type {point.data_type.value}. "
                 "Check the point's data_type and address in the configuration.",
             ) from None
-        return {
+        result: dict[str, JsonValue] = {
             "device": device.name,
             "point": point.name,
             "value": value,
             "unit": point.unit,
             "timestamp": _now(),
         }
+        if point.labels is not None and isinstance(decoded, int) and not isinstance(decoded, bool):
+            text = dict(point.labels).get(decoded)
+            if text is not None:
+                result["value"] = text
+                result["raw"] = decoded
+        return result
 
     # ----- tool handlers --------------------------------------------------
 

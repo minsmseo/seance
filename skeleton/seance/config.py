@@ -75,8 +75,32 @@ def _load_point(file: str, device: str, index: int, raw: object) -> PointConfig:
         if data_type is DataType.BOOL:
             raise ConfigError(file, device, f"{prefix}.decimals", "is not allowed on a bool point")
         decimals = value
+    labels: tuple[tuple[int, str], ...] | None = None
+    if "labels" in raw and raw["labels"] is not None:
+        field = f"{prefix}.labels"
+        if data_type in (DataType.BOOL, DataType.FLOAT32):
+            raise ConfigError(file, device, field, f"is not allowed on a {data_type.value} point")
+        raw_labels = raw["labels"]
+        if not isinstance(raw_labels, Mapping):
+            raise ConfigError(file, device, field, "must be a mapping of integers to text")
+        if not raw_labels:
+            raise ConfigError(file, device, field, "must not be empty")
+        pairs: list[tuple[int, str]] = []
+        for key, text_value in raw_labels.items():
+            if not isinstance(key, int) or isinstance(key, bool):
+                raise ConfigError(file, device, field, f"key {key!r} must be an integer")
+            if not isinstance(text_value, str) or not text_value:
+                raise ConfigError(file, device, field, f"label for {key} must be non-empty text")
+            pairs.append((key, text_value))
+        labels = tuple(pairs)
     return PointConfig(
-        name=name, address=address, data_type=data_type, unit=unit, scale=scale, decimals=decimals
+        name=name,
+        address=address,
+        data_type=data_type,
+        unit=unit,
+        scale=scale,
+        decimals=decimals,
+        labels=labels,
     )
 
 
@@ -145,6 +169,8 @@ def dump_config(config: Configuration) -> str:
                 entry["scale"] = point.scale
             if point.decimals is not None:
                 entry["decimals"] = point.decimals
+            if point.labels is not None:
+                entry["labels"] = dict(point.labels)
             points.append(entry)
         devices.append(
             {

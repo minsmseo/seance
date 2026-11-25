@@ -78,29 +78,29 @@ Verification rules for every task:
     - In `skeleton/tests/test_codec_properties.py` check that the existing generators over `list(DataType)` cover `uint64`, and add one property that a positive scale never changes the sign of a decoded `uint64` value
     - Tag with `Feature: app-snmp, Property 4`
 
-- [ ] 4. Skeleton change: value labels
-  - [ ] 4.1 Add `labels` to `PointConfig` and the Config_Loader
+- [x] 4. Skeleton change: value labels
+  - [x] 4.1 Add `labels` to `PointConfig` and the Config_Loader
     - In `skeleton/seance/points.py` add `labels: tuple[tuple[int, str], ...] | None = None` as the last field
     - In `skeleton/seance/config.py` read an optional `labels` map into `(int, str)` pairs in file order, and write it back in `dump_config` in the same order
     - Reject with a `ConfigError` that names the file, the device and `points[<name>].labels`: labels on a `bool` or `float32` point, a key that is not an integer (text or boolean), empty or non-text label text, and an empty map
     - Existing configs without labels load as before
     - _Requirements: Skeleton change 2 (criteria 3, 4), 4.8_
 
-  - [ ] 4.2 Apply labels in the Tool_Server
+  - [x] 4.2 Apply labels in the Tool_Server
     - In `skeleton/seance/server.py` change `_read_value` so that a decoded `int` (not `bool`) found in the labels returns `value` as the text and a `raw` key with the decoded integer, with the unit kept
     - An unmapped integer and a point without labels return the same keys and values as before
     - The lookup uses the decoded, unscaled integer, and `read_points` uses the same helper
     - `ToolServer.call` still writes exactly one audit entry
     - _Requirements: 5.1, 5.2, Skeleton change 2 (criteria 1, 2, 3, 5)_
 
-  - [ ] 4.3 Write skeleton unit tests
+  - [x] 4.3 Write skeleton unit tests
     - In `skeleton/tests/test_config.py` test the loader rejections (bool point, float32 point, non-integer key, boolean key, empty text, empty map), each naming file, device and field, and that `dump_config` then `load_config` keeps labels in order
     - In `skeleton/tests/test_server.py` test a labeled read (`value` text, `raw`, `unit`), an unmapped integer (integer value, no `raw`, no error), a point without labels (same keys as before), a labeled point with a scale (mapped integer is not scaled), `read_points`, and exactly one audit entry per labeled call
     - Use a fake adapter and no network
     - Run `uv run pytest skeleton/tests/test_server.py` once
     - _Requirements: 5.1, 5.2, Skeleton change 2 (criteria 1 to 5)_
 
-  - [ ] 4.4 Write property tests for labels
+  - [x] 4.4 Write property tests for labels
     - **Property 5: Labels map known integers and leave unknown ones alone**
     - **Validates: Requirements 5.1, 5.2**
     - Create `skeleton/tests/test_labels_properties.py` with a fake adapter and a generated label map for integer types
@@ -287,7 +287,7 @@ Verification rules for every task:
 - All sources and documents use UTF-8 with ASCII characters only.
 - Tests start the Simulator on a free localhost UDP port and make no other network call. Share one module-scoped Simulator and create no event loop per test, per example or per tool call.
 - Tasks 3 and 4 change only the skeleton, additively, and must land before task 7. If another skeleton gap appears, record it and stop for a decision, and do not work around it in the skeleton.
-- `apps/modbus/` is not changed by any task.
+- `apps/modbus/` source files and the Simulator are not changed by any task. Its tests may be updated when the skeleton gains a data type (decided after the task 3 CI failures in `apps/modbus/tests/test_adapter.py`, where the new `uint64` type broke the literal count of 24 combinations and the register reads at `2:holding:0` and `2:input:0`).
 - Task 7.2 must not start until the GitHub Actions result of the three tests from 7.1 has been read.
 - Properties 1 and 2 need `devices.yaml`, so their tests are in task 9 and not in task 7.
 - Property tests validate universal properties. Unit tests validate examples and edge cases.

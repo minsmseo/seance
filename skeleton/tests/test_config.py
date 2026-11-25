@@ -135,6 +135,54 @@ def test_decimals_rejected_on_bool_point(tmp_path: Path) -> None:
     assert str(path) in str(info.value)
 
 
+def labels_text(labels: str, data_type: str = "int16") -> str:
+    return (
+        "devices:\n  - name: press\n    points:\n"
+        f'      - {{name: state, address: "1", data_type: {data_type}, unit: state, '
+        f"labels: {labels}}}\n"
+    )
+
+
+@pytest.mark.parametrize(
+    ("labels", "data_type"),
+    [
+        ("{0: off, 1: on}", "bool"),
+        ("{0: off, 1: on}", "float32"),
+        ("{up: on}", "int16"),
+        ("{1.5: on}", "int16"),
+        ("{true: on}", "int16"),
+        ('{1: ""}', "int16"),
+        ("{1: 5}", "int16"),
+        ("{}", "int16"),
+    ],
+)
+def test_invalid_labels_name_file_device_and_field(
+    tmp_path: Path, labels: str, data_type: str
+) -> None:
+    path = write(tmp_path, labels_text(labels, data_type))
+    with pytest.raises(ConfigError) as info:
+        load_config(path)
+    assert info.value.field == "points[state].labels"
+    assert info.value.device == "press"
+    assert str(path) in str(info.value)
+    assert "points[state].labels" in str(info.value)
+
+
+def test_labels_load_in_order_and_are_optional(tmp_path: Path) -> None:
+    point = load_config(write(tmp_path, labels_text("{3: c, 1: a, 2: b}"))).devices[0].points[0]
+    assert point.labels == ((3, "c"), (1, "a"), (2, "b"))
+    assert load_config(write(tmp_path, VALID)).devices[0].points[0].labels is None
+
+
+def test_labels_round_trip_through_dump_keeps_order(tmp_path: Path) -> None:
+    config = load_config(write(tmp_path, labels_text("{3: c, 1: a, 2: b}")))
+    again = load_config(write(tmp_path, dump_config(config)))
+    assert again == config
+    labels = again.devices[0].points[0].labels
+    assert labels is not None
+    assert [key for key, _ in labels] == [3, 1, 2]
+
+
 def test_decimals_round_trips_through_dump(tmp_path: Path) -> None:
     config = load_config(write(tmp_path, decimals_text("3")))
     assert load_config(write(tmp_path, dump_config(config))) == config

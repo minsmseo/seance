@@ -110,8 +110,8 @@ def test_read_never_sends_a_function_code_outside_one_to_four(
 COMBINATIONS = [(data_type, table) for data_type in DataType for table in TABLES]
 
 
-def test_there_are_24_combinations() -> None:
-    assert len(COMBINATIONS) == 24
+def test_there_is_one_combination_per_data_type_and_table() -> None:
+    assert len(COMBINATIONS) == len(DataType) * len(TABLES)
 
 
 @pytest.mark.parametrize(("data_type", "table"), COMBINATIONS)
@@ -121,6 +121,13 @@ def test_data_type_and_table_combination(
     point = _point("probe_point", f"2:{table}:0", data_type)
     device = _device(point)
     fits = (data_type == DataType.BOOL) == (table in BIT_TABLES)
+    if data_type == DataType.UINT64 and table not in BIT_TABLES:
+        # The Simulator has no block of 4 consecutive registers at 2:<table>:0.
+        with pytest.raises(AdapterReadError) as outside:
+            adapter.read(device, point)
+        assert "probe_point" in str(outside.value)
+        assert "outside the range of device feed_pump" in str(outside.value)
+        return
     if fits:
         raw = adapter.read(device, point)
         assert len(raw) == required_length(data_type)

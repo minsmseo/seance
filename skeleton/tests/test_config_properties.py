@@ -12,19 +12,34 @@ _text = st.text(alphabet=st.characters(min_codepoint=32, max_codepoint=126), max
 _nonempty = _text.filter(bool)
 _positive = st.floats(min_value=1e-6, max_value=1e6, allow_nan=False, allow_infinity=False)
 
-_points = st.builds(
-    PointConfig,
-    name=_nonempty,
-    address=_nonempty,
-    data_type=st.sampled_from(DataType),
-    unit=_nonempty,
-    scale=st.none() | _positive,
-)
+_NO_LABEL_TYPES = (DataType.BOOL, DataType.FLOAT32)
+_label_maps = st.dictionaries(
+    st.integers(min_value=-(2**15), max_value=2**16 - 1),
+    _nonempty,
+    min_size=1,
+    max_size=5,
+).map(lambda mapping: tuple(mapping.items()))
+
+
+@st.composite
+def _points(draw: st.DrawFn) -> PointConfig:
+    data_type = draw(st.sampled_from(DataType))
+    labels = None
+    if data_type not in _NO_LABEL_TYPES:
+        labels = draw(st.none() | _label_maps)
+    return PointConfig(
+        name=draw(_nonempty),
+        address=draw(_nonempty),
+        data_type=data_type,
+        unit=draw(_nonempty),
+        scale=draw(st.none() | _positive),
+        labels=labels,
+    )
 
 
 @st.composite
 def _devices(draw: st.DrawFn) -> DeviceConfig:
-    points = draw(st.lists(_points, max_size=5, unique_by=lambda p: p.name))
+    points = draw(st.lists(_points(), max_size=5, unique_by=lambda p: p.name))
     return DeviceConfig(
         name=draw(_nonempty),
         description=draw(_text),
