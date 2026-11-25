@@ -129,11 +129,11 @@ Current code facts that these requirements rely on:
 
 ### Requirement 6: Display formatting in the browser
 
-**User Story:** As an operator, I want uptime, sizes, states and times in readable form, so that I do not have to convert raw numbers.
+**User Story:** As an operator, I want durations, sizes, states and times in readable form, so that I do not have to convert raw numbers.
 
 #### Acceptance Criteria
 
-1. WHEN a value has unit `s` and the point name or description marks it as uptime, THE Formatter SHALL show the value as `<d>d <h>h <m>m` and SHALL show the raw value with a thousands separator and the unit `s` on the detail line. For example, `86427.5 s` SHALL show as `1d 0h 0m` with `86,427.5 s` on the detail line.
+1. WHEN a value has unit `s` and the value is 60 or more, THE Formatter SHALL show it as a duration, with each part rounded down to a whole number: `<d>d <h>h <m>m` from one day up, `<h>h <m>m` from one hour up to one day, and `<m>m <s>s` below one hour. THE Formatter SHALL show the raw value with a thousands separator and the unit `s` on the detail line. For example, `86427.5 s` SHALL show as `1d 0h 0m` with `86,427.5 s` on the detail line, and `270 s` SHALL show as `4m 30s` with `270 s` on the detail line.
 2. WHEN a value has unit `B`, THE Formatter SHALL show the value in decimal units (kB, MB, GB, TB) with two decimals, and SHALL show the raw byte count with a thousands separator on the detail line. For example, `5010152941 B` SHALL show as `5.01 GB` with `5,010,152,941 B` on the detail line.
 3. WHEN a value is a boolean, THE Formatter SHALL show `on` for true and `off` for false, and the detail line SHALL show the time of the read.
 4. WHEN a result carries a `raw` integer next to a label value, THE Formatter SHALL show the label as the value, and the detail line SHALL show `raw <integer>` and the time of the read.
@@ -144,6 +144,8 @@ Current code facts that these requirements rely on:
 9. THE Formatter SHALL leave every tool result, every `/points` response and every `/audit` response unchanged, so that agents and the Ledger source keep raw values.
 10. THE Formatter SHALL never change the sign of a numeric value that it displays.
 11. THE Page SHALL contain the character `°` only through the Formatter or an HTML entity, so that Python and CSS source files stay ASCII.
+12. WHEN a value has unit `s` and the value is less than 60, THE Formatter SHALL show the value as plain seconds, which is the number followed by the unit `s`, and the detail line SHALL show the time of the read. For example, `42.5 s` SHALL show as `42.5 s`.
+13. THE Formatter SHALL choose every format from the unit and the type of the value only, and SHALL never consult a point name, a device name or a description.
 
 ### Requirement 7: Summary strip
 
@@ -211,6 +213,7 @@ Current code facts that these requirements rely on:
 5. THE change set SHALL edit files only in `skeleton/seance/console/`, `skeleton/tests/`, `skeleton/seance/config.py`, `skeleton/seance/points.py`, `apps/snmp/devices.yaml` and this spec folder, plus the `healthy` documentation lines in `README.md` and `docs/add-a-protocol.md` when those files describe point fields.
 6. THE source files and the documents of the change set SHALL be UTF-8 and use ASCII characters only.
 7. THE Console SHALL create no event loop per request, and the tests SHALL reuse the session event loop.
+8. THE served HTML shell, `console.css` and `console.js` SHALL contain no point name and no device name. Names SHALL reach the Page only as data from `GET /config` and from tool results, and the server SHALL not write a device name into the HTML shell.
 
 ### Requirement 11: Correctness properties
 
@@ -231,7 +234,7 @@ Current code facts that these requirements rely on:
 
 #### Acceptance Criteria
 
-1. THE Test_Suite SHALL check that the Page contains the header, the Summary_Strip, one section per device, the Ledger and the Tool_Panel.
+1. THE Test_Suite SHALL check that the HTML shell contains the header, the Summary_Strip, the devices container, the Ledger and the Tool_Panel, and that the served `console.js` creates one section per device from the `GET /config` data.
 2. THE Test_Suite SHALL check that every color value in `console.css`, outside the `:root` block, is `var(--token)` of a Steering_Token, and that the `:root` block holds exactly the nine Steering_Tokens with the steering values.
 3. THE Test_Suite SHALL check that no rule that targets a Tile sets its own height other than the one shared 108px rule.
 4. THE Test_Suite SHALL check that no heading and no button in the Page contains a parenthesis.
@@ -241,3 +244,4 @@ Current code facts that these requirements rely on:
 8. THE Test_Suite SHALL keep each existing test in `skeleton/tests/test_console.py` passing, and SHALL update a test only when it asserts the old markup, and the final report SHALL list each test that changed and why.
 9. THE Test_Suite SHALL make no network call and SHALL run the console tests with the Fake_Adapter.
 10. THE Test_Suite SHALL be verified on GitHub Actions. THE developer SHALL run only `ruff` and at most one targeted pytest file, once, on the local machine.
+11. THE Test_Suite SHALL load `apps/modbus/devices.yaml` and `apps/snmp/devices.yaml`, and SHALL check that no device name and no point name from either file appears in the served HTML (`GET /`, built over each of the two configurations) or in the served `console.js`. THE check SHALL match each name as a whole word, ignoring case, and SHALL fail with the file and the name that was found.
