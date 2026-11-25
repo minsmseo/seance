@@ -233,7 +233,7 @@ class _Server(ModbusTcpServer):
 
 
 def _port_bind_error(host: str, port: int) -> OSError | None:
-    """Return True if nothing is bound to the port.
+    """Return the OSError if the port cannot be bound now, else None.
 
     pymodbus listens with address reuse, which on Windows lets a second server share
     a busy port. A plain bind (no reuse on Windows) detects that case before start.
@@ -250,22 +250,20 @@ def _port_bind_error(host: str, port: int) -> OSError | None:
     return None
 
 
-def _new_event_loop() -> asyncio.AbstractEventLoop:
-    """Create an event loop, retrying because Windows can fail the loopback self-pipe."""
-    for _ in range(4):
-        try:
-            return asyncio.new_event_loop()
-        except OSError:
-            time.sleep(0.05)
-    return asyncio.new_event_loop()
-
-
 class Simulator:
-    """Modbus TCP server for the three-device mixing line, run on a background thread."""
+    """Modbus TCP server for the three-device mixing line, run on a background thread.
+
+    A Simulator runs once. It creates exactly one asyncio event loop, on its first
+    ``start()``, and closes it when the server thread ends. Calling ``start()`` again,
+    even after ``stop()`` or a failed start, raises ``SimulatorError``: create a new
+    Simulator instead. Port 0 asks the operating system for a free port; ``port``
+    then returns the real port once ``start()`` has returned.
+    """
 
     def __init__(self, host: str, port: int, seed: int) -> None:
         self._host = host
         self._port = port
+        self._started = False
         self._seed = seed
         self._rng = random.Random(seed)
         self._lock = threading.Lock()
@@ -286,7 +284,7 @@ class Simulator:
 
     @property
     def port(self) -> int:
-        """Port the server listens on."""
+        """Port the server listens on. For port 0 this is the real port after ``start()``."""
         return self._port
 
     @property
@@ -311,14 +309,27 @@ class Simulator:
         return self._thread is not None and self._thread.is_alive()
 
     def start(self) -> None:
-        """Start serving on a background thread. Returns once the port is listening."""
+        """Start serving on a background thread. Returns once the port is listening.
+
+        Works once per instance. A second call raises SimulatorError.
+        """
         if self.running:
             raise SimulatorError("The simulator is already running.")
-        bind_error = _port_bind_error(self._host, self._port)
-        if bind_error is not None:
+        if self._started:
+            raise SimulatorError("This simulator already ran once. Create a new Simulator.")
+        self._started = True
+        if self._port != 0:
+            bind_error = _port_bind_error(self._host, self._port)
+            if bind_error is not None:
+                raise SimulatorError(
+                    f"Port {self._port} is already in use ({bind_error}). Try another port."
+                ) from bind_error
+        try:
+            self._loop = asyncio.new_event_loop()
+        except OSError as exc:
             raise SimulatorError(
-                f"Port {self._port} is already in use ({bind_error}). Try another port."
-            ) from bind_error
+                f"The simulator could not create its event loop ({exc}). Create a new Simulator."
+            ) from exc
         self._ready.clear()
         self._start_error = None
         self._thread = threading.Thread(target=self._run, name="modbus-simulator", daemon=True)
@@ -349,6 +360,8 @@ class Simulator:
             self._drift_thread = None
         thread, loop, server = self._thread, self._loop, self._server
         if thread is None or loop is None or server is None or not thread.is_alive():
+            if loop is not None and not loop.is_closed() and not (thread and thread.is_alive()):
+                loop.close()
             return
         future = asyncio.run_coroutine_threadsafe(server.shutdown(), loop)
         try:
@@ -470,10 +483,11 @@ class Simulator:
         return data
 
     def _run(self) -> None:
-        """Thread body: run one asyncio loop that serves until stopped."""
-        loop: asyncio.AbstractEventLoop | None = None
+        """Thread body: run the simulator's one asyncio loop until stopped, then close it."""
+        loop = self._loop
         try:
-            loop = _new_event_loop()
+            if loop is None:
+                raise SimulatorError("The simulator has no event loop.")
             loop.run_until_complete(self._serve())
         except Exception as exc:  # noqa: BLE001 - startup failures are reported through start()
             if not self._ready.is_set():
@@ -488,7 +502,6 @@ class Simulator:
 
     async def _serve(self) -> None:
         """Create the server, listen, signal readiness and wait for shutdown."""
-        self._loop = asyncio.get_running_loop()
         server = _Server(
             _build_devices(),
             address=(self._host, self._port),
@@ -497,5 +510,9 @@ class Simulator:
         server.defined_bits_by_unit = _defined_bits()
         self._server = server
         await server.serve_forever(background=True)
+        if self._port == 0:
+            # server.transport is the asyncio.Server returned by create_server.
+            sockets = server.transport.sockets  # type: ignore[attr-defined]
+            self._port = int(sockets[0].getsockname()[1])
         self._ready.set()
         await server.serving

@@ -1,6 +1,9 @@
 """Unit tests for the Modbus simulator.
 
-Every test talks only to a simulator on 127.0.0.1 and a port picked at setup.
+Every test talks only to a simulator on 127.0.0.1 and an OS-assigned port (port 0).
+Each Simulator creates one event loop for its whole life, so tests share one running
+simulator and start their own only to stop it, compare seeds, count function codes or
+check the real drift thread.
 Drift is driven by ``drift_step()``; the drift thread is slowed down so it cannot
 interleave with the steps, except in the one test that checks the real thread.
 """
@@ -52,31 +55,11 @@ def _wait_until_bindable(port: int, timeout: float) -> bool:
     return True
 
 
-def _free_port() -> int:
-    """Ask the OS for a free localhost port and release it."""
-    with socket.socket() as probe:
-        probe.bind((HOST, 0))
-        port: int = probe.getsockname()[1]
-    return port
-
-
 def _started(seed: int) -> Simulator:
-    """Start a simulator on a fresh free port.
-
-    Windows refuses to rebind a just-closed port for a few tens of milliseconds,
-    so start() is retried briefly while the picked port is released.
-    """
-    simulator = Simulator(HOST, _free_port(), seed)
-    deadline = time.monotonic() + 2.0
-    while True:
-        try:
-            simulator.start()
-        except SimulatorError:
-            if time.monotonic() >= deadline:
-                raise
-            time.sleep(0.05)
-        else:
-            return simulator
+    """Start a simulator on an OS-assigned port (port 0). One start, one event loop."""
+    simulator = Simulator(HOST, 0, seed)
+    simulator.start()
+    return simulator
 
 
 @pytest.fixture
@@ -99,7 +82,7 @@ def make_simulator(monkeypatch: pytest.MonkeyPatch) -> Iterator[SimulatorFactory
 def shared_simulator() -> Iterator[Simulator]:
     """One started simulator (seed 1) for the whole module.
 
-    Each Simulator.start() creates an asyncio event loop. On Windows every loop leaves a
+    Each Simulator creates an asyncio event loop. On Windows every loop leaves a
     loopback socket pair in TIME_WAIT, so tests that can share one simulator do.
     """
     patch = pytest.MonkeyPatch()
@@ -290,17 +273,21 @@ def test_drift_moves_values(simulator: Simulator) -> None:
     assert _snapshot(simulator) != before
 
 
-def test_equal_seeds_give_equal_sequences(make_simulator: SimulatorFactory) -> None:
-    first = make_simulator(42)
-    second = make_simulator(42)
+def test_equal_seeds_give_equal_sequences(
+    simulator: Simulator, make_simulator: SimulatorFactory
+) -> None:
+    first = simulator
+    second = make_simulator(simulator.seed)
     for _ in range(25):
         first.drift_step()
         second.drift_step()
         assert _snapshot(first) == _snapshot(second)
 
 
-def test_different_seeds_give_different_sequences(make_simulator: SimulatorFactory) -> None:
-    first = make_simulator(1)
+def test_different_seeds_give_different_sequences(
+    simulator: Simulator, make_simulator: SimulatorFactory
+) -> None:
+    first = simulator
     second = make_simulator(2)
     for _ in range(25):
         first.drift_step()
@@ -376,15 +363,39 @@ def test_stop_with_a_connected_client_still_releases_the_port(
 
 
 def test_stop_is_safe_when_not_running() -> None:
-    Simulator(HOST, _free_port(), 1).stop()
+    Simulator(HOST, 0, 1).stop()
 
 
 def test_start_on_a_busy_port_raises_one_sentence() -> None:
     with socket.socket() as blocker:
         blocker.bind((HOST, 0))
         port: int = blocker.getsockname()[1]
+        busy = Simulator(HOST, port, 1)
         with pytest.raises(SimulatorError, match="already in use"):
-            Simulator(HOST, port, 1).start()
+            busy.start()
+        with pytest.raises(SimulatorError, match="Create a new Simulator"):
+            busy.start()
+
+
+def test_port_zero_reports_the_real_port_after_start(simulator: Simulator) -> None:
+    assert simulator.port != 0
+    assert not _can_bind(simulator.port)
+
+
+def test_start_on_a_running_simulator_raises(simulator: Simulator) -> None:
+    with pytest.raises(SimulatorError, match="already running"):
+        simulator.start()
+
+
+def test_second_start_after_stop_raises_and_creates_no_new_loop() -> None:
+    once = _started(1)
+    loop = once._loop  # the test checks that the one loop is kept and closed
+    once.stop()
+    assert loop is not None
+    assert loop.is_closed()
+    with pytest.raises(SimulatorError, match="Create a new Simulator"):
+        once.start()
+    assert once._loop is loop
 
 
 def test_unknown_point_raises_one_sentence(simulator: Simulator) -> None:
