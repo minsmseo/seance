@@ -202,8 +202,8 @@ Verification rules for every task:
     - Compare `len(simulator.pdus_seen)` before and after each sequence, assert that the new records contain only GET, and that a guard-rejected call adds none
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.4**
 
-- [ ] 10. Implement the Entry_Point
-  - [ ] 10.1 Create `apps/snmp/__main__.py`
+- [x] 10. Implement the Entry_Point
+  - [x] 10.1 Create `apps/snmp/__main__.py`
     - Read `SEANCE_SNMP_HOST` (127.0.0.1), `SEANCE_SNMP_PORT` (1161), `SEANCE_CONSOLE_HOST` (127.0.0.1) and `SEANCE_CONSOLE_PORT` (8080), with `StartupError` and `read_port` as in `apps/modbus/__main__.py`, copied and not imported
     - A port that is not an integer from 1 to 65535 stops before serving with one message naming the variable and the range
     - `check_points(config_path)` loads the config, parses every address with a message naming device, point and reason, and compares the community with the device name with a message naming device, point and both values
@@ -214,7 +214,7 @@ Verification rules for every task:
     - Needs no secret and makes no network call beyond its own host
     - _Requirements: 4.11, 4.12, 4.13, 4.14, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10_
 
-  - [ ] 10.2 Write unit tests in `apps/snmp/tests/test___main__.py`
+  - [x] 10.2 Write unit tests in `apps/snmp/tests/test___main__.py`
     - Defaults and overrides of the four environment variables
     - Invalid ports (text, 0, 65536) give one message naming the variable and the range
     - A busy port gives one message naming the port and `SEANCE_SNMP_PORT`
@@ -223,7 +223,7 @@ Verification rules for every task:
     - Nothing is written to standard output by the Entry_Point itself
     - _Requirements: 4.12, 4.13, 4.14, 7.1, 7.2, 7.3, 7.4, 7.5, 7.7, 7.8, 7.9, 7.10_
 
-  - [ ] 10.3 Write integration tests in `apps/snmp/tests/test_server_integration.py`
+  - [x] 10.3 Write integration tests in `apps/snmp/tests/test_server_integration.py`
     - Use the skeleton `ToolServer` with the real adapter, `devices.yaml` and a running Simulator on a free port
     - `list_devices` returns three devices, `list_points`, `read_points` and `device_health` answer, and `read_point` on `core_switch` `port3_status` returns `down` with raw 2, unit and timestamp
     - A point the device does not define gives one sentence naming the device and the point
