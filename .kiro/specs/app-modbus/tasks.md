@@ -53,11 +53,11 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Use a fake adapter and no network
     - _Requirements: 5.1, 5.2, 5.4, 5.5, Skeleton change 1_
 
-- [ ] 4. Checkpoint - Skeleton change
+- [x] 4. Checkpoint - Skeleton change
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement the Address_Parser and Address_Formatter
-  - [ ] 5.1 Create `apps/modbus/address.py`
+- [x] 5. Implement the Address_Parser and Address_Formatter
+  - [x] 5.1 Create `apps/modbus/address.py`
     - Define `Table` (StrEnum), the frozen `ModbusAddress` dataclass and `AddressError`
     - `parse_address(text)` requires exactly three colon-separated parts, then validates unit, table and offset in that order
     - Unit and offset are decimal with no leading zeros, ranges 1 to 247 and 0 to 65535
@@ -65,18 +65,18 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - `format_address(address)` returns `<unit>:<table>:<offset>`
     - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 10.6_
 
-  - [ ] 5.2 Write unit tests in `apps/modbus/tests/test_address.py`
+  - [x] 5.2 Write unit tests in `apps/modbus/tests/test_address.py`
     - Concrete valid addresses for each table and the boundary values 1, 247, 0 and 65535
     - Concrete malformed addresses with the exact expected message content for each of the four error kinds, plus leading zeros and non-numeric parts
     - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6, 3.7_
 
-  - [ ] 5.3 Write property test for address round-trip in `apps/modbus/tests/test_address_properties.py`
+  - [x] 5.3 Write property test for address round-trip in `apps/modbus/tests/test_address_properties.py`
     - **Property 1: Address round-trip**
     - Tag with `Feature: app-modbus, Property 1`
     - Run at least 100 examples
     - **Validates: Requirements 3.3**
 
-  - [ ] 5.4 Write property test for invalid address text in `apps/modbus/tests/test_address_properties.py`
+  - [x] 5.4 Write property test for invalid address text in `apps/modbus/tests/test_address_properties.py`
     - **Property 4: Invalid address text is rejected with a field-naming sentence**
     - Tag with `Feature: app-modbus, Property 4`
     - Generate text malformed in exactly one of: part count, unit range, offset range, table name
