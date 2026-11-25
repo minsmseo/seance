@@ -36,7 +36,7 @@ REQUIRED_POINTS: dict[str, set[str]] = {
         "wan_in_octets",
         "wan_out_octets",
     },
-    "ups": {"battery_charge", "runtime_remaining", "on_battery", "output_load", "temperature"},
+    "ups": {"battery_charge", "runtime_remaining", "power_source", "output_load", "temperature"},
 }
 
 COMPATIBLE_TYPES: dict[SnmpType, DataType] = {
@@ -53,7 +53,7 @@ STATUS_POINTS = {
     "port3_status",
     "port4_status",
     "wan_link_status",
-    "on_battery",
+    "power_source",
 }
 
 

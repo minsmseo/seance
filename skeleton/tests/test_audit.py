@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from seance.audit import Audit_Log, AuditEntry
 
 
@@ -80,6 +82,19 @@ def test_stored_fields_are_preserved() -> None:
     assert stored.point == "temp"
     assert stored.outcome == "timeout"
     assert stored.duration_ms == 2000.25
+
+
+def test_source_defaults_to_agent_and_is_stored() -> None:
+    assert AuditEntry("t", "list_devices").source == "agent"
+    log = Audit_Log()
+    log.record(AuditEntry("t", "list_devices", source="console"))
+    (stored,) = log.recent(1)
+    assert stored.source == "console"
+
+
+def test_source_must_be_agent_or_console() -> None:
+    with pytest.raises(ValueError, match="Unknown call source"):
+        AuditEntry("t", "list_devices", source="cli")
 
 
 def test_recent_returns_a_copy() -> None:

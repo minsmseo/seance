@@ -78,7 +78,7 @@ def create_app(server: ToolServer) -> FastAPI:
 
     @app.get("/points/{device}/{point}")
     def point_value(device: str, point: str) -> JSONResponse:
-        result = server.call("read_point", {"device": device, "point": point})
+        result = server.call("read_point", {"device": device, "point": point}, source="console")
         return JSONResponse(_result_body(result), status_code=_status_for(result))
 
     @app.post("/tools/{tool_name}")
@@ -101,7 +101,7 @@ def create_app(server: ToolServer) -> FastAPI:
                     status_code=400,
                 )
             arguments = {str(k): v for k, v in parsed.items()}
-        result = await run_in_threadpool(server.call, tool_name, arguments)
+        result = await run_in_threadpool(server.call, tool_name, arguments, source="console")
         return JSONResponse(_result_body(result), status_code=_status_for(result))
 
     @app.get("/audit")
@@ -114,6 +114,7 @@ def create_app(server: ToolServer) -> FastAPI:
                 "point": e.point,
                 "outcome": e.outcome,
                 "duration_ms": e.duration_ms,
+                "source": e.source,
             }
             for e in server.audit.recent(AUDIT_LIMIT)
         ]

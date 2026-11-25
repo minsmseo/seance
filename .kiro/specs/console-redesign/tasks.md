@@ -8,7 +8,7 @@ Constraints that apply to every task:
 
 - Never run the full pytest suite locally. GitHub Actions is the source of truth. Locally run `uv run ruff check .`, `uv run ruff format .`, and at most one targeted pytest file, once. Never retry after WinError 10014.
 - Run each command directly, one per call. No `;` chaining and no output redirected to a file.
-- Do not change `skeleton/seance/guard.py`, `skeleton/seance/audit.py`, `skeleton/seance/adapter.py` or any `apps/*/adapter.py`. The audit format and the `/audit` response fields stay as they are.
+- Do not change `skeleton/seance/guard.py`, `skeleton/seance/audit.py`, `skeleton/seance/adapter.py` or any `apps/*/adapter.py`. The audit format and the `/audit` response fields stay as they are, except the additive `source` field in task 12.4.
 - Source files and documents are UTF-8 and ASCII only. The degree sign reaches the page only through the Formatter, written in `console.js` as the escape `"\u00b0"`, or as the HTML entity `&deg;` (Requirement 6.11).
 - `console.js`, `console.css` and the HTML shell contain no point name and no device name, including in comments. Describe behavior by unit and value type instead (Requirements 6.13, 10.8).
 - Tests use `Fake_Adapter` and the shared `session_portal` fixture. No test creates an event loop of its own and no test makes a network call.
@@ -232,8 +232,46 @@ Constraints that apply to every task:
     - Run `uv run ruff check .`, then `uv run ruff format .`, then `uv run pytest skeleton/tests/test_console_design.py` once.
     - _Requirements: 12.10_
 
-- [-] 11. Final checkpoint - Ensure all tests pass
+- [~] 11. Final checkpoint - Ensure all tests pass
   - Ensure ruff is clean. Confirm that GitHub Actions is the place where the full suite is checked, and that the completion note lists every changed test from task 3.5. Ask the user if questions arise.
+
+- [x] 12. Refine the Ledger, tiles, call source and one SNMP point name
+  - [x] 12.1 Format the Ledger target in `console.js` and `console.css`
+    - When an audit entry names more than three points, show `<device>, <n> points` and put the full comma-separated list of point names in the `title` of the row.
+    - Otherwise join the device name and the point names with `, `. Put each name in its own `span` with `white-space: nowrap` so that lines wrap only at the commas, never inside a name.
+    - _Requirements: 14.1, 14.2_
+  - [x] 12.2 Render the tile unit in its own element
+    - In `renderTile` in `console.js`, write the unit into a separate element. In `console.css`, make it smaller than the value and colored `var(--mute)`.
+    - Keep the Tile height at 108px, set in the one shared `.tile` rule and nowhere else.
+    - _Requirements: 14.3, 5.4_
+  - [x] 12.3 Separate detail-line parts with `, `
+    - In the Formatter and `renderTile` in `console.js`, join the detail parts with `", "`, for example `raw 1, 21:56:19`.
+    - _Requirements: 14.4_
+  - [x] 12.4 Add the additive `source` field to the audit log
+    - In `skeleton/seance/audit.py`, add `source: str = "agent"` as the last field of `AuditEntry` and record it. In `skeleton/seance/server.py`, add a keyword `source: str = "agent"` to `ToolServer.call` and pass it to the audit log. Change nothing else in these files, so existing callers keep working and each call still writes exactly one entry.
+    - In `skeleton/seance/console/app.py`, pass `source="console"` from `POST /tools/{tool_name}`, `GET /points/{device}/{point}` and the `read_points` refresh calls, and return `source` in each `GET /audit` entry.
+    - Update the audit tests and the one-entry-per-call property (`skeleton/tests/test_audit.py`, `skeleton/tests/test_audit_properties.py`) to cover `source`. Add tests that calls through the MCP path record `agent` and that console `POST /tools` calls, and the console's own `read_points` refresh calls, record `console`.
+    - _Requirements: 14.5, 14.6, 14.7, 14.8, 10.3, 10.5_
+  - [x] 12.5 Show the call source in each Ledger row
+    - In `renderLedgerRows` in `console.js`, show the source word on each row. In `console.css`, color `agent` with `var(--ink)` and `console` with `var(--mute)`. Never use `--alert` or `--alert-ink` for the source.
+    - _Requirements: 14.9_
+  - [x] 12.6 Make the Ledger sticky beside the devices
+    - In `console.css`, at the widths where the Ledger sits beside the devices, set `position: sticky` near the top, `overflow-y: auto` and a `max-height` such as `calc(100vh - <top offset>)`. Below that breakpoint the Ledger stays in normal flow under the devices.
+    - _Requirements: 14.10, 14.11_
+  - [x] 12.7 Rename the SNMP point `on_battery` to `power_source`
+    - Change `apps/snmp/devices.yaml`, `apps/snmp/simulator.py` only if it carries the point name, the README table or tables (`apps/snmp/README.md` and `README.md`), and every test in `skeleton/tests/` and `apps/snmp/tests/` that names it. Keep the labels and `healthy: normal`.
+    - Change neither `apps/snmp/adapter.py` nor any Modbus file.
+    - _Requirements: 14.12, 2.2_
+  - [x] 12.8 Update `.kiro/steering/design.md`
+    - Record the rules that change: unit styling in tiles, the detail-line separator, the Ledger source colors, the Ledger target formatting and the sticky Ledger. ASCII only.
+    - _Requirements: 14.13_
+  - [x] 12.9 Write the tests in `skeleton/tests/test_console_design.py`
+    - Add source and CSS checks for 12.1 to 12.3, 12.5 and 12.6. Extend the existing CSS rule tests where they would now reject the new rules legitimately, for example a `max-height` on the Ledger is not a tile rule.
+    - In the completion note, record every changed test by name.
+    - _Requirements: 14.14, 12.3_
+  - [x] 12.10 Run ruff only
+    - Run `uv run ruff check .`, then `uv run ruff format .`. Do not run pytest.
+    - _Requirements: 12.10_
 
 ## Notes
 
@@ -282,7 +320,14 @@ Constraints that apply to every task:
     { "id": 32, "tasks": ["10.4"] },
     { "id": 33, "tasks": ["10.5"] },
     { "id": 34, "tasks": ["10.7"] },
-    { "id": 35, "tasks": ["11"] }
+    { "id": 35, "tasks": ["11"] },
+    { "id": 36, "tasks": ["12.1", "12.4"] },
+    { "id": 37, "tasks": ["12.2", "12.7"] },
+    { "id": 38, "tasks": ["12.3"] },
+    { "id": 39, "tasks": ["12.5"] },
+    { "id": 40, "tasks": ["12.6"] },
+    { "id": 41, "tasks": ["12.8", "12.9"] },
+    { "id": 42, "tasks": ["12.10"] }
   ]
 }
 ```

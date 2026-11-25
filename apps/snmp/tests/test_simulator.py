@@ -180,9 +180,9 @@ def test_default_seed_reports_port3_down_and_other_statuses_healthy(sim: Simulat
     assert sim.seed == 1
     assert sim.get_value("core_switch", "port3_status") == 2
     for entry in OID_MAP:
-        is_status = entry.name.endswith("_status") or entry.name == "on_battery"
+        is_status = entry.name.endswith("_status") or entry.name == "power_source"
         if is_status and (entry.device, entry.name) != ("core_switch", "port3_status"):
-            healthy = 3 if entry.name == "on_battery" else 1
+            healthy = 3 if entry.name == "power_source" else 1
             assert sim.get_value(entry.device, entry.name) == healthy, entry.name
 
 

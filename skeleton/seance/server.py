@@ -20,7 +20,7 @@ from mcp.server.mcpserver import MCPServer
 from pydantic import Field
 
 from seance.adapter import AdapterReadError, ProtocolAdapter, check_adapter
-from seance.audit import Audit_Log, AuditEntry
+from seance.audit import Audit_Log, AuditEntry, check_source
 from seance.codec import RawValue, apply_scale, decode, round_value
 from seance.config import load_config
 from seance.guard import READ_TOOLS, Read_Only_Guard, Rejected
@@ -198,8 +198,19 @@ class ToolServer:
 
     # ----- shared wrapper -------------------------------------------------
 
-    def call(self, tool: str, args: Mapping[str, object] | None = None) -> ToolResult:
-        """Run one tool call. Writes exactly one AuditEntry, whatever happens."""
+    def call(
+        self,
+        tool: str,
+        args: Mapping[str, object] | None = None,
+        *,
+        source: str = "agent",
+    ) -> ToolResult:
+        """Run one tool call. Writes exactly one AuditEntry, whatever happens.
+
+        source is "agent" (the default, used by the MCP tools) or "console".
+        Any other value raises ValueError before the call runs.
+        """
+        check_source(source)
         arguments: Mapping[str, object] = args if args is not None else {}
         started = time.perf_counter()
         result: ToolResult | None = None
@@ -222,6 +233,7 @@ class ToolServer:
                     _audit_point(arguments),
                     outcome=outcome,
                     duration_ms=(time.perf_counter() - started) * 1000.0,
+                    source=source,
                 )
             )
         return result

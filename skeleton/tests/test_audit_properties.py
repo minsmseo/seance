@@ -53,22 +53,23 @@ def make_server(mode: str) -> tuple[ToolServer, Fake_Adapter]:
 # entries equals the number of calls.
 @SETTINGS
 @given(
-    sequence=st.lists(calls(), max_size=10),
+    sequence=st.lists(st.tuples(calls(), st.sampled_from(["agent", "console"])), max_size=10),
     mode=st.sampled_from(["ok", "ok", "error", "slow"]),
 )
 def test_property_10_audit_entry_count_matches_call_count(
-    sequence: list[tuple[str, dict[str, object]]], mode: str
+    sequence: list[tuple[tuple[str, dict[str, object]], str]], mode: str
 ) -> None:
-    """**Validates: Requirements 6.1, 6.2, 6.3**"""
+    """**Validates: Requirements 6.1, 6.2, 6.3, 14.5, 14.6**"""
     server, _ = make_server(mode)
     try:
-        for tool, args in sequence:
-            server.call(tool, args)
+        for (tool, args), source in sequence:
+            server.call(tool, args, source=source)
     finally:
         server.close()
-    entries = server.audit.recent(len(sequence) + 10)
+    entries = list(reversed(server.audit.recent(len(sequence) + 10)))
     assert len(entries) == len(sequence)
-    assert [e.tool for e in reversed(entries)] == [tool for tool, _ in sequence]
+    assert [e.tool for e in entries] == [tool for (tool, _), _ in sequence]
+    assert [e.source for e in entries] == [source for _, source in sequence]
 
 
 # Feature: skeleton-core, Property 11: For any tool call, the audit entry stores the

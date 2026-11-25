@@ -30,7 +30,7 @@ Selecting a device by community is a Simulator convention. The simulator answers
 
 Addresses have the form `<community>:<oid>`, for example `core_switch:1.3.6.1.2.1.1.3.0`. The community equals the device name. The OID is numeric and dotted. A scale converts the raw value to the unit (value = raw * scale). "none" means the raw value is used as it is. Labels map a raw integer to a word. When a label exists, the tool returns the word as `value` and the integer as `raw`.
 
-Interface status labels follow ifOperStatus: 1=up, 2=down, 3=testing, 4=unknown, 5=dormant, 6=notPresent, 7=lowerLayerDown. The `on_battery` labels follow upsOutputSource: 1=other, 2=none, 3=normal, 4=bypass, 5=battery, 6=booster, 7=reducer.
+Interface status labels follow ifOperStatus: 1=up, 2=down, 3=testing, 4=unknown, 5=dormant, 6=notPresent, 7=lowerLayerDown. The `power_source` labels follow upsOutputSource: 1=other, 2=none, 3=normal, 4=bypass, 5=battery, 6=booster, 7=reducer.
 
 | Device | Name | Address | Data type | Unit | Scale | Labels |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Interface status labels follow ifOperStatus: 1=up, 2=down, 3=testing, 4=unknown,
 | edge_router | wan_out_octets | edge_router:1.3.6.1.2.1.31.1.1.1.10.1 | uint64 | B | none | none |
 | ups | battery_charge | ups:1.3.6.1.2.1.33.1.2.4.0 | int32 | percent | none | none |
 | ups | runtime_remaining | ups:1.3.6.1.2.1.33.1.2.3.0 | int32 | min | none | none |
-| ups | on_battery | ups:1.3.6.1.2.1.33.1.4.1.0 | int32 | state | none | 1=other, 2=none, 3=normal, 4=bypass, 5=battery, 6=booster, 7=reducer |
+| ups | power_source | ups:1.3.6.1.2.1.33.1.4.1.0 | int32 | state | none | 1=other, 2=none, 3=normal, 4=bypass, 5=battery, 6=booster, 7=reducer |
 | ups | output_load | ups:1.3.6.1.2.1.33.1.4.4.1.5.1 | int32 | percent | none | none |
 | ups | temperature | ups:1.3.6.1.2.1.33.1.2.7.0 | int32 | degC | none | none |
 
@@ -77,7 +77,7 @@ These are the same five tools as in the Modbus app. An agent that learned one ap
    - The answer for `port3_status` is `down` with `raw` 2.
 
 2. Is the UPS running on battery, and how long will it last?
-   - `read_points` with `device` = `ups`, `points` = `["on_battery", "battery_charge", "runtime_remaining"]`
+   - `read_points` with `device` = `ups`, `points` = `["power_source", "battery_charge", "runtime_remaining"]`
 
 3. Is the edge router healthy, and is the WAN link up?
    - `device_health` with `device` = `edge_router`

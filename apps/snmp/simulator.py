@@ -17,7 +17,7 @@ Supported on the wire:
 Each device is selected by the community string of the request. ``OID_MAP`` is the
 single source of truth for the OIDs, types, start values, ranges and drift steps;
 ``devices.yaml`` must match it. ``memory_used`` counts MiB (one allocation unit is
-1 MiB) and ``on_battery`` is upsOutputSource (3 normal, 5 battery).
+1 MiB) and ``power_source`` is upsOutputSource (3 normal, 5 battery).
 
 This module holds the codec and the request handling (``SnmpResponder``). The UDP
 server, drift task and lifecycle are added on top of it.
@@ -243,7 +243,7 @@ OID_MAP: tuple[OidEntry, ...] = (
     ),
     OidEntry(
         "ups",
-        "on_battery",
+        "power_source",
         (1, 3, 6, 1, 2, 1, 33, 1, 4, 1, 0),
         SnmpType.INTEGER,
         3,

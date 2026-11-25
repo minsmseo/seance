@@ -790,3 +790,17 @@ real browser (per the task list's checkpoints) is the only check for those.
 checkpoint (for example `uv run pytest skeleton/tests/test_config.py` after the
 `healthy` field lands, then `uv run pytest skeleton/tests/test_console.py` after the
 console rewrite). The full suite is verified on GitHub Actions.
+
+## Refinements: Ledger, tiles, call source and one SNMP point name (Requirement 14)
+
+This section supersedes the earlier statements in this document that `audit.py`, `server.py` and the `/audit` shape do not change. The only exception is the additive `source` field described below.
+
+1. **Ledger target (14.1, 14.2).** `renderLedgerRows` in `console.js` builds the target from the entry. An entry that names more than three points shows `<device>, <n> points` and carries the full comma-separated list in the row `title`. Otherwise the device and each point name go in their own `span` with `white-space: nowrap`, joined with `, `, so lines break only at the commas. The `/audit` entry carries the point names it already records.
+2. **Tile units (14.3).** `renderTile` writes the unit into a separate `span.unit`. `console.css` sets it smaller than the value and in `var(--mute)`. The 108px height stays in the single shared `.tile` rule.
+3. **Detail line (14.4).** The Formatter joins detail parts with `", "`, for example `raw 1, 21:56:19`.
+4. **Call source (14.5 to 14.8).** `AuditEntry` gains `source: str = "agent"` as its last field, so existing construction keeps working. `ToolServer.call` gains a keyword argument `source: str = "agent"` and passes it to the audit log, so the MCP tool handlers need no change and record `agent`. The console routes (`POST /tools/{tool_name}`, `GET /points/{device}/{point}` and the `read_points` refresh calls) pass `source="console"`. `GET /audit` adds `source` to each entry. The call count is unchanged: one entry per call.
+5. **Source display (14.9).** Each Ledger_Row shows the source word in a `span`, with a class for `agent` (`var(--ink)`) and one for `console` (`var(--mute)`). The word is the text, so state is not shown by color alone. The alert colors are never used for source.
+6. **Sticky Ledger (14.10, 14.11).** In the media query where the Ledger sits beside the devices, `console.css` sets `position: sticky`, a top offset, `overflow-y: auto` and `max-height: calc(100vh - <top offset>)`. Below that breakpoint the Ledger stays in normal flow.
+7. **SNMP point name (14.12).** The point `on_battery` becomes `power_source` in `apps/snmp/devices.yaml`, the README tables and every test that names it. Labels and `healthy: normal` stay. `apps/snmp/adapter.py` and the Modbus files stay as they are.
+
+**Testing.** Source and CSS checks for items 1, 2, 3, 5 and 6 go in `skeleton/tests/test_console_design.py`. The CSS rule tests extend where they would reject the new rules legitimately, for example a `max-height` on the Ledger is not a tile rule. Item 4 gets audit tests, an extended one-entry-per-call property, MCP-path tests that record `agent` and console route tests that record `console`.

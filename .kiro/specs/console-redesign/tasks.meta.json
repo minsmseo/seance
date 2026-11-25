@@ -486,6 +486,16 @@
         "executionId": "b3463328-8a63-45ce-ac14-c06116de0112",
         "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
         "timestamp": 1795611110724
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611649762
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611649830
       }
     ],
     "6. Add the summary strip": [
@@ -529,6 +539,148 @@
         "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
         "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
         "timestamp": 1795610961467
+      }
+    ],
+    "12.1 Format the Ledger target in `console.js` and `console.css`": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611649878
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611983166
+      }
+    ],
+    "12.2 Render the tile unit in its own element": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611649927
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611983413
+      }
+    ],
+    "12.3 Separate detail-line parts with `, `": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611649974
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611984395
+      }
+    ],
+    "12.4 Add the additive `source` field to the audit log": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650024
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611669139
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611800313
+      }
+    ],
+    "12.5 Show the call source in each Ledger row": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650074
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611985375
+      }
+    ],
+    "12.6 Make the Ledger sticky beside the devices": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650125
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611986860
+      }
+    ],
+    "12.7 Rename the SNMP point `on_battery` to `power_source`": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650163
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611669375
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611801210
+      }
+    ],
+    "12.8 Update `.kiro/steering/design.md`": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650213
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611987825
+      }
+    ],
+    "12.9 Write the tests in `skeleton/tests/test_console_design.py`": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650264
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611988895
+      }
+    ],
+    "12.10 Run ruff only": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611650327
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611989230
+      }
+    ],
+    "12. Refine the Ledger, tiles, call source and one SNMP point name": [
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611658595
+      },
+      {
+        "executionId": "c8dd41cd-c3dc-45f6-bdac-90ea8058d1cb",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795611989311
       }
     ]
   }

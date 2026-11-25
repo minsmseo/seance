@@ -247,7 +247,7 @@ def test_snmp_devices_file_carries_healthy_text() -> None:
         ("core_switch", "port3_status"): "up",
         ("core_switch", "port4_status"): "up",
         ("edge_router", "wan_link_status"): "up",
-        ("ups", "on_battery"): "normal",
+        ("ups", "power_source"): "normal",
     }
 
 

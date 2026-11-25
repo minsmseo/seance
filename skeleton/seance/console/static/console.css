@@ -275,6 +275,13 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   font-size: 11px;
 }
 
+.tile-unit {
+  margin-left: 4px;
+  color: var(--mute);
+  font-size: 13px;
+  font-weight: 400;
+}
+
 .tile.attention {
   border: 2px solid var(--alert);
   background: var(--alert-ground);
@@ -318,6 +325,10 @@ a:focus-visible, button:focus-visible, select:focus-visible {
 
 /* Ledger */
 .ledger {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
   padding: 16px;
   border: 1px solid var(--line);
   background: var(--panel);
@@ -360,6 +371,18 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   color: var(--mute);
 }
 
+.ledger-name {
+  white-space: nowrap;
+}
+
+.ledger-source-agent {
+  color: var(--ink);
+}
+
+.ledger-source-console {
+  color: var(--mute);
+}
+
 .ledger-list li.attention .ledger-detail,
 .ledger-list li.attention .ledger-reason {
   color: var(--alert-ink);
@@ -398,6 +421,12 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   .layout {
     grid-template-columns: minmax(0, 1fr);
     padding: 16px;
+  }
+
+  .ledger {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .tile-grid {

@@ -39,6 +39,11 @@ function formatUnit(unit) {
   return String(unit);
 }
 
+// Detail parts are joined with a comma and a space.
+function joinDetail(parts) {
+  return parts.join(", ");
+}
+
 function formatSeconds(seconds, readTime) {
   if (seconds >= 60) {
     const whole = Math.floor(seconds);
@@ -83,7 +88,7 @@ function formatLabeled(label, raw, readTime) {
   return {
     value: String(label),
     unit: "",
-    detail: "raw " + raw + " " + formatTimestamp(readTime).text,
+    detail: joinDetail(["raw " + raw, formatTimestamp(readTime).text]),
   };
 }
 
@@ -156,8 +161,10 @@ function renderTile(point, outcome) {
     tile.title = String(outcome.error);
   } else {
     const shown = formatReading(point.unit, outcome.reading);
-    const unitText = shown.unit ? " " + shown.unit : "";
-    valueLine.textContent = shown.value + unitText;
+    valueLine.textContent = shown.value;
+    if (shown.unit) {
+      addText(valueLine, "span", "tile-unit", shown.unit);
+    }
     detailLine.textContent = shown.detail;
     tile.title = formatTimestamp(outcome.reading.timestamp).title;
     if (typeof point.healthy === "string" && point.healthy) {
@@ -381,6 +388,39 @@ function reasonSentence(outcome) {
   return GENERIC_REASON;
 }
 
+const LEDGER_MAX_NAMED_POINTS = 3;
+
+// Builds the target of one entry. More than three points show as
+// "<device>, <n> points" with the full list in the row title. Otherwise each
+// name sits in its own nowrap span and lines wrap only at the commas.
+function renderLedgerTarget(entry, row) {
+  const points = entry.point ? String(entry.point).split(",") : [];
+  const names = [];
+  if (entry.device) {
+    names.push(entry.device);
+  }
+  if (points.length > LEDGER_MAX_NAMED_POINTS) {
+    names.push(points.length + " points");
+    row.title = points.join(", ");
+  } else {
+    for (const point of points) {
+      names.push(point);
+    }
+  }
+  if (names.length === 0) {
+    return null;
+  }
+  const target = document.createElement("span");
+  target.className = "ledger-target ledger-detail";
+  names.forEach(function (name, index) {
+    if (index > 0) {
+      addText(target, "span", "ledger-sep", ", ");
+    }
+    addText(target, "span", "ledger-name", name);
+  });
+  return target;
+}
+
 // Replaces the Ledger rows with one row per entry, in the order received.
 function renderLedgerRows(entries) {
   const host = document.getElementById("ledger-list");
@@ -401,16 +441,13 @@ function renderLedgerRows(entries) {
       main.appendChild(warningTriangle());
     }
     addText(main, "span", "ledger-tool", entry.tool);
-    let target = entry.device || "";
-    if (entry.device && entry.point) {
-      target = entry.device + " " + entry.point;
-    } else if (!entry.device && entry.point) {
-      target = entry.point;
-    }
+    const target = renderLedgerTarget(entry, row);
     if (target) {
-      addText(main, "span", "ledger-detail", target);
+      main.appendChild(target);
     }
     addText(main, "span", "ledger-outcome", entry.outcome);
+    const source = entry.source === "console" ? "console" : "agent";
+    addText(main, "span", "ledger-source ledger-source-" + source, source);
     const when = formatTimestamp(entry.timestamp);
     const time = addText(main, "span", "ledger-detail", when.text);
     time.title = when.title;

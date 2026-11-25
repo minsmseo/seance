@@ -875,3 +875,124 @@ def test_formatter_functions_take_no_name_or_description_parameter(name: str) ->
     assert [p for p in names if banned.search(p)] == []
     assert "document" not in body
     assert re.search(r"\.(name|description)\b", body) is None
+
+
+# ---------------------------------------------------------------------------
+# Refinements (Requirement 14): Ledger target, tile unit, detail separator,
+# call source and sticky Ledger
+# ---------------------------------------------------------------------------
+
+ALERT_TOKENS = ("--alert", "--alert-ink", "--alert-ground")
+
+
+def _declarations(selector: str) -> dict[str, str]:
+    """Merge the declarations of every rule whose selector is exactly this one."""
+    merged: dict[str, str] = {}
+    for rule_selector, decls in parse_css(load_css()):
+        if rule_selector == selector:
+            merged.update(decls)
+    return merged
+
+
+def _media_block(css: str) -> str:
+    text = re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL)
+    start = text.index("@media")
+    open_at = text.index("{", start)
+    depth = 0
+    for index in range(open_at, len(text)):
+        depth += {"{": 1, "}": -1}.get(text[index], 0)
+        if depth == 0:
+            return text[open_at + 1 : index]
+    raise AssertionError("media block has no closing brace")
+
+
+def test_ledger_target_shortens_more_than_three_points_and_keeps_the_list_in_title() -> None:
+    script = load_js()
+    body = _squash(js_body(script, "renderLedgerTarget"))
+    assert "LEDGER_MAX_NAMED_POINTS = 3;" in _squash(script)
+    assert "points.length > LEDGER_MAX_NAMED_POINTS" in body
+    assert 'points.length + " points"' in body
+    assert 'row.title = points.join(", ");' in body
+    assert 'String(entry.point).split(",")' in body
+
+
+def test_ledger_target_joins_names_with_commas_in_nowrap_spans() -> None:
+    body = _squash(js_body(load_js(), "renderLedgerTarget"))
+    assert 'addText(target, "span", "ledger-sep", ", ")' in body
+    assert 'addText(target, "span", "ledger-name", name)' in body
+    assert _declarations(".ledger-name").get("white-space") == "nowrap"
+    separator = _declarations(".ledger-sep")
+    assert separator.get("white-space") != "nowrap"
+
+
+def test_ledger_rows_use_the_target_helper_and_show_the_source() -> None:
+    body = _squash(js_body(load_js(), "renderLedgerRows"))
+    assert "renderLedgerTarget(entry, row)" in body
+    assert 'entry.source === "console" ? "console" : "agent"' in body
+    assert 'addText(main, "span", "ledger-source ledger-source-" + source, source)' in body
+
+
+def test_tile_unit_is_its_own_smaller_muted_element() -> None:
+    body = _squash(js_body(load_js(), "renderTile"))
+    assert 'addText(valueLine, "span", "tile-unit", shown.unit)' in body
+    assert "valueLine.textContent = shown.value;" in body
+    assert "valueLine.textContent = shown.value + " not in body
+    unit = _declarations(".tile-unit")
+    value = _declarations(".tile-value")
+    assert unit["color"] == "var(--mute)"
+    unit_size = float(unit["font-size"].removesuffix("px"))
+    assert unit_size < float(value["font-size"].removesuffix("px"))
+    assert not {"height", "min-height", "max-height"} & set(unit)
+
+
+def test_detail_parts_are_joined_with_comma_and_space() -> None:
+    script = load_js()
+    assert 'return parts.join(", ");' in _squash(js_body(script, "joinDetail"))
+    labeled = _squash(js_body(script, "formatLabeled"))
+    assert 'joinDetail(["raw " + raw, formatTimestamp(readTime).text])' in labeled
+    assert '"raw " + raw + " "' not in labeled
+
+
+def _source_rules() -> list[Rule]:
+    return [r for r in parse_css(load_css()) if "ledger-source" in r[0]]
+
+
+def test_ledger_source_agent_is_ink_and_console_is_mute() -> None:
+    assert _declarations(".ledger-source-agent") == {"color": "var(--ink)"}
+    assert _declarations(".ledger-source-console") == {"color": "var(--mute)"}
+
+
+def test_ledger_source_rules_never_use_alert_colors() -> None:
+    rules = _source_rules()
+    assert len(rules) == 2
+    for selector, decls in rules:
+        assert "attention" not in selector, selector
+        for prop, value in decls:
+            for token in ALERT_TOKENS:
+                assert f"var({token})" not in value, f"{selector} {prop}"
+
+
+def test_ledger_is_sticky_with_own_scroll_beside_the_devices() -> None:
+    css = re.sub(r"/\*.*?\*/", "", load_css(), flags=re.DOTALL)
+    wide = parse_css(css.replace(_media_block(css), ""))
+    ledger = {}
+    for selector, decls in wide:
+        if selector == ".ledger":
+            ledger.update(decls)
+    assert ledger["position"] == "sticky"
+    assert re.fullmatch(r"\d+px", ledger["top"])
+    assert ledger["overflow-y"] == "auto"
+    assert re.fullmatch(r"calc\(100vh - \d+px\)", ledger["max-height"])
+
+
+def test_ledger_is_in_normal_flow_in_the_narrow_layout() -> None:
+    css = re.sub(r"/\*.*?\*/", "", load_css(), flags=re.DOTALL)
+    narrow = parse_css(_media_block(css))
+    ledger = {}
+    for selector, decls in narrow:
+        if selector == ".ledger":
+            ledger.update(decls)
+    assert ledger["position"] == "static"
+    assert ledger["max-height"] == "none"
+    assert ledger["overflow-y"] in {"visible", "hidden"} and ledger["overflow-y"] != "auto"
+    assert "(max-width" in css[css.index("@media") : css.index("{", css.index("@media"))]

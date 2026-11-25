@@ -10,7 +10,7 @@ To mark a tile as needing attention without protocol knowledge, the skeleton con
 
 Constraints carried from the steering documents and the request:
 
-- Tool behavior, the read-only guard, the audit format and the adapters do not change.
+- Tool behavior, the read-only guard, the audit format and the adapters do not change, except the one additive `source` field of Requirement 14.
 - Tool results and the audit log keep raw values. Display formatting happens only in the browser.
 - The console is plain HTML, CSS and JavaScript, with no framework and no build step.
 - The full test suite is verified on GitHub Actions, not locally.
@@ -72,7 +72,7 @@ Current code facts that these requirements rely on:
 #### Acceptance Criteria
 
 1. THE `apps/snmp/devices.yaml` file SHALL set `healthy: up` on `port1_status`, `port2_status`, `port3_status`, `port4_status` and `wan_link_status`.
-2. THE `apps/snmp/devices.yaml` file SHALL set `healthy: normal` on `on_battery`.
+2. THE `apps/snmp/devices.yaml` file SHALL set `healthy: normal` on `on_battery` (renamed to `power_source` by Requirement 14.12).
 3. WHEN `load_config` reads `apps/snmp/devices.yaml`, THE Config_Loader SHALL load the file without error.
 4. THE change set of this feature SHALL touch no file under `apps/` other than `apps/snmp/devices.yaml`, `apps/modbus/devices.yaml` (only for the changes named in Requirement 13) and the tests and README files that quote a device description (Requirement 13.11).
 
@@ -179,7 +179,7 @@ Current code facts that these requirements rely on:
 7. WHILE the Page is open, THE Console SHALL request `/audit` every 2 seconds and replace the Ledger_Rows without reloading the Page.
 8. WHEN an agent makes a tool call while the Page is open, THE Ledger SHALL show the new Audit_Entry at the top within 2 seconds plus the request time.
 9. IF a request to `/audit` fails, THEN THE Ledger SHALL keep the rows already shown and SHALL show the sentence `The ledger could not be loaded. It will try again in 2 seconds.`
-10. THE Console SHALL leave the `GET /audit` response fields and the audit format unchanged.
+10. THE Console SHALL leave the `GET /audit` response fields and the audit format unchanged, except the one additive `source` field of Requirement 14.
 11. THE Ledger SHALL not start a new request while the previous `/audit` request is still pending.
 
 ### Requirement 9: Read again and the tool panel
@@ -209,10 +209,10 @@ Current code facts that these requirements rely on:
 #### Acceptance Criteria
 
 1. THE Console SHALL read every value through `ToolServer.call`, so that each Console call writes exactly one Audit_Entry.
-2. THE Console SHALL keep the routes `GET /points/{device}/{point}`, `POST /tools/{tool_name}` and `GET /audit` with their current status codes and response bodies.
-3. THE change set SHALL leave `skeleton/seance/guard.py`, `skeleton/seance/audit.py`, `skeleton/seance/adapter.py` and every file under `apps/*/adapter.py` unchanged.
+2. THE Console SHALL keep the routes `GET /points/{device}/{point}`, `POST /tools/{tool_name}` and `GET /audit` with their current status codes and response bodies, except that each `GET /audit` entry gains the `source` field of Requirement 14.
+3. THE change set SHALL leave `skeleton/seance/guard.py`, `skeleton/seance/adapter.py` and every file under `apps/*/adapter.py` unchanged, and SHALL leave `skeleton/seance/audit.py` unchanged except for the one additive `source` field of Requirement 14.
 4. THE skeleton SHALL import nothing from `apps/`, and SHALL import neither `pymodbus` nor `pysnmp`.
-5. THE change set SHALL edit files only in `skeleton/seance/console/`, `skeleton/tests/`, `skeleton/seance/config.py`, `skeleton/seance/points.py`, `apps/snmp/devices.yaml`, `apps/modbus/devices.yaml` and this spec folder, plus the `healthy` and `title` documentation lines in `README.md` and `docs/add-a-protocol.md` when those files describe point fields or top-level fields, plus every test file under `apps/*/tests/` and every `README.md` (root and `apps/*/README.md`) that quotes an old device description text, plus the `apps/*/tests/test_server_integration.py` tests that assert the old server-rendered markup. THE change set SHALL change no other Modbus source file, so `apps/modbus/adapter.py`, `apps/modbus/simulator.py` and every Modbus test that does not quote an old device description or assert the old markup stay as they are.
+5. THE change set SHALL edit files only in `skeleton/seance/console/`, `skeleton/tests/`, `skeleton/seance/config.py`, `skeleton/seance/audit.py` and `skeleton/seance/server.py` (both only for the additive `source` field of Requirement 14), `.kiro/steering/design.md` (Requirement 14.13), `apps/snmp/simulator.py`, `apps/snmp/tests/` and `apps/snmp/README.md` (only for the point rename of Requirement 14.12), `skeleton/seance/points.py`, `apps/snmp/devices.yaml`, `apps/modbus/devices.yaml` and this spec folder, plus the `healthy` and `title` documentation lines in `README.md` and `docs/add-a-protocol.md` when those files describe point fields or top-level fields, plus every test file under `apps/*/tests/` and every `README.md` (root and `apps/*/README.md`) that quotes an old device description text, plus the `apps/*/tests/test_server_integration.py` tests that assert the old server-rendered markup. THE change set SHALL change no other Modbus source file, so `apps/modbus/adapter.py`, `apps/modbus/simulator.py` and every Modbus test that does not quote an old device description or assert the old markup stay as they are.
 6. THE source files and the documents of the change set SHALL be UTF-8 and use ASCII characters only.
 7. THE Console SHALL create no event loop per request, and the tests SHALL reuse the session event loop.
 8. THE served HTML shell, `console.css` and `console.js` SHALL contain no point name and no device name. Names SHALL reach the Page only as data from `GET /config` and from tool results, and the server SHALL not write a device name into the HTML shell.
@@ -269,3 +269,26 @@ Current code facts that these requirements rely on:
 13. WHEN the viewport is 390px wide, THE Console SHALL wrap the Device_Header_Row so that no text is clipped and no horizontal scrolling appears.
 14. THE Device_Header_Row SHALL be built by `console.css` and `console.js` only, and `console.js`, `console.css` and the HTML shell SHALL contain no device name and no point name.
 15. THE Test_Suite SHALL cover the App_Title in `skeleton/tests/test_config.py` with example tests for a valid title, an absent title, an empty title, a non-text title, a 41-character title and a round trip, SHALL extend the Hypothesis round trip in `skeleton/tests/test_config_properties.py` with an optional title, and SHALL check in `skeleton/tests/test_console.py` that `GET /config` returns the title or null.
+
+### Requirement 14: Ledger, tile and call-source refinements
+
+**User Story:** As an operator, I want a readable Ledger that shows who made each call, tiles with quieter units, and a Ledger that stays in view, so that I can follow agent activity while I scroll the devices.
+
+Exception noted for the whole feature: this requirement lifts the earlier constraint on `skeleton/seance/audit.py` and the audit format for the one additive `source` field only (see Requirements 8.10, 10.2, 10.3 and 10.5).
+
+#### Acceptance Criteria
+
+1. WHEN an Audit_Entry names more than three points, THE Ledger SHALL show the target as `<device>, <n> points` and SHALL set the full comma-separated list of point names as the `title` attribute of the Ledger_Row.
+2. WHEN an Audit_Entry names three points or fewer, THE Ledger SHALL show the device name and the point names joined with `, ` and SHALL break lines only at the commas, never inside a name.
+3. THE Console SHALL render the unit of a Tile in its own element, smaller than the value and in `var(--mute)`, and the Tile height SHALL stay 108px, set in one rule only.
+4. THE Console SHALL separate the parts of a Tile detail line with `, `, for example `raw 1, 21:56:19`.
+5. THE Audit_Entry SHALL carry a `source` field that holds `agent` for a call received over MCP and `console` for a call received from the Console.
+6. THE audit log SHALL contain exactly one Audit_Entry for each tool call, and the `source` field SHALL NOT add or remove entries.
+7. WHEN a caller of `ToolServer.call` gives no source, THE ToolServer SHALL record `agent`, so that existing callers keep working.
+8. WHEN the Console calls `ToolServer.call` for `POST /tools/{tool_name}`, for `GET /points/{device}/{point}` or for its own `read_points` refresh, THE Console SHALL pass the source `console`, and THE `GET /audit` response SHALL return `source` for each entry.
+9. THE Ledger SHALL show the source on each Ledger_Row as the word `agent` in `var(--ink)` or the word `console` in `var(--mute)`, and SHALL NOT use `var(--alert)` or `var(--alert-ink)` for the source.
+10. WHEN the viewport is wide enough that the Ledger sits beside the devices, THE Ledger SHALL use `position: sticky` near the top of the viewport, SHALL scroll on its own with `overflow-y: auto`, and SHALL have a `max-height` that fits the viewport.
+11. WHILE the Ledger sits below the devices, THE Ledger SHALL stay in normal flow with no sticky position.
+12. THE `apps/snmp/devices.yaml` file SHALL name the point `power_source` where it named `on_battery`, keep its labels and `healthy: normal`, and THE README tables and every test that named `on_battery` SHALL use `power_source`, with no change to `apps/snmp/adapter.py` or any Modbus file.
+13. THE `.kiro/steering/design.md` file SHALL state the rules of criteria 1 to 4, 9 and 10 in ASCII text.
+14. THE Test_Suite SHALL cover criteria 1 to 4, 9 and 10 with source and CSS checks in `skeleton/tests/test_console_design.py`, SHALL cover criteria 5 to 8 with audit tests, an extended one-entry-per-call property, MCP-path tests that record `agent` and console route tests that record `console`, and SHALL list each changed test by name.

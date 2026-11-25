@@ -334,6 +334,31 @@ def test_every_call_writes_one_audit_entry() -> None:
     assert entries[2].device == ""
 
 
+def test_mcp_path_call_records_agent_source(session_loop: asyncio.AbstractEventLoop) -> None:
+    server, _ = make()
+    mcp = server.build_mcp()
+    session_loop.run_until_complete(mcp.call_tool("read_point", {"device": "press", "point": "x"}))
+    session_loop.run_until_complete(mcp.call_tool("list_devices", {}))
+    entries = server.audit.recent(10)
+    assert [e.tool for e in entries] == ["list_devices", "read_point"]
+    assert [e.source for e in entries] == ["agent", "agent"]
+
+
+def test_direct_call_defaults_to_agent_and_accepts_console() -> None:
+    server, _ = make()
+    server.call("list_devices")
+    server.call("list_devices", source="console")
+    assert [e.source for e in server.audit.recent(10)] == ["console", "agent"]
+
+
+def test_call_rejects_unknown_source_without_an_entry() -> None:
+    server, fake = make()
+    with pytest.raises(ValueError, match="Unknown call source"):
+        server.call("list_devices", source="cli")
+    assert server.audit.recent(10) == []
+    assert fake.call_count == 0
+
+
 def test_mcp_registers_the_five_tools(session_loop: asyncio.AbstractEventLoop) -> None:
     server, _ = make()
     mcp = server.build_mcp()

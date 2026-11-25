@@ -235,6 +235,33 @@ def test_each_console_call_writes_one_audit_entry(make: MakeClient) -> None:
     server.close()
 
 
+def test_post_tools_records_console_source(make: MakeClient) -> None:
+    client, server, _ = make()
+    client.post("/tools/list_devices", json={})
+    client.post("/tools/read_points", json={"device": "press", "points": ["temperature"]})
+    client.post("/tools/nonexistent", json={})
+    entries = server.audit.recent(10)
+    assert len(entries) == 3
+    assert {e.source for e in entries} == {"console"}
+
+
+def test_get_points_records_console_source(make: MakeClient) -> None:
+    client, server, _ = make()
+    client.get("/points/press/temperature")
+    client.get("/points/press/nope")
+    entries = server.audit.recent(10)
+    assert len(entries) == 2
+    assert {e.source for e in entries} == {"console"}
+
+
+def test_audit_route_includes_source(make: MakeClient) -> None:
+    client, server, _ = make()
+    server.call("list_devices")
+    client.post("/tools/list_devices", json={})
+    entries = client.get("/audit").json()
+    assert [e["source"] for e in entries] == ["console", "agent"]
+
+
 def test_index_writes_one_audit_entry_per_device_with_points(make: MakeClient) -> None:
     client, server, fake = make()
     client.get("/")
