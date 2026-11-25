@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import socket
 import struct
+import sys
 import time
 from collections.abc import Callable, Iterator
 
@@ -39,6 +40,8 @@ def _can_bind(port: int) -> bool:
     """Return True if a plain socket can bind the localhost port right now."""
     with socket.socket() as probe:
         try:
+            if sys.platform != "win32":  # on Windows SO_REUSEADDR allows port hijacking
+                probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             probe.bind((HOST, port))
         except OSError:
             return False

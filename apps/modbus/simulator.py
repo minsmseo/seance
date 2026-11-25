@@ -56,6 +56,7 @@ from pymodbus.pdu import ExceptionResponse, ModbusPDU
 from pymodbus.server import ModbusTcpServer
 from pymodbus.server.requesthandler import ServerRequestHandler
 from pymodbus.simulator import DataType, SimData, SimDevice
+from pymodbus.transport import ModbusProtocol
 
 TableName = Literal["coil", "discrete", "input", "holding"]
 DataTypeName = Literal["bool", "uint16", "int16", "uint32", "float32"]
@@ -250,6 +251,28 @@ def _port_bind_error(host: str, port: int) -> OSError | None:
     return None
 
 
+def _open_connections(server: ModbusTcpServer) -> list[ModbusProtocol]:
+    """Return the client connections the server tracks (pymodbus 3.16.2).
+
+    Read from ``ModbusProtocol.active_connections`` in pymodbus/transport/transport.py.
+    """
+    return list(server.active_connections.values())
+
+
+async def _close_clients_then_shutdown(server: ModbusTcpServer) -> None:
+    """Close every client connection, let asyncio finish closing them, then shut down.
+
+    pymodbus ``shutdown()`` only schedules the close of client sockets. The loop stops
+    soon after, so those sockets could stay open and keep the port busy on Linux.
+    """
+    for connection in _open_connections(server):
+        connection.close()
+    # Two loop turns let asyncio run connection_lost and close each client socket.
+    await asyncio.sleep(0)
+    await asyncio.sleep(0)
+    await server.shutdown()
+
+
 class Simulator:
     """Modbus TCP server for the three-device mixing line, run on a background thread.
 
@@ -363,7 +386,7 @@ class Simulator:
             if loop is not None and not loop.is_closed() and not (thread and thread.is_alive()):
                 loop.close()
             return
-        future = asyncio.run_coroutine_threadsafe(server.shutdown(), loop)
+        future = asyncio.run_coroutine_threadsafe(_close_clients_then_shutdown(server), loop)
         try:
             future.result(max(deadline - time.monotonic(), 0.1))
         except Exception as exc:  # noqa: BLE001 - report one short sentence instead
