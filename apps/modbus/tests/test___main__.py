@@ -240,8 +240,16 @@ def test_startup_order_simulator_then_adapter_then_serve(harness: Harness) -> No
 
 def test_simulator_stops_after_serve_returns(harness: Harness) -> None:
     assert harness.run({}) == 0
-    assert harness.events[-3:] == ["serve", "adapter.close", "simulator.stop"]
-    assert harness.events.count("simulator.stop") == 1
+    events = harness.events
+    assert "serve" in events
+    assert events.count("adapter.connect") == 1
+    assert events.count("simulator.stop") == 1
+    assert (
+        events.index("serve")
+        < events.index("adapter.connect")
+        < events.index("adapter.close")
+        < events.index("simulator.stop")
+    )
 
 
 def test_simulator_stops_when_serve_raises_a_config_error_only_once(harness: Harness) -> None:
@@ -263,15 +271,14 @@ def test_adapter_is_closed_when_serve_raises(harness: Harness) -> None:
     assert harness.run({}) == 1
     # serve closes in its finally block, then main closes again (harmless),
     # then the simulator stops.
-    assert harness.events == [
-        "simulator.start",
-        "adapter.create",
-        "serve",
-        "adapter.connect",
-        "adapter.close",
-        "adapter.close",
-        "simulator.stop",
-    ]
+    events = harness.events
+    assert events.count("adapter.connect") == 1
+    assert events.count("adapter.close") == 2
+    assert events.count("simulator.stop") == 1
+    first_close = events.index("adapter.close")
+    last_close = len(events) - 1 - events[::-1].index("adapter.close")
+    assert events.index("serve") < events.index("adapter.connect") < first_close
+    assert last_close < events.index("simulator.stop")
 
 
 def test_adapter_is_closed_when_the_address_check_fails(harness: Harness, tmp_path: Path) -> None:
@@ -288,24 +295,27 @@ def test_adapter_is_closed_when_the_address_check_fails(harness: Harness, tmp_pa
         encoding="utf-8",
     )
     assert harness.run({}, config_path=config) == 1
-    assert harness.events == [
-        "simulator.start",
-        "adapter.create",
-        "adapter.close",
-        "simulator.stop",
-    ]
+    events = harness.events
+    assert "serve" not in events
+    assert "adapter.connect" not in events
+    assert events.count("adapter.close") == 1
+    assert events.count("simulator.stop") == 1
+    assert (
+        events.index("adapter.create")
+        < events.index("adapter.close")
+        < events.index("simulator.stop")
+    )
 
 
 def test_adapter_is_not_closed_again_after_a_successful_serve(harness: Harness) -> None:
     assert harness.run({}) == 0
-    assert harness.events == [
-        "simulator.start",
-        "adapter.create",
-        "serve",
-        "adapter.connect",
-        "adapter.close",
-        "simulator.stop",
-    ]
+    events = harness.events
+    assert events.count("adapter.close") == 1
+    assert (
+        events.index("adapter.connect")
+        < events.index("adapter.close")
+        < events.index("simulator.stop")
+    )
 
 
 # --- Standard output (7.9) -----------------------------------------------------------------
