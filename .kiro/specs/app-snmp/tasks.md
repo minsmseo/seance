@@ -273,7 +273,7 @@ Verification rules for every task:
     - Assert that `.gitignore` does not list `.kiro`
     - _Requirements: 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.10_
 
-- [ ] 14. Final checkpoint - Ensure all tests pass
+- [x] 14. Final checkpoint - Ensure all tests pass
   - Run `uv run ruff check .` and `uv run ruff format --check .` locally
   - Rely on the GitHub Actions (ubuntu) run for the full suite, and do not run it locally
   - Ensure all tests pass, ask the user if questions arise.
