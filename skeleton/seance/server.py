@@ -21,7 +21,7 @@ from pydantic import Field
 
 from seance.adapter import AdapterReadError, ProtocolAdapter, check_adapter
 from seance.audit import Audit_Log, AuditEntry
-from seance.codec import RawValue, apply_scale, decode
+from seance.codec import RawValue, apply_scale, decode, round_value
 from seance.config import load_config
 from seance.guard import READ_TOOLS, Read_Only_Guard, Rejected
 from seance.points import Configuration, DeviceConfig, PointConfig
@@ -288,7 +288,11 @@ class ToolServer:
     def _read_value(self, device: DeviceConfig, point: PointConfig) -> dict[str, JsonValue]:
         raw = self._with_timeout(device, "read", lambda: self._adapter.read(device, point))
         try:
-            value: RawValue = apply_scale(decode(point.data_type, raw), point.scale)
+            value: RawValue = round_value(
+                apply_scale(decode(point.data_type, raw), point.scale),
+                point.data_type,
+                point.decimals,
+            )
         except ValueError:
             logger.exception("Decode failed for %s/%s", device.name, point.name)
             raise _ToolFailure(

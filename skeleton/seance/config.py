@@ -65,7 +65,19 @@ def _load_point(file: str, device: str, index: int, raw: object) -> PointConfig:
         if not _positive_number(raw["scale"]):
             raise ConfigError(file, device, f"{prefix}.scale", "must be a number greater than zero")
         scale = float(raw["scale"])
-    return PointConfig(name=name, address=address, data_type=data_type, unit=unit, scale=scale)
+    decimals: int | None = None
+    if raw.get("decimals") is not None:
+        value = raw["decimals"]
+        if not isinstance(value, int) or isinstance(value, bool) or not 0 <= value <= 6:
+            raise ConfigError(
+                file, device, f"{prefix}.decimals", "must be a whole number from 0 to 6"
+            )
+        if data_type is DataType.BOOL:
+            raise ConfigError(file, device, f"{prefix}.decimals", "is not allowed on a bool point")
+        decimals = value
+    return PointConfig(
+        name=name, address=address, data_type=data_type, unit=unit, scale=scale, decimals=decimals
+    )
 
 
 def _load_device(file: str, index: int, raw: object) -> DeviceConfig:
@@ -131,6 +143,8 @@ def dump_config(config: Configuration) -> str:
             }
             if point.scale is not None:
                 entry["scale"] = point.scale
+            if point.decimals is not None:
+                entry["decimals"] = point.decimals
             points.append(entry)
         devices.append(
             {

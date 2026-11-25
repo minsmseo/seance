@@ -42,6 +42,7 @@ devices:
         address: "2:input:0"
         data_type: float32
         unit: L/min
+        decimals: 1
       - name: pump_running
         address: "2:coil:0"
         data_type: bool
@@ -64,6 +65,7 @@ devices:
         address: "3:input:0"
         data_type: float32
         unit: degC
+        decimals: 1
       - name: compressor_on
         address: "3:coil:0"
         data_type: bool

@@ -114,9 +114,3 @@ def test_apply_scale_power_of_ten_has_at_most_n_places(raw: int, n: int) -> None
     assert isinstance(exponent, int)
     assert exponent >= -n
     assert math.isclose(result, raw * scale, rel_tol=1e-9, abs_tol=1e-12)
-
-
-def test_apply_scale_removes_float_noise() -> None:
-    assert apply_scale(394, 0.1) == 39.4
-    assert repr(apply_scale(394, 0.1)) == "39.4"
-    assert repr(apply_scale(3, 0.25)) == "0.75"

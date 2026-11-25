@@ -134,6 +134,28 @@ def apply_scale(value: RawValue, scale: float | None) -> RawValue:
     return result
 
 
+def round_value(value: RawValue, data_type: DataType, decimals: int | None) -> RawValue:
+    """Round a decoded, scaled value for presentation.
+
+    BOOL values are returned unchanged. When `decimals` is set the value is
+    rounded to that many places (an int stays an int). When `decimals` is None,
+    FLOAT32 values are rounded to 7 significant digits, which hides the false
+    precision of widening float32 to float64. NaN and infinities pass through.
+    Any other value is returned unchanged.
+    """
+    if isinstance(value, bool):
+        return value
+    if decimals is not None:
+        if isinstance(value, int):
+            return value
+        if not math.isfinite(value):
+            return value
+        return round(value, decimals)
+    if data_type is DataType.FLOAT32 and isinstance(value, float) and math.isfinite(value):
+        return float(f"{value:.7g}")
+    return value
+
+
 def _decimal_places(scale: float) -> int:
     """Return the decimal places in the shortest decimal form of `scale`."""
     if not math.isfinite(scale):

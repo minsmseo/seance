@@ -21,7 +21,7 @@ from apps.modbus import simulator as sim_module
 from apps.modbus.adapter import ModbusAdapter
 from apps.modbus.simulator import Simulator
 from seance.audit import Audit_Log
-from seance.codec import apply_scale
+from seance.codec import apply_scale, round_value
 from seance.config import load_config
 from seance.points import Configuration
 from seance.server import ToolServer
@@ -111,7 +111,11 @@ def test_read_point_equals_decoded_simulator_memory(
             result = tool_server.call("read_point", {"device": device.name, "point": point.name})
             assert result.ok, result.text
             assert isinstance(result.payload, dict)
-            expected = apply_scale(simulator.get_value(device.name, point.name), point.scale)
+            expected = round_value(
+                apply_scale(simulator.get_value(device.name, point.name), point.scale),
+                point.data_type,
+                point.decimals,
+            )
             assert result.payload["value"] == expected, (device.name, point.name)
             assert result.payload["unit"] == point.unit
             timestamp = result.payload["timestamp"]
@@ -230,7 +234,11 @@ def test_console_shows_three_devices_with_live_values_within_five_seconds(
             assert name in page
         for device in config.devices:
             for point in device.points:
-                value = apply_scale(simulator.get_value(device.name, point.name), point.scale)
+                value = round_value(
+                    apply_scale(simulator.get_value(device.name, point.name), point.scale),
+                    point.data_type,
+                    point.decimals,
+                )
                 assert html.escape(str(value), quote=True) in page, (device.name, point.name)
         reading = client.get("/points/mixing_tank/level")
         assert reading.status_code == 200

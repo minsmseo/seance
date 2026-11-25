@@ -101,6 +101,7 @@ class PointConfig:
     data_type: DataType  # enum: INT16, UINT16, INT32, UINT32, FLOAT32, BOOL, ...
     unit: str
     scale: float | None = None  # must be > 0 when present
+    decimals: int | None = None  # optional, integer 0..6, not allowed on BOOL points
 
 
 @dataclass(frozen=True)
@@ -121,6 +122,7 @@ These are plain, immutable, hashable dataclasses with full type hints and no `An
 ### `config.py` — `Config_Loader`
 
 - `load_config(path: Path) -> Configuration`: reads YAML, validates every field, applies the default `Timeout` of 2 seconds where absent, rejects duplicate point names per device, rejects unsupported data types, and raises `ConfigError(file, device, field, reason)` on the first problem found.
+- `decimals` is an optional per-point field. When present it must be an integer from 0 to 6; a non-integer, a YAML bool, a float such as `1.0`, a string, or a value outside 0..6 raises `ConfigError` naming the field `decimals`. It is also rejected on a `bool` point, because rounding has no meaning there. A missing value loads as `None`, and `dump_config` writes the field only when it is set.
 - `dump_config(config: Configuration) -> str`: renders a `Configuration` back to YAML text, inverse of `load_config`'s parsing step.
 - Validation order is: structural shape (required keys present) → per-field type and value checks → cross-point uniqueness within a device → data type support check. This order lets error messages always report the most specific problem.
 
@@ -135,7 +137,9 @@ These are plain, immutable, hashable dataclasses with full type hints and no `An
 
 - `decode(data_type: DataType, raw: bytes) -> RawValue` and `encode(data_type: DataType, value: RawValue) -> bytes`, each dispatching on a fixed-length table per `DataType` (e.g. `INT16`/`UINT16` → 2 bytes, `INT32`/`UINT32`/`FLOAT32` → 4 bytes, `BOOL` → 1 byte).
 - `decode` raises `CodecLengthError(data_type, expected_length, received_length)` when `len(raw)` does not match the required length for `data_type`.
-- `apply_scale(value: RawValue, scale: float | None) -> RawValue` multiplies by `scale` when present (and `scale > 0`, enforced at config load time), otherwise returns `value` unchanged.
+- `apply_scale(value: RawValue, scale: float | None) -> RawValue` multiplies by `scale` when present (and `scale > 0`, enforced at config load time), otherwise returns `value` unchanged. Integer raw values are rounded to the decimal places implied by the scale, which removes float noise such as 39.400000000000006.
+- `round_value(value: RawValue, data_type: DataType, decimals: int | None) -> RawValue` rounds the final value for presentation. `bool` values are returned unchanged. When `decimals` is set the value is rounded with `round(value, decimals)` (an int stays an int). When `decimals` is `None` and the type is `FLOAT32`, the value is rounded to 7 significant digits, which hides the false precision of widening float32 to float64. NaN and infinities are returned unchanged. Every other case returns `value` unchanged.
+- Rounding order for a read: `decode`, then `apply_scale` (scale-implied places for integer raw values), then `round_value` (`decimals` if set, else 7 significant digits for `FLOAT32`). `decode` and `encode` are not affected, so the decode-then-encode round trip still holds. The `Tool_Server` applies this order in one helper, so `read_point`, `read_points` and the `Web_Console` all show the same value.
 
 ### `server.py` — `Tool_Server`
 
@@ -185,6 +189,7 @@ class PointConfig:
     data_type: DataType
     unit: str
     scale: float | None = None
+    decimals: int | None = None  # optional, integer 0..6, not allowed on BOOL points
 
 
 @dataclass(frozen=True)

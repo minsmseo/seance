@@ -1,6 +1,7 @@
 """Unit tests for the Tool_Server. Uses the Fake_Adapter; no network."""
 
 import asyncio
+import struct
 from datetime import datetime
 from pathlib import Path
 
@@ -62,6 +63,30 @@ def test_read_point_scales_and_timestamps() -> None:
     assert result.payload["unit"] == "C"
     assert isinstance(result.payload["timestamp"], str)
     datetime.fromisoformat(result.payload["timestamp"])
+
+
+def test_read_point_rounds_float32_with_and_without_decimals() -> None:
+    raw = struct.pack(">f", 44.39446258544922)
+    config = Configuration(
+        devices=(
+            DeviceConfig(
+                name="pump",
+                description="Pump",
+                timeout_seconds=0.2,
+                points=(
+                    PointConfig("plain", "1", DataType.FLOAT32, "L/min"),
+                    PointConfig("rounded", "2", DataType.FLOAT32, "L/min", decimals=1),
+                ),
+            ),
+        )
+    )
+    server = ToolServer(config, Fake_Adapter(data=raw))
+    plain = server.call("read_point", {"device": "pump", "point": "plain"})
+    rounded = server.call("read_point", {"device": "pump", "point": "rounded"})
+    assert isinstance(plain.payload, dict)
+    assert isinstance(rounded.payload, dict)
+    assert plain.payload["value"] == 44.39446
+    assert rounded.payload["value"] == 44.4
 
 
 def test_device_health_shape() -> None:

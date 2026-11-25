@@ -17,13 +17,18 @@ class DataType(StrEnum):
 
 @dataclass(frozen=True)
 class PointConfig:
-    """One readable value on a device. `scale`, when present, must be greater than zero."""
+    """One readable value on a device.
+
+    `scale`, when present, must be greater than zero. `decimals`, when present,
+    is an integer from 0 to 6 and is not allowed on bool points.
+    """
 
     name: str
     address: str
     data_type: DataType
     unit: str
     scale: float | None = None
+    decimals: int | None = None
 
 
 @dataclass(frozen=True)

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from seance.config import ConfigError, load_config
+from seance.config import ConfigError, dump_config, load_config
 
 VALID = """
 devices:
@@ -88,3 +88,45 @@ def test_unreadable_and_malformed_files(tmp_path: Path) -> None:
         load_config(tmp_path / "missing.yaml")
     with pytest.raises(ConfigError):
         load_config(write(tmp_path, "devices: [unclosed"))
+
+
+def decimals_text(value: str, data_type: str = "float32") -> str:
+    return (
+        "devices:\n  - name: press\n    points:\n"
+        f'      - {{name: temp, address: "1", data_type: {data_type}, unit: C, '
+        f"decimals: {value}}}\n"
+    )
+
+
+@pytest.mark.parametrize("value", [0, 1, 6])
+def test_valid_decimals_loads(tmp_path: Path, value: int) -> None:
+    config = load_config(write(tmp_path, decimals_text(str(value))))
+    assert config.devices[0].points[0].decimals == value
+
+
+def test_missing_decimals_is_none(tmp_path: Path) -> None:
+    assert load_config(write(tmp_path, VALID)).devices[0].points[0].decimals is None
+
+
+@pytest.mark.parametrize("value", ["-1", "7", "1.5", "1.0", '"2"', "true", "false"])
+def test_invalid_decimals(tmp_path: Path, value: str) -> None:
+    path = write(tmp_path, decimals_text(value))
+    with pytest.raises(ConfigError) as info:
+        load_config(path)
+    assert info.value.field.endswith("decimals")
+    assert info.value.device == "press"
+    assert str(path) in str(info.value)
+
+
+def test_decimals_rejected_on_bool_point(tmp_path: Path) -> None:
+    path = write(tmp_path, decimals_text("1", "bool"))
+    with pytest.raises(ConfigError) as info:
+        load_config(path)
+    assert info.value.field.endswith("decimals")
+    assert info.value.device == "press"
+    assert str(path) in str(info.value)
+
+
+def test_decimals_round_trips_through_dump(tmp_path: Path) -> None:
+    config = load_config(write(tmp_path, decimals_text("3")))
+    assert load_config(write(tmp_path, dump_config(config))) == config
