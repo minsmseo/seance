@@ -31,6 +31,7 @@ Check the current documentation of a library before using an API from memory.
 - Configuration comes from a YAML file per app, validated at startup. Fail fast with a message naming the bad field.
 - Errors returned to the agent are short sentences that say what failed and what to try next. Never return a stack trace.
 - Timeouts on every device call. Default 2 seconds.
+- On Windows each asyncio event loop costs a loopback socket pair that lingers in TIME_WAIT for about two minutes. Never create an event loop per test example, per request or per tool call. Reuse one loop.
 
 ## Property-based testing targets
 

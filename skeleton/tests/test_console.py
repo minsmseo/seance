@@ -1,8 +1,11 @@
 """Route tests for the web console. Uses the Fake_Adapter and TestClient; no network."""
 
 import html
+from collections.abc import Callable, Iterator
+from contextlib import ExitStack
 
 import pytest
+from anyio.from_thread import BlockingPortal
 from fastapi.testclient import TestClient
 
 from seance.console.app import AUDIT_LIMIT, create_app
@@ -28,13 +31,33 @@ CONFIG = Configuration(
 )
 
 
-def make(adapter: Fake_Adapter | None = None) -> tuple[TestClient, ToolServer, Fake_Adapter]:
-    fake = adapter if adapter is not None else Fake_Adapter(data=b"\x00\x64")
-    server = ToolServer(CONFIG, fake)
-    return TestClient(create_app(server)), server, fake
+MakeClient = Callable[..., tuple[TestClient, ToolServer, Fake_Adapter]]
 
 
-def test_index_lists_devices_and_points_with_live_values() -> None:
+@pytest.fixture
+def make(session_portal: BlockingPortal) -> Iterator[MakeClient]:
+    """Build clients that share the session portal, so the whole run uses one event loop.
+
+    ``with TestClient(...)`` would open a new portal (a new event loop) per test. The
+    console app has no lifespan handlers, so attaching the shared portal is enough.
+    Each test still gets a fresh ToolServer and audit log.
+    """
+    with ExitStack() as stack:
+
+        def build(
+            adapter: Fake_Adapter | None = None,
+        ) -> tuple[TestClient, ToolServer, Fake_Adapter]:
+            fake = adapter if adapter is not None else Fake_Adapter(data=b"\x00\x64")
+            server = ToolServer(CONFIG, fake)
+            client = TestClient(create_app(server))
+            client.portal = session_portal
+            stack.callback(client.close)
+            return client, server, fake
+
+        yield build
+
+
+def test_index_lists_devices_and_points_with_live_values(make: MakeClient) -> None:
     client, server, _ = make()
     response = client.get("/")
     assert response.status_code == 200
@@ -47,7 +70,7 @@ def test_index_lists_devices_and_points_with_live_values() -> None:
     server.close()
 
 
-def test_index_keeps_device_names_readable_after_escaping() -> None:
+def test_index_keeps_device_names_readable_after_escaping(make: MakeClient) -> None:
     client, server, _ = make()
     raw = client.get("/").text
     assert "&lt;main&gt;" in raw
@@ -57,7 +80,7 @@ def test_index_keeps_device_names_readable_after_escaping() -> None:
     server.close()
 
 
-def test_index_shows_adapter_error_sentence_unchanged() -> None:
+def test_index_shows_adapter_error_sentence_unchanged(make: MakeClient) -> None:
     client, server, _ = make(Fake_Adapter(error=RuntimeError("boom")))
     text = html.unescape(client.get("/").text)
     expected = (
@@ -70,7 +93,7 @@ def test_index_shows_adapter_error_sentence_unchanged() -> None:
     server.close()
 
 
-def test_point_route_returns_live_value() -> None:
+def test_point_route_returns_live_value(make: MakeClient) -> None:
     client, server, _ = make()
     response = client.get("/points/press/temperature")
     assert response.status_code == 200
@@ -82,7 +105,7 @@ def test_point_route_returns_live_value() -> None:
     server.close()
 
 
-def test_point_route_unknown_point_returns_sentence_unchanged() -> None:
+def test_point_route_unknown_point_returns_sentence_unchanged(make: MakeClient) -> None:
     client, server, _ = make()
     response = client.get("/points/press/temperatur")
     assert response.status_code == 404
@@ -95,7 +118,7 @@ def test_point_route_unknown_point_returns_sentence_unchanged() -> None:
     server.close()
 
 
-def test_point_route_handles_device_name_with_special_characters() -> None:
+def test_point_route_handles_device_name_with_special_characters(make: MakeClient) -> None:
     client, server, _ = make()
     response = client.get("/points/Line%20A%20%26%20B%20%3Cmain%3E/x")
     assert response.status_code == 404
@@ -103,7 +126,7 @@ def test_point_route_handles_device_name_with_special_characters() -> None:
     server.close()
 
 
-def test_tool_invocation_returns_raw_result() -> None:
+def test_tool_invocation_returns_raw_result(make: MakeClient) -> None:
     client, server, _ = make()
     response = client.post("/tools/list_devices", json={})
     assert response.status_code == 200
@@ -120,7 +143,7 @@ def test_tool_invocation_returns_raw_result() -> None:
     server.close()
 
 
-def test_tool_invocation_errors_are_plain_sentences() -> None:
+def test_tool_invocation_errors_are_plain_sentences(make: MakeClient) -> None:
     client, server, _ = make()
     unknown = client.post("/tools/delete_everything", json={})
     assert unknown.status_code == 403
@@ -134,7 +157,7 @@ def test_tool_invocation_errors_are_plain_sentences() -> None:
     server.close()
 
 
-def test_console_does_not_forward_write_requests_to_the_adapter() -> None:
+def test_console_does_not_forward_write_requests_to_the_adapter(make: MakeClient) -> None:
     client, server, fake = make()
     response = client.post("/tools/write_point", json={"device": "press", "value": 1})
     assert response.status_code == 403
@@ -143,13 +166,13 @@ def test_console_does_not_forward_write_requests_to_the_adapter() -> None:
     server.close()
 
 
-def test_audit_is_empty_at_start() -> None:
+def test_audit_is_empty_at_start(make: MakeClient) -> None:
     client, server, _ = make()
     assert client.get("/audit").json() == []
     server.close()
 
 
-def test_each_console_call_writes_one_audit_entry() -> None:
+def test_each_console_call_writes_one_audit_entry(make: MakeClient) -> None:
     client, server, _ = make()
     client.get("/points/press/temperature")
     assert len(server.audit.recent(100)) == 1
@@ -170,7 +193,7 @@ def test_each_console_call_writes_one_audit_entry() -> None:
     server.close()
 
 
-def test_index_writes_one_audit_entry_per_device_with_points() -> None:
+def test_index_writes_one_audit_entry_per_device_with_points(make: MakeClient) -> None:
     client, server, _ = make()
     client.get("/")
     entries = server.audit.recent(100)
@@ -178,7 +201,7 @@ def test_index_writes_one_audit_entry_per_device_with_points() -> None:
     server.close()
 
 
-def test_audit_view_is_capped_at_50_newest_first() -> None:
+def test_audit_view_is_capped_at_50_newest_first(make: MakeClient) -> None:
     client, server, _ = make()
     total = AUDIT_LIMIT + 10
     for i in range(total):

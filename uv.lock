@@ -486,6 +486,15 @@ crypto = [
 ]
 
 [[package]]
+name = "pymodbus"
+version = "3.16.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/e8/910c866f041769d323df554835965571b054b10e1a3265427d246c4d2ccb/pymodbus-3.16.2.tar.gz", hash = "sha256:64057981fac117ed4b75ea8ef6035369f6ae803247700a5efdf75d76a2be8aef", size = 170282, upload-time = "2026-11-03T12:04:07.347Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/51/d4/ac60401cb41999f375887c8dee0902db0bf9d0f43dc6f8b0695483b7016c/pymodbus-3.16.2-py3-none-any.whl", hash = "sha256:385ad145955a7af15020ee55c266f7a2c6d9af2180d45c3755a56db9a5014078", size = 168896, upload-time = "2026-11-03T12:04:05.255Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "9.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -499,6 +508,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/79/42/bb4641652e58dedeac2ec51abc1f8cae4fee4ec63899a0999016229a0f2a/pytest-9.2.0.tar.gz", hash = "sha256:97c4f3b1f3c7414aa36465e09b8220f1d03627993bd51b1282e193753c80557b", size = 1797555, upload-time = "2026-10-27T21:30:20.728Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/51/39/1f5d8c8877a0fa327db959c19341d4be61660de1ab6b7391f9eb805bcd67/pytest-9.2.0-py3-none-any.whl", hash = "sha256:07acdcf88ec174f907dc01af70bf52d49b014bbab03faeeade31c96b18c2e588", size = 411776, upload-time = "2026-10-27T21:30:19.131Z" },
+]
+
+[[package]]
+name = "pytest-rerunfailures"
+version = "16.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/b0/6b5337f9d59b26b0069ea3d5e863c31dc04b69e51bbfb1cf2ea6328fba87/pytest_rerunfailures-16.7.tar.gz", hash = "sha256:6956ddfb65ca1d07e7e3d99e2c5359d82300f4cb062e6049563bd2c106f72d5c", size = 59666, upload-time = "2026-09-17T07:08:48.871Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/d3/07ea35102cf2020ddaaac368d2a6f0bcc63d6523fb8918805bac3eb8b98f/pytest_rerunfailures-16.7-py3-none-any.whl", hash = "sha256:edf1886209c2b7dafe35b5bf1708d6ec40ccf6c6b357f0f02807efcec0204c99", size = 23952, upload-time = "2026-09-17T07:08:47.635Z" },
 ]
 
 [[package]]
@@ -619,6 +641,7 @@ source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "mcp" },
+    { name = "pymodbus" },
     { name = "pyyaml" },
     { name = "uvicorn" },
 ]
@@ -628,6 +651,7 @@ dev = [
     { name = "httpx" },
     { name = "hypothesis" },
     { name = "pytest" },
+    { name = "pytest-rerunfailures" },
     { name = "ruff" },
 ]
 
@@ -635,6 +659,7 @@ dev = [
 requires-dist = [
     { name = "fastapi", specifier = ">=0.110" },
     { name = "mcp", specifier = ">=1.0" },
+    { name = "pymodbus", specifier = ">=3.16.2" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "uvicorn", specifier = ">=0.29" },
 ]
@@ -644,6 +669,7 @@ dev = [
     { name = "httpx", specifier = ">=0.27" },
     { name = "hypothesis", specifier = ">=6.100" },
     { name = "pytest", specifier = ">=8.0" },
+    { name = "pytest-rerunfailures", specifier = ">=16.7" },
     { name = "ruff", specifier = ">=0.5" },
 ]
 

@@ -1,6 +1,6 @@
 """Unit tests for the Tool_Server. Uses the Fake_Adapter; no network."""
 
-from collections.abc import Coroutine
+import asyncio
 from datetime import datetime
 from pathlib import Path
 
@@ -171,26 +171,19 @@ def test_every_call_writes_one_audit_entry() -> None:
     assert entries[2].device == ""
 
 
-def _drive[T](coro: Coroutine[object, object, T]) -> T:
-    """Run a coroutine that never suspends, without creating an event loop or sockets."""
-    try:
-        coro.send(None)
-    except StopIteration as done:
-        return done.value  # type: ignore[no-any-return]
-    coro.close()
-    raise RuntimeError("coroutine suspended")
-
-
-def test_mcp_registers_the_five_tools() -> None:
+def test_mcp_registers_the_five_tools(session_loop: asyncio.AbstractEventLoop) -> None:
     server, _ = make()
     mcp = server.build_mcp()
-    tools = _drive(mcp.list_tools())
+    tools = session_loop.run_until_complete(mcp.list_tools())
     assert sorted(t.name for t in tools) == sorted(TOOL_NAMES)
 
 
-def test_mcp_tool_schema_declares_text_arguments() -> None:
+def test_mcp_tool_schema_declares_text_arguments(
+    session_loop: asyncio.AbstractEventLoop,
+) -> None:
     server, _ = make()
-    tools = {t.name: t for t in _drive(server.build_mcp().list_tools())}
+    listed = session_loop.run_until_complete(server.build_mcp().list_tools())
+    tools = {t.name: t for t in listed}
     properties = tools["read_points"].input_schema["properties"]
     assert properties["device"]["type"] == "string"
     assert properties["points"]["type"] == "array"

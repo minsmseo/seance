@@ -7,7 +7,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
 ## Tasks
 
 - [ ] 1. Build the Simulator
-  - [ ] 1.1 Create the app package and the Simulator memory map
+  - [x] 1.1 Create the app package and the Simulator memory map
     - Create `apps/modbus/__init__.py` and `apps/modbus/tests/__init__.py` if the repo layout needs them
     - Create `apps/modbus/simulator.py` with a `Simulator(host, port, seed)` class built on the pymodbus simulator datastore
     - Check the current pymodbus documentation for `SimData`, `SimDevice` and the server start and stop calls before writing code
@@ -18,7 +18,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Type hints on every public function, no `Any`
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.9, 1.10, 6.2, 10.6_
 
-  - [ ] 1.2 Add drift, seeding, the low-level flag and clean stop
+  - [x] 1.2 Add drift, seeding, the low-level flag and clean stop
     - A drift thread changes each analog value at least once per second by a bounded random step, clamped to its declared minimum and maximum
     - Seed a private random generator from the constructor so equal seeds give equal sequences
     - Set the mixing tank low-level discrete input when the level falls below its low limit, and clear it when the level rises above
@@ -26,7 +26,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Expose a way to read and set a point value in the Simulator's memory, for tests
     - _Requirements: 1.5, 1.6, 1.7, 1.8, 1.11_
 
-  - [ ] 1.3 Write unit tests in `apps/modbus/tests/test_simulator.py`
+  - [-] 1.3 Write unit tests in `apps/modbus/tests/test_simulator.py`
     - Start the Simulator on a free localhost port picked at test setup, make no other network call
     - Three devices answer on their unit ids
     - An undefined offset answers "illegal data address" and an unsupported function code answers "illegal function"

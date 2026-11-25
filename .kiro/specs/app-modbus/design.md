@@ -90,9 +90,9 @@ class Table(StrEnum):
 
 @dataclass(frozen=True)
 class ModbusAddress:
-    unit: int      # 1..247
+    unit: int  # 1..247
     table: Table
-    offset: int    # 0..65535
+    offset: int  # 0..65535
 
 
 class AddressError(ValueError):
