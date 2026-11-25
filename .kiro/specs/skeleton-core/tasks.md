@@ -183,7 +183,7 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Create `skeleton/tests/test_console.py`
     - _Requirements: 6.6, 7.1, 7.2, 7.3, 7.4, 7.5, 7.8_
 
-- [ ] 11. Final checkpoint - Ensure all tests pass
+- [x] 11. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
