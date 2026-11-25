@@ -14,6 +14,21 @@
         "read_points",
         "device_health"
       ]
+    },
+    "seance-snmp": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "apps.snmp"],
+      "env": {
+        "SEANCE_CONSOLE_PORT": "8083"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "list_devices",
+        "list_points",
+        "read_point",
+        "read_points",
+        "device_health"
+      ]
     }
   }
 }

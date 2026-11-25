@@ -256,8 +256,8 @@ Verification rules for every task:
     - It mentions the test command and `mcp.json`
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9_
 
-- [ ] 13. Add the Kiro_MCP_Config
-  - [ ] 13.1 Print the `seance-snmp` entry for the user to add
+- [x] 13. Add the Kiro_MCP_Config
+  - [x] 13.1 Print the `seance-snmp` entry for the user to add
     - The agent cannot write `.kiro/settings/mcp.json`, so do not edit it
     - Print this entry as a JSON object in the reply and ask the user to add it under `mcpServers`, next to the unchanged `seance-modbus` entry:
       - `command` `uv`, `args` `run`, `python`, `-m`, `apps.snmp`
@@ -267,7 +267,7 @@ Verification rules for every task:
     - Stop and wait for the user to confirm that the entry is added before starting 13.2
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9_
 
-  - [ ] 13.2 Write unit tests in `apps/snmp/tests/test_mcp_config.py`
+  - [x] 13.2 Write unit tests in `apps/snmp/tests/test_mcp_config.py`
     - Parse `.kiro/settings/mcp.json` and assert criteria 10.3 to 10.9: one `seance-snmp` entry, the `uv` command and arguments, the five tools in `autoApprove`, the entry enabled, no value that looks like a secret, valid JSON, a console port other than 8080 and other than the `seance-modbus` console port, and the `seance-modbus` entry unchanged
     - When the entry is missing, fail with a message that names the missing `seance-snmp` entry
     - Assert that `.gitignore` does not list `.kiro`

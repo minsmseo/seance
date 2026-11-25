@@ -433,6 +433,37 @@
         "chatSessionId": "sess_15f07685-237c-4a23-98b6-6f42edb166d5",
         "timestamp": 1795605082934
       }
+    ],
+    "13.1 Print the `seance-snmp` entry for the user to add": [
+      {
+        "executionId": "e6379102-e47b-4ecb-9191-81245cc5771e",
+        "chatSessionId": "sess_7426f7d5-789b-4713-85ea-b90a22c62597",
+        "timestamp": 1795605374089
+      },
+      {
+        "executionId": "0dc6fc76-2bcb-45ca-af4e-bdc8dee06035",
+        "chatSessionId": "sess_7426f7d5-789b-4713-85ea-b90a22c62597",
+        "timestamp": 1795605537811
+      }
+    ],
+    "13.2 Write unit tests in `apps/snmp/tests/test_mcp_config.py`": [
+      {
+        "executionId": "0dc6fc76-2bcb-45ca-af4e-bdc8dee06035",
+        "chatSessionId": "sess_7426f7d5-789b-4713-85ea-b90a22c62597",
+        "timestamp": 1795605538355
+      },
+      {
+        "executionId": "0dc6fc76-2bcb-45ca-af4e-bdc8dee06035",
+        "chatSessionId": "sess_7426f7d5-789b-4713-85ea-b90a22c62597",
+        "timestamp": 1795605590206
+      }
+    ],
+    "13. Add the Kiro_MCP_Config": [
+      {
+        "executionId": "0dc6fc76-2bcb-45ca-af4e-bdc8dee06035",
+        "chatSessionId": "sess_7426f7d5-789b-4713-85ea-b90a22c62597",
+        "timestamp": 1795605590248
+      }
     ]
   }
 }
