@@ -1,4 +1,4 @@
-# Implementation Plan: skeleton-core
+﻿# Implementation Plan: skeleton-core
 
 ## Overview
 
@@ -110,8 +110,8 @@ The Codec has no slot in the requested order, so it is built right after configu
 - [x] 7. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Implement the MCP tools
-  - [ ] 8.1 Build the Tool_Server core and discovery tools in `skeleton/seance/server.py`
+- [x] 8. Implement the MCP tools
+  - [x] 8.1 Build the Tool_Server core and discovery tools in `skeleton/seance/server.py`
     - Build the MCP server from a Configuration, adapter, guard and audit log
     - Shared `_call_tool` wrapper that validates arguments, calls the guard and records exactly one Audit_Entry in a `finally` block
     - `list_devices` and `list_points`
@@ -119,41 +119,41 @@ The Codec has no slot in the requested order, so it is built right after configu
     - Invalid-argument errors naming the argument
     - _Requirements: 5.1, 5.2, 5.3, 5.8, 5.10, 6.1, 6.2_
 
-  - [ ] 8.2 Add read and health tools with timeouts
+  - [x] 8.2 Add read and health tools with timeouts
     - `read_point`, `read_points` (requested order) and `device_health`
     - Run adapter calls under the Device Timeout; decode and scale via the Codec
     - Return value, unit and ISO 8601 timestamp
     - Timeout and adapter-error sentences with a next step and no stack trace
     - _Requirements: 3.5, 5.4, 5.5, 5.6, 5.7, 5.9_
 
-  - [ ] 8.3 Wire startup
+  - [x] 8.3 Wire startup
     - Check adapter registration, load Configuration, call `connect` once before serving
     - Return the guard's plain-sentence rejection for Write_Requests without calling the adapter
     - _Requirements: 1.2, 4.1, 4.3, 5.1_
 
-  - [ ] 8.4 Write unit tests for the tools
+  - [x] 8.4 Write unit tests for the tools
     - Shapes for `list_devices` and `list_points`, unknown device and point messages, close-match suggestions, timeout sentence, adapter-error sentence
     - Create `skeleton/tests/test_server.py`
     - _Requirements: 5.2, 5.3, 5.7, 5.8, 5.9, 5.10_
 
-  - [ ] 8.5 Write property tests for read results
+  - [x] 8.5 Write property tests for read results
     - **Property 7: `read_points` preserves request order**
     - **Validates: Requirements 5.5**
     - **Property 8: Successful reads carry value, unit and a valid timestamp**
     - **Validates: Requirements 5.4, 5.6**
     - Create `skeleton/tests/test_server_properties.py`
 
-  - [ ] 8.6 Write property test for error sentences
+  - [x] 8.6 Write property test for error sentences
     - **Property 9: Error responses are short, plain sentences with no stack trace**
     - **Validates: Requirements 5.7, 5.8, 5.9, 5.10**
     - Add to `skeleton/tests/test_server_properties.py`
 
-  - [ ] 8.7 Write property test for audit entry count
+  - [x] 8.7 Write property test for audit entry count
     - **Property 10: Audit entry count matches call count**
     - **Validates: Requirements 6.1, 6.2, 6.3**
     - Create `skeleton/tests/test_audit_properties.py` driving the Tool_Server with the Fake_Adapter
 
-  - [ ] 8.8 Write property test for audit fields
+  - [x] 8.8 Write property test for audit fields
     - **Property 11: Audit entries record the field that was supplied and leave the rest empty**
     - **Validates: Requirements 6.4, 6.5**
     - Add to `skeleton/tests/test_audit_properties.py`
