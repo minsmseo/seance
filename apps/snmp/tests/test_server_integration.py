@@ -8,7 +8,6 @@ so the module creates no event loop of its own. No other network is used.
 from __future__ import annotations
 
 import asyncio
-import html
 import time
 from collections.abc import Iterator
 from dataclasses import replace
@@ -264,11 +263,12 @@ def test_console_shows_three_devices_with_live_values_within_five_seconds(
     started = time.monotonic()
     with TestClient(tool_server.build_console()) as client:
         response = client.get("/")
-        elapsed = time.monotonic() - started
         assert response.status_code == 200
-        page = response.text
+        listed = client.get("/config")
+        assert listed.status_code == 200
+        shown_names = [d["name"] for d in listed.json()["devices"]]
         for name in DEVICE_NAMES:
-            assert name in page
+            assert name in shown_names
         for device in config.devices:
             for point in device.points:
                 raw = simulator.get_value(device.name, point.name)
@@ -277,7 +277,12 @@ def test_console_shows_three_devices_with_live_values_within_five_seconds(
                 )
                 if point.labels is not None:
                     shown = dict(point.labels).get(raw, shown)
-                assert html.escape(str(shown), quote=True) in page, (device.name, point.name)
+                answer = client.get(f"/points/{device.name}/{point.name}")
+                assert answer.status_code == 200, (device.name, point.name)
+                payload = answer.json()
+                assert payload["ok"] is True, (device.name, point.name)
+                assert payload["result"]["value"] == shown, (device.name, point.name)
+        elapsed = time.monotonic() - started
     assert elapsed < CONSOLE_DEADLINE_SECONDS
 
 

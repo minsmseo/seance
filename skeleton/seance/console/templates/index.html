@@ -36,7 +36,7 @@
           <label for="point-select">Point</label>
           <select id="point-select" name="point"></select>
         </div>
-        <button type="submit" class="button">Send</button>
+        <button type="submit" id="tool-send" class="button">Send</button>
       </form>
       <h3 class="sub-title">Raw reply</h3>
       <pre class="reply mono" id="tool-reply" aria-live="polite">No call made yet.</pre>
@@ -44,6 +44,7 @@
   </main>
   <aside class="ledger" id="ledger">
     <h2 class="section-title">Ledger</h2>
+    <p class="ledger-note" id="ledger-note" hidden></p>
     <ol class="ledger-list" id="ledger-list"></ol>
   </aside>
 </div>

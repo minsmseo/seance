@@ -9,6 +9,7 @@ import yaml
 from seance.points import Configuration, DataType, DeviceConfig, PointConfig
 
 DEFAULT_TIMEOUT_SECONDS = 2.0
+MAX_TITLE_LENGTH = 40
 
 
 class ConfigError(Exception):
@@ -168,7 +169,20 @@ def load_config(path: Path) -> Configuration:
     raw_devices = data.get("devices", [])
     if not isinstance(raw_devices, list):
         raise ConfigError(file, "", "devices", "must be a list")
-    return Configuration(devices=tuple(_load_device(file, i, d) for i, d in enumerate(raw_devices)))
+    title: str | None = None
+    if data.get("title") is not None:
+        raw_title = data["title"]
+        if not isinstance(raw_title, str) or not raw_title:
+            raise ConfigError(file, "", "title", "must be non-empty text")
+        if len(raw_title) > MAX_TITLE_LENGTH:
+            raise ConfigError(
+                file, "", "title", f"must be at most {MAX_TITLE_LENGTH} characters long"
+            )
+        title = raw_title
+    return Configuration(
+        devices=tuple(_load_device(file, i, d) for i, d in enumerate(raw_devices)),
+        title=title,
+    )
 
 
 def dump_config(config: Configuration) -> str:
@@ -200,4 +214,8 @@ def dump_config(config: Configuration) -> str:
                 "points": points,
             }
         )
-    return yaml.safe_dump({"devices": devices}, sort_keys=False, allow_unicode=False)
+    document: dict[str, object] = {}
+    if config.title is not None:
+        document["title"] = config.title
+    document["devices"] = devices
+    return yaml.safe_dump(document, sort_keys=False, allow_unicode=False)

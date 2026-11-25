@@ -7,7 +7,6 @@ network is used.
 
 from __future__ import annotations
 
-import html
 import json
 import time
 from collections.abc import Iterator
@@ -227,22 +226,28 @@ def test_console_shows_three_devices_with_live_values_within_five_seconds(
     started = time.monotonic()
     with TestClient(tool_server.build_console()) as client:
         response = client.get("/")
-        elapsed = time.monotonic() - started
         assert response.status_code == 200
-        page = response.text
+        listed = client.get("/config")
+        assert listed.status_code == 200
+        shown_names = [d["name"] for d in json.loads(listed.text)["devices"]]
         for name in DEVICE_NAMES:
-            assert name in page
+            assert name in shown_names
         for device in config.devices:
             for point in device.points:
-                value = round_value(
+                expected = round_value(
                     apply_scale(simulator.get_value(device.name, point.name), point.scale),
                     point.data_type,
                     point.decimals,
                 )
-                assert html.escape(str(value), quote=True) in page, (device.name, point.name)
+                answer = client.get(f"/points/{device.name}/{point.name}")
+                assert answer.status_code == 200, (device.name, point.name)
+                payload = json.loads(answer.text)
+                assert payload["ok"] is True, (device.name, point.name)
+                assert payload["result"]["value"] == expected, (device.name, point.name)
         reading = client.get("/points/mixing_tank/level")
         assert reading.status_code == 200
         body = json.loads(reading.text)
         assert body["ok"] is True
         assert body["result"]["unit"] == "percent"
+        elapsed = time.monotonic() - started
     assert elapsed < CONSOLE_DEADLINE_SECONDS

@@ -117,6 +117,11 @@ a {
   color: var(--ink);
 }
 
+button:disabled, select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 a, button, select {
   outline-offset: 2px;
 }
@@ -137,11 +142,28 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   font-size: 13px;
 }
 
-.summary .attention {
-  padding: 4px 10px;
-  border: 1px solid var(--alert);
+.summary-count {
+  color: var(--mute);
+}
+
+.attention-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 4px 12px;
+  border: 2px solid var(--alert);
+  border-radius: 3px;
   background: var(--alert-ground);
   color: var(--alert-ink);
+  font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.attention-chip .warning {
+  flex: none;
+  fill: var(--alert-ink);
 }
 
 /* Layout */
@@ -176,21 +198,31 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   margin-bottom: 28px;
 }
 
-.device-name {
-  margin-bottom: 4px;
+.device-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--ink);
+}
+
+.device-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 16px;
   font-weight: 500;
 }
 
 .device-description {
+  min-width: 0;
   color: var(--mute);
   font-size: 14px;
 }
 
 .device-health {
-  margin: 4px 0 12px;
+  margin-left: auto;
+  min-width: 0;
   color: var(--mute);
   font-size: 13px;
 }
@@ -303,6 +335,50 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   font-family: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 12px;
   overflow-wrap: anywhere;
+}
+
+.ledger-list li.attention {
+  padding: 8px;
+  border: 2px solid var(--alert);
+  border-radius: 3px;
+  background: var(--alert-ground);
+  color: var(--alert-ink);
+}
+
+.ledger-row-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.ledger-tool {
+  font-weight: 500;
+}
+
+.ledger-detail {
+  color: var(--mute);
+}
+
+.ledger-list li.attention .ledger-detail,
+.ledger-list li.attention .ledger-reason {
+  color: var(--alert-ink);
+}
+
+.ledger-reason {
+  margin: 4px 0 0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.ledger-note {
+  margin: 0 0 8px;
+  color: var(--alert-ink);
+  font-size: 12px;
+}
+
+.ledger-empty {
+  color: var(--mute);
+  font-size: 12px;
 }
 
 /* Narrow screens */

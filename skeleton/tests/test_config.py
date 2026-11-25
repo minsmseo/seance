@@ -249,3 +249,45 @@ def test_snmp_devices_file_carries_healthy_text() -> None:
         ("edge_router", "wan_link_status"): "up",
         ("ups", "on_battery"): "normal",
     }
+
+
+def title_text(title: str) -> str:
+    return f"title: {title}\n" + VALID
+
+
+def test_title_loads_and_defaults_to_none(tmp_path: Path) -> None:
+    assert load_config(write(tmp_path, title_text('"Test line"'))).title == "Test line"
+    assert load_config(write(tmp_path, VALID)).title is None
+    assert load_config(write(tmp_path, title_text("null"))).title is None
+
+
+def test_title_of_exactly_40_characters_loads(tmp_path: Path) -> None:
+    assert load_config(write(tmp_path, title_text("a" * 40))).title == "a" * 40
+
+
+@pytest.mark.parametrize("title", ['""', "5", "1.5", "true", "[a]", "a" * 41])
+def test_invalid_title_names_file_and_field(tmp_path: Path, title: str) -> None:
+    path = write(tmp_path, title_text(title))
+    with pytest.raises(ConfigError) as info:
+        load_config(path)
+    assert info.value.field == "title"
+    assert str(path) in str(info.value)
+    assert "title" in str(info.value)
+
+
+def test_title_round_trips_through_dump(tmp_path: Path) -> None:
+    config = load_config(write(tmp_path, title_text('"Test line"')))
+    text = dump_config(config)
+    assert "title: Test line" in text
+    assert load_config(write(tmp_path, text)) == config
+    assert "title" not in dump_config(load_config(write(tmp_path, VALID)))
+
+
+def test_app_files_have_titles_and_plain_descriptions() -> None:
+    root = Path(__file__).resolve().parents[2] / "apps"
+    expected = {"snmp": "SNMP network gear", "modbus": "Modbus factory line"}
+    for app, title in expected.items():
+        config = load_config(root / app / "devices.yaml")
+        assert config.title == title
+        assert config.devices
+        assert all("(" not in device.description for device in config.devices)

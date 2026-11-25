@@ -4,6 +4,8 @@ import html
 import json
 from collections.abc import Callable, Iterator
 from contextlib import ExitStack
+from dataclasses import replace
+from pathlib import Path
 
 import pytest
 from anyio.from_thread import BlockingPortal
@@ -253,3 +255,38 @@ def test_audit_view_is_capped_at_50_newest_first(make: MakeClient) -> None:
     assert [e["device"] for e in entries] == [f"d{i}" for i in range(total - 1, total - 51, -1)]
     assert len(server.audit.recent(1000)) == total
     server.close()
+
+
+STATIC_DIR = Path(__file__).resolve().parents[1] / "seance" / "console" / "static"
+
+
+def test_config_route_returns_title_or_null(session_portal: BlockingPortal) -> None:
+    def fetch(config: Configuration) -> object:
+        server = ToolServer(config, Fake_Adapter(data=b"\x00\x64"))
+        client = TestClient(create_app(server))
+        client.portal = session_portal
+        try:
+            return client.get("/config").json()["title"]
+        finally:
+            client.close()
+            server.close()
+
+    assert fetch(replace(CONFIG, title="Test line")) == "Test line"
+    assert fetch(CONFIG) is None
+
+
+def test_console_sets_app_name_from_title_and_shell_keeps_placeholder(make: MakeClient) -> None:
+    client, server, _ = make()
+    script = client.get("/static/console.js").text
+    assert 'getElementById("app-name").textContent = config.title' in script
+    assert "Read-only console" in client.get("/").text
+    server.close()
+
+
+def test_console_builds_device_head_row_that_wraps() -> None:
+    script = (STATIC_DIR / "console.js").read_text(encoding="utf-8")
+    css = (STATIC_DIR / "console.css").read_text(encoding="utf-8")
+    assert '"device-head"' in script
+    rule = css.split(".device-head {", 1)[1].split("}", 1)[0]
+    assert "display: flex" in rule
+    assert "flex-wrap: wrap" in rule

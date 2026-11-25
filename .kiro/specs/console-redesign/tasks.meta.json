@@ -122,6 +122,409 @@
         "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
         "timestamp": 1795609488656
       }
+    ],
+    "4. Add the app title, plain device descriptions and the device header row": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609819258
+      },
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609943404
+      }
+    ],
+    "4.1 Add the optional `title` field to the config, with validation and dump": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609942395
+      }
+    ],
+    "4.2 Write the title tests in `skeleton/tests/test_config.py` and `skeleton/tests/test_config_properties.py`": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609942471
+      }
+    ],
+    "4.3 Return `title` from `GET /config` and show it in the header": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609942618
+      }
+    ],
+    "4.4 Set the titles and plain descriptions in both `devices.yaml` files": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609942702
+      }
+    ],
+    "4.5 Build the device header row in `console.css` and `console.js`": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609943243
+      }
+    ],
+    "4.6 Run ruff only": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609943363
+      }
+    ],
+    "5. Render tiles and the Formatter in `console.js`": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609948089
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610199574
+      }
+    ],
+    "5.1 Add the pure Formatter functions": [
+      {
+        "executionId": "12e6e220-4d04-4726-9000-48ab918c971c",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610055474
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610117767
+      }
+    ],
+    "5.2 Add `renderTile` and tile filling in `console.js`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610106191
+      }
+    ],
+    "5.3 Run ruff and one targeted test file": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610106923
+      }
+    ],
+    "5.4 Update the app integration tests that assert the old server-rendered markup": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127447
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128517
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610199443
+      }
+    ],
+    "6.1 Add `renderSummaryStrip` to `console.js` and wire it into `refreshAll()`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127498
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610211046
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610296811
+      }
+    ],
+    "6.2 Run ruff and one targeted test file": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127536
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610297569
+      }
+    ],
+    "7.1 Add the reason sentences and `renderLedgerRows` to `console.js`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127586
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610368698
+      }
+    ],
+    "7.2 Add `pollAudit()` and the timer": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127680
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610372181
+      }
+    ],
+    "7.3 Run ruff and one targeted test file": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127715
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610372322
+      }
+    ],
+    "8.1 Wire `Read again` in `console.js`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127752
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610458603
+      }
+    ],
+    "8.2 Build the tool panel selects in `console.js`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127796
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610459604
+      }
+    ],
+    "8.3 Implement `sendTool` in `console.js`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127834
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610460595
+      }
+    ],
+    "8.4 Run ruff and one targeted test file": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127915
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610461656
+      }
+    ],
+    "9. Checkpoint - Ensure the console works end to end": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610127953
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610485253
+      }
+    ],
+    "10.1 Page structure, `/config` and the section-per-device code path": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128031
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610499207
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610568379
+      }
+    ],
+    "10.2 CSS rule tests": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128069
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610577154
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610656489
+      }
+    ],
+    "10.3 Shell text tests: parentheses, fonts, theme words, ASCII": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128133
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610656639
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610758639
+      }
+    ],
+    "10.4 Name-free test over both apps": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128168
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610759759
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610807965
+      }
+    ],
+    "10.5 Properties 1 to 3 as example tests, and Formatter source checks": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128240
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610808987
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610936333
+      }
+    ],
+    "10.6 Hypothesis audit property in `skeleton/tests/test_audit_properties.py`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128289
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610499446
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610568558
+      }
+    ],
+    "10.7 Run ruff and one targeted test file": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128381
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610936914
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610961309
+      }
+    ],
+    "11. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610128466
+      }
+    ],
+    "6. Add the summary strip": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610297688
+      }
+    ],
+    "7. Add the Ledger with a 2 second refresh": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610305464
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610372465
+      }
+    ],
+    "8. Add the tool panel and `Read again`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610378304
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610461718
+      }
+    ],
+    "10. Write the tests for the design rules in `skeleton/tests/test_console_design.py`": [
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610486243
+      },
+      {
+        "executionId": "1eafbcdc-f29b-4074-8660-d70bcdd8c94a",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795610961467
+      }
     ]
   }
 }

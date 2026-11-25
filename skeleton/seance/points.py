@@ -51,3 +51,4 @@ class Configuration:
     """The full set of devices served by one app."""
 
     devices: tuple[DeviceConfig, ...] = ()
+    title: str | None = None

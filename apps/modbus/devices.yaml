@@ -2,9 +2,10 @@
 # Addresses read <unit>:<table>:<offset> and match MEMORY_MAP in simulator.py.
 # Host and port come from SEANCE_MODBUS_HOST and SEANCE_MODBUS_PORT, not from this file.
 # A scale is only given where the raw register needs conversion (engineering = raw * scale).
+title: "Modbus factory line"
 devices:
   - name: mixing_tank
-    description: Batch mixing tank with an agitator (Modbus unit 1)
+    description: Batch mixing tank with an agitator
     timeout_seconds: 2.0
     points:
       - name: level
@@ -31,7 +32,7 @@ devices:
         unit: state
 
   - name: feed_pump
-    description: Feed pump for the mixing tank (Modbus unit 2)
+    description: Feed pump for the mixing tank
     timeout_seconds: 2.0
     points:
       - name: runtime_hours
@@ -53,7 +54,7 @@ devices:
         unit: state
 
   - name: chiller
-    description: Chiller that cools the batch (Modbus unit 3)
+    description: Chiller that cools the batch
     timeout_seconds: 2.0
     points:
       - name: setpoint

@@ -7,9 +7,10 @@
 # memory_used is hrStorageUsed. It counts allocation units, and the simulator
 # treats one unit as 1 MiB, so the unit is MiB.
 # on_battery is upsOutputSource: 3 means normal, 5 means running on battery.
+title: "SNMP network gear"
 devices:
   - name: core_switch
-    description: Core switch with four ports and an uplink (SNMP community core_switch)
+    description: Core switch with four ports and an uplink
     timeout_seconds: 2.0
     points:
       - name: uptime
@@ -83,7 +84,7 @@ devices:
         unit: errors
 
   - name: edge_router
-    description: Edge router with one WAN link (SNMP community edge_router)
+    description: Edge router with one WAN link
     timeout_seconds: 2.0
     points:
       - name: uptime
@@ -122,7 +123,7 @@ devices:
         unit: B
 
   - name: ups
-    description: Uninterruptible power supply (SNMP community ups)
+    description: Uninterruptible power supply
     timeout_seconds: 2.0
     points:
       - name: battery_charge

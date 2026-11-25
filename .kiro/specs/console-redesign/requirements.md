@@ -6,7 +6,7 @@ This feature rebuilds the web console in `skeleton/seance/console/` so that it f
 
 The current console is a table-per-device page with a raw JSON textarea, a plain `/audit` table and a "Summon again" button that reloads the page. The rebuild replaces it with a header, a summary strip, device sections made of fixed-size point tiles, a Ledger column that refreshes on its own, and a "Call a tool yourself" panel built from selects.
 
-To mark a tile as needing attention without protocol knowledge, the skeleton configuration gains one optional per-point field, `healthy`. It names the label text that means normal (for example `up`). This is the only change outside `skeleton/seance/console/` (plus its tests), and the only app file touched is `apps/snmp/devices.yaml`.
+To mark a tile as needing attention without protocol knowledge, the skeleton configuration gains one optional per-point field, `healthy`. It names the label text that means normal (for example `up`). A second optional field, a top-level `title`, gives the header an app name without protocol knowledge in the skeleton. Outside `skeleton/seance/console/` and its tests, the changes are the two config fields, the two `devices.yaml` files, and the tests and README text that quote a device description (Requirement 13).
 
 Constraints carried from the steering documents and the request:
 
@@ -44,6 +44,8 @@ Current code facts that these requirements rely on:
 - **Steering_Tokens**: The nine CSS colors defined in the Tokens table of `.kiro/steering/design.md`: `--ground`, `--panel`, `--ink`, `--mute`, `--line`, `--line-strong`, `--alert`, `--alert-ink` and `--alert-ground`.
 - **Formatter**: The browser-side JavaScript functions that turn a raw value, unit and timestamp into display text.
 - **Test_Suite**: `skeleton/tests/test_console.py` and the test files added for the Healthy_Label.
+- **App_Title**: The optional top-level `title` text of the YAML configuration, stored on the Configuration, shown in the header as the app name.
+- **Device_Header_Row**: The single row at the top of a device section that holds the device name, the description and the health text, above the section rule.
 
 ## Requirements
 
@@ -72,7 +74,7 @@ Current code facts that these requirements rely on:
 1. THE `apps/snmp/devices.yaml` file SHALL set `healthy: up` on `port1_status`, `port2_status`, `port3_status`, `port4_status` and `wan_link_status`.
 2. THE `apps/snmp/devices.yaml` file SHALL set `healthy: normal` on `on_battery`.
 3. WHEN `load_config` reads `apps/snmp/devices.yaml`, THE Config_Loader SHALL load the file without error.
-4. THE change set of this feature SHALL touch no file under `apps/` other than `apps/snmp/devices.yaml`.
+4. THE change set of this feature SHALL touch no file under `apps/` other than `apps/snmp/devices.yaml`, `apps/modbus/devices.yaml` (only for the changes named in Requirement 13) and the tests and README files that quote a device description (Requirement 13.11).
 
 ### Requirement 3: Page structure
 
@@ -210,7 +212,7 @@ Current code facts that these requirements rely on:
 2. THE Console SHALL keep the routes `GET /points/{device}/{point}`, `POST /tools/{tool_name}` and `GET /audit` with their current status codes and response bodies.
 3. THE change set SHALL leave `skeleton/seance/guard.py`, `skeleton/seance/audit.py`, `skeleton/seance/adapter.py` and every file under `apps/*/adapter.py` unchanged.
 4. THE skeleton SHALL import nothing from `apps/`, and SHALL import neither `pymodbus` nor `pysnmp`.
-5. THE change set SHALL edit files only in `skeleton/seance/console/`, `skeleton/tests/`, `skeleton/seance/config.py`, `skeleton/seance/points.py`, `apps/snmp/devices.yaml` and this spec folder, plus the `healthy` documentation lines in `README.md` and `docs/add-a-protocol.md` when those files describe point fields.
+5. THE change set SHALL edit files only in `skeleton/seance/console/`, `skeleton/tests/`, `skeleton/seance/config.py`, `skeleton/seance/points.py`, `apps/snmp/devices.yaml`, `apps/modbus/devices.yaml` and this spec folder, plus the `healthy` and `title` documentation lines in `README.md` and `docs/add-a-protocol.md` when those files describe point fields or top-level fields, plus every test file under `apps/*/tests/` and every `README.md` (root and `apps/*/README.md`) that quotes an old device description text, plus the `apps/*/tests/test_server_integration.py` tests that assert the old server-rendered markup. THE change set SHALL change no other Modbus source file, so `apps/modbus/adapter.py`, `apps/modbus/simulator.py` and every Modbus test that does not quote an old device description or assert the old markup stay as they are.
 6. THE source files and the documents of the change set SHALL be UTF-8 and use ASCII characters only.
 7. THE Console SHALL create no event loop per request, and the tests SHALL reuse the session event loop.
 8. THE served HTML shell, `console.css` and `console.js` SHALL contain no point name and no device name. Names SHALL reach the Page only as data from `GET /config` and from tool results, and the server SHALL not write a device name into the HTML shell.
@@ -245,3 +247,25 @@ Current code facts that these requirements rely on:
 9. THE Test_Suite SHALL make no network call and SHALL run the console tests with the Fake_Adapter.
 10. THE Test_Suite SHALL be verified on GitHub Actions. THE developer SHALL run only `ruff` and at most one targeted pytest file, once, on the local machine.
 11. THE Test_Suite SHALL load `apps/modbus/devices.yaml` and `apps/snmp/devices.yaml`, and SHALL check that no device name and no point name from either file appears in the served HTML (`GET /`, built over each of the two configurations) or in the served `console.js`. THE check SHALL match each name as a whole word, ignoring case, and SHALL fail with the file and the name that was found.
+
+### Requirement 13: App title, plain device descriptions and the device header row
+
+**User Story:** As an operator, I want the header to name the app, the device descriptions to be short, and each device name, description and health text on one row, so that the console reads at a glance.
+
+#### Acceptance Criteria
+
+1. THE Configuration SHALL carry an optional App_Title that defaults to no value, and THE skeleton SHALL treat the App_Title as generic text with no protocol knowledge.
+2. WHEN the YAML file has a top-level `title` field with non-empty text of at most 40 characters, THE Config_Loader SHALL store the text as the App_Title.
+3. WHEN the YAML file has no top-level `title` field, THE Config_Loader SHALL load the Configuration with no App_Title.
+4. IF the top-level `title` field is empty, is not text, or is longer than 40 characters, THEN THE Config_Loader SHALL raise a ConfigError that names the file and the field `title`.
+5. WHEN `dump_config` renders a Configuration, THE Config_Loader SHALL write the `title` field only when the App_Title is set.
+6. FOR ALL valid Configurations, loading, dumping and loading again SHALL produce an equal Configuration, with and without an App_Title (round-trip property).
+7. THE `GET /config` response SHALL include a `title` field that holds the App_Title, or null when no App_Title is set.
+8. WHERE the `GET /config` response carries a `title`, THE header SHALL show the App_Title as the app name in place of the placeholder `Read-only console`.
+9. WHILE the `GET /config` response carries a null `title`, THE header SHALL show the app name `Read-only console`.
+10. THE `apps/snmp/devices.yaml` file SHALL set `title: "SNMP network gear"` and THE `apps/modbus/devices.yaml` file SHALL set `title: "Modbus factory line"`.
+11. THE `apps/snmp/devices.yaml` and `apps/modbus/devices.yaml` files SHALL hold, for every device, a description with no parenthetical part, for example `Core switch with four ports and an uplink`, and THE change set SHALL update every test and every README table (`apps/*/README.md`, `README.md`) that quotes an old description text.
+12. THE Console SHALL show the device name and the description on one Device_Header_Row above the section rule, with the health text at the right end of the same row.
+13. WHEN the viewport is 390px wide, THE Console SHALL wrap the Device_Header_Row so that no text is clipped and no horizontal scrolling appears.
+14. THE Device_Header_Row SHALL be built by `console.css` and `console.js` only, and `console.js`, `console.css` and the HTML shell SHALL contain no device name and no point name.
+15. THE Test_Suite SHALL cover the App_Title in `skeleton/tests/test_config.py` with example tests for a valid title, an absent title, an empty title, a non-text title, a 41-character title and a round trip, SHALL extend the Hypothesis round trip in `skeleton/tests/test_config_properties.py` with an optional title, and SHALL check in `skeleton/tests/test_console.py` that `GET /config` returns the title or null.

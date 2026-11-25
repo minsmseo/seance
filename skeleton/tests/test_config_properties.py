@@ -10,6 +10,9 @@ from seance.points import Configuration, DataType, DeviceConfig, PointConfig
 
 _text = st.text(alphabet=st.characters(min_codepoint=32, max_codepoint=126), max_size=20)
 _nonempty = _text.filter(bool)
+_title = st.text(
+    alphabet=st.characters(min_codepoint=32, max_codepoint=126), min_size=1, max_size=40
+)
 _positive = st.floats(min_value=1e-6, max_value=1e6, allow_nan=False, allow_infinity=False)
 
 _NO_LABEL_TYPES = (DataType.BOOL, DataType.FLOAT32)
@@ -55,6 +58,7 @@ def _devices(draw: st.DrawFn) -> DeviceConfig:
 _configurations = st.builds(
     Configuration,
     devices=st.lists(_devices(), max_size=4).map(tuple),
+    title=st.none() | _title,
 )
 
 

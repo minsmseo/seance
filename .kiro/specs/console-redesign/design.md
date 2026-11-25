@@ -141,10 +141,9 @@ when the key is present).
 
 Six `healthy:` lines added to the five `*_status` points (`healthy: up`) and to
 `on_battery` (`healthy: normal`), per Requirement 2.1-2.2. No other line in the file
-changes. `apps/modbus/devices.yaml` is not touched; the modbus app has no points
-with `labels` that name a clear single healthy value in the current requirements, so
-Requirement 2.4 (no file under `apps/` other than this one) rules it out for this
-feature regardless.
+changes. `apps/modbus/devices.yaml` gets no `healthy` lines; the modbus app has no points
+with `labels` that name a clear single healthy value. It changes only for
+Requirement 13 (the `title` and the plain descriptions).
 
 ### `skeleton/seance/console/app.py`
 
@@ -162,6 +161,7 @@ Route changes:
 
 ```json
 {
+  "title": "SNMP network gear",
   "devices": [
     {
       "name": "core_switch",
@@ -285,6 +285,54 @@ duration_ms}` per entry (Requirement 8.10, 10.2).
 timestamp`, plus `raw` when the point has labels). The console's `renderTile` reads
 `unit` from `/config` and `value`/`raw`/`timestamp`/`error` from these payloads; it
 never needs a new field on the tool result itself.
+
+## Header title, plain descriptions and the device header row (Requirement 13)
+
+### The `title` config field
+
+`Configuration` in `skeleton/seance/points.py` gains `title: str | None = None` as its
+last field, so `Configuration(devices=...)` keeps working. `load_config` reads the
+top-level `title` key after the `devices` checks. An absent key or a null value gives
+`None`. Any other value must be non-empty text of at most 40 characters. Otherwise it
+raises `ConfigError(file, "", "title", reason)`, the same shape as the existing
+top-level `devices` errors, with reasons such as `must be non-empty text` and
+`must be at most 40 characters`. A boolean or a number is "not text". The skeleton
+treats the value as opaque text and knows no protocol word.
+
+`dump_config` writes `title` first in the mapping, and only when it is not `None`, so
+`load_config(dump_config(cfg)) == cfg` with and without a title. The Hypothesis
+configuration strategy in `test_config_properties.py` draws `title` as `None` or
+non-empty text of 1 to 40 characters.
+
+### `/config` field and header fallback
+
+`GET /config` gains a top-level `title` key next to `devices` and `tools`:
+the App_Title, or `null` when none is set. The shell holds the placeholder text
+`Read-only console` in the header app-name element. After `console.js` fetches
+`/config`, it sets that element with `textContent` to the title when the title is
+non-empty text, and leaves the placeholder otherwise. The title therefore never
+enters the HTML shell on the server side, which keeps the shell name-free. Both app
+files set a title: `title: "SNMP network gear"` and `title: "Modbus factory line"`.
+
+### Plain descriptions
+
+Every device `description` in both `devices.yaml` files loses its parenthetical part,
+for example `Core switch with four ports and an uplink`. Tests and README tables that
+quote the old text are updated to the new text. No Modbus file other than
+`apps/modbus/devices.yaml` and a test or README that quotes a description changes.
+
+### Device header row layout
+
+Each device section starts with one `div.device-head` row, a flex container with
+`flex-wrap: wrap`, `align-items: baseline` and a gap. The row holds, in order, the
+`h2` with the device name, a `p` with the description, and a `p` with the health text.
+The name and description take the left side. The health text has `margin-left: auto`
+so it sits at the right end of the row. The section rule (a 1px `--ink` bottom border)
+sits on the row's bottom edge, so the row is above the rule. At 390px the items wrap
+onto further lines and the health text goes to the start of its own line when it does
+not fit, with `min-width: 0` and `overflow-wrap: anywhere` so no text is clipped and
+the page does not scroll sideways. `console.js` only creates the three elements with
+`textContent` and adds the class names. Neither file holds a device or point name.
 
 ## Design Decision 1: Seconds formatting by unit only, and a console with no names
 

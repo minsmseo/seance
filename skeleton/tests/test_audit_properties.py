@@ -3,6 +3,7 @@
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from seance.audit import Audit_Log, AuditEntry
 from seance.points import Configuration, DataType, DeviceConfig, PointConfig
 from seance.server import TOOL_NAMES, ToolServer
 from tests.fakes import Fake_Adapter
@@ -95,3 +96,23 @@ def test_property_11_audit_entries_record_supplied_fields(
     assert entry.point == (point if isinstance(point, str) else "")
     assert entry.outcome != ""
     assert entry.duration_ms >= 0
+
+
+# Feature: console-redesign, Property 3: the audit view is never longer than n or the log,
+# and is newest first.
+@SETTINGS
+@given(
+    tools=st.lists(TEXT, max_size=30),
+    n=st.integers(min_value=-5, max_value=40),
+)
+def test_recent_never_exceeds_n_or_total_and_is_newest_first(tools: list[str], n: int) -> None:
+    """**Validates: Requirements 9.1**"""
+    log = Audit_Log()
+    entries = [AuditEntry("2025-01-01T00:00:00Z", f"{i}:{t}") for i, t in enumerate(tools)]
+    for entry in entries:
+        log.record(entry)
+    view = log.recent(n)
+    assert len(view) <= max(n, 0)
+    assert len(view) <= len(entries)
+    assert len(view) == min(max(n, 0), len(entries))
+    assert view == list(reversed(entries))[: len(view)]

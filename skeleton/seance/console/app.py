@@ -60,7 +60,7 @@ def _config_body(server: ToolServer) -> dict[str, JsonValue]:
         for device in server.config.devices
     ]
     tools: list[JsonValue] = list(sorted(READ_TOOLS))
-    return {"devices": devices, "tools": tools}
+    return {"title": server.config.title, "devices": devices, "tools": tools}
 
 
 def create_app(server: ToolServer) -> FastAPI:
