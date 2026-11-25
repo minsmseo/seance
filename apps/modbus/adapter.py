@@ -49,15 +49,21 @@ class ModbusAdapter:
         # retries=0: one request is one timeout, so the device timeout is the real bound.
         self._client = ModbusTcpClient(host, port=port, timeout=2.0, retries=0)
         self._lock = threading.Lock()
+        # True until the client may hold a connection. Makes close() safe to call twice.
+        self._closed = True
 
     def connect(self) -> None:
         """Open the TCP connection. A device that is down is reported on read, not here."""
         with self._lock:
+            self._closed = False
             self._client.connect()
 
     def close(self) -> None:
-        """Close the TCP connection."""
+        """Close the TCP connection. Does nothing if it is already closed."""
         with self._lock:
+            if self._closed:
+                return
+            self._closed = True
             self._client.close()
 
     def read(self, device: DeviceConfig, point: PointConfig) -> bytes:
@@ -102,6 +108,8 @@ class ModbusAdapter:
         count = 1 if is_bits else required_length(point.data_type) // 2
         try:
             with self._lock:
+                # A read may reconnect on its own, so a later close() must close it.
+                self._closed = False
                 # The pymodbus sync client reads its timeout from here on every request.
                 self._client.comm_params.timeout_connect = device.timeout_seconds
                 if address.table == Table.COIL:

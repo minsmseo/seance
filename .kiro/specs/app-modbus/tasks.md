@@ -146,7 +146,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Needs no secret and makes no network call beyond its own host
     - _Requirements: 4.7, 4.8, 4.9, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10, 10.6_
 
-  - [-] 9.2 Write unit tests in `apps/modbus/tests/test___main__.py`
+  - [x] 9.2 Write unit tests in `apps/modbus/tests/test___main__.py`
     - Defaults and overrides of the four environment variables
     - Invalid ports (text, 0, 65536) give one message naming the variable and the range
     - A port in use gives one message naming the port and `SEANCE_MODBUS_PORT`

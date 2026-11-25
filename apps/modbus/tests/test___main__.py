@@ -240,7 +240,7 @@ def test_startup_order_simulator_then_adapter_then_serve(harness: Harness) -> No
 
 def test_simulator_stops_after_serve_returns(harness: Harness) -> None:
     assert harness.run({}) == 0
-    assert harness.events[-2:] == ["serve", "simulator.stop"]
+    assert harness.events[-3:] == ["serve", "adapter.close", "simulator.stop"]
     assert harness.events.count("simulator.stop") == 1
 
 
@@ -261,9 +261,17 @@ def test_adapter_connect_is_called_exactly_once_on_success(harness: Harness) -> 
 def test_adapter_is_closed_when_serve_raises(harness: Harness) -> None:
     harness.serve_error = ConfigError("devices.yaml", "x", "name", "is required")
     assert harness.run({}) == 1
-    assert "adapter.close" in harness.events
-    assert harness.events.count("simulator.stop") == 1
-    assert harness.events[-1] == "simulator.stop"
+    # serve closes in its finally block, then main closes again (harmless),
+    # then the simulator stops.
+    assert harness.events == [
+        "simulator.start",
+        "adapter.create",
+        "serve",
+        "adapter.connect",
+        "adapter.close",
+        "adapter.close",
+        "simulator.stop",
+    ]
 
 
 def test_adapter_is_closed_when_the_address_check_fails(harness: Harness, tmp_path: Path) -> None:
@@ -280,13 +288,24 @@ def test_adapter_is_closed_when_the_address_check_fails(harness: Harness, tmp_pa
         encoding="utf-8",
     )
     assert harness.run({}, config_path=config) == 1
-    assert harness.events.count("adapter.close") == 1
-    assert "adapter.connect" not in harness.events
+    assert harness.events == [
+        "simulator.start",
+        "adapter.create",
+        "adapter.close",
+        "simulator.stop",
+    ]
 
 
 def test_adapter_is_not_closed_again_after_a_successful_serve(harness: Harness) -> None:
     assert harness.run({}) == 0
-    assert harness.events.count("adapter.close") == 1
+    assert harness.events == [
+        "simulator.start",
+        "adapter.create",
+        "serve",
+        "adapter.connect",
+        "adapter.close",
+        "simulator.stop",
+    ]
 
 
 # --- Standard output (7.9) -----------------------------------------------------------------

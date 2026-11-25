@@ -324,3 +324,51 @@ def test_no_file_under_apps_modbus_calls_a_pymodbus_write_method() -> None:
 def test_adapter_has_no_write_method() -> None:
     public = [name for name in dir(ModbusAdapter) if not name.startswith("_")]
     assert sorted(public) == ["close", "connect", "health", "read"]
+
+
+# --- close() is idempotent -----------------------------------------------------------------
+
+
+class _FakeClient:
+    """Counts connect and close calls. Never opens a socket."""
+
+    def __init__(self) -> None:
+        self.connects = 0
+        self.closes = 0
+
+    def connect(self) -> bool:
+        self.connects += 1
+        return True
+
+    def close(self) -> None:
+        self.closes += 1
+
+
+def test_close_twice_closes_the_client_once() -> None:
+    adapter = ModbusAdapter(HOST, 1)
+    fake = _FakeClient()
+    adapter._client = fake  # type: ignore[assignment]
+    adapter.connect()
+    adapter.close()
+    adapter.close()
+    assert fake.closes == 1
+
+
+def test_close_without_connect_does_not_raise() -> None:
+    adapter = ModbusAdapter(HOST, 1)
+    fake = _FakeClient()
+    adapter._client = fake  # type: ignore[assignment]
+    adapter.close()
+    assert fake.closes == 0
+
+
+def test_connect_after_close_works_and_can_be_closed_again() -> None:
+    adapter = ModbusAdapter(HOST, 1)
+    fake = _FakeClient()
+    adapter._client = fake  # type: ignore[assignment]
+    adapter.connect()
+    adapter.close()
+    adapter.connect()
+    adapter.close()
+    assert fake.connects == 2
+    assert fake.closes == 2
