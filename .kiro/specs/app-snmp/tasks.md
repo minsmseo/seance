@@ -134,8 +134,8 @@ Verification rules for every task:
     - Generate text with exactly one defect and check that the message names the form, `community` or `oid` that matches it
     - **Validates: Requirements 3.4, 3.5, 3.6, 3.7, 3.8, 3.9**
 
-- [ ] 7. Implement the SNMP_Adapter
-  - [ ] 7.1 Add the pysnmp dependency and write the three pysnmp verification tests
+- [~] 7. Implement the SNMP_Adapter
+  - [x] 7.1 Add the pysnmp dependency and write the three pysnmp verification tests
     - Check the current pysnmp 7.1 documentation for `get_cmd`, `UdpTransportTarget.create`, `CommunityData` and `lookupMib`
     - Add `pysnmp>=7.1,<8` to `dependencies` in `pyproject.toml` and run `uv sync`
     - Create `apps/snmp/tests/test_adapter.py` with only these three tests, written against the Simulator and without any adapter code beyond a throwaway helper inside the test file:
