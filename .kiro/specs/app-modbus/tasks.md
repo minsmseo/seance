@@ -184,15 +184,15 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - The README mentions the test command and `mcp.json`
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 12. Add the Kiro_MCP_Config
-  - [ ] 12.1 Create `.kiro/settings/mcp.json`
+- [x] 12. Add the Kiro_MCP_Config
+  - [x] 12.1 Create `.kiro/settings/mcp.json`
     - One entry `seance-modbus` under `mcpServers`, with `command` `uv` and `args` `run`, `python`, `-m`, `apps.modbus`
     - `autoApprove` lists `list_devices`, `list_points`, `read_point`, `read_points` and `device_health`
     - The entry is enabled, has no secret, and sets `SEANCE_CONSOLE_PORT` in `env` to a value other than 8080
     - Valid JSON, ASCII only, and no change to `.gitignore` that hides `.kiro`
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
 
-  - [ ] 12.2 Write unit tests in `apps/modbus/tests/test_mcp_config.py`
+  - [x] 12.2 Write unit tests in `apps/modbus/tests/test_mcp_config.py`
     - Parse the file and assert each point of requirement 9, including that the console port differs from the default and that no value looks like a secret
     - Assert that `.gitignore` does not list `.kiro`
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_

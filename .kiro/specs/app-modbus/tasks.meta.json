@@ -362,6 +362,42 @@
         "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
         "timestamp": 1795599806369
       }
+    ],
+    "12.1 Create `.kiro/settings/mcp.json`": [
+      {
+        "executionId": "2fb03b3a-66a7-4357-86cd-1192cf7150c1",
+        "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
+        "timestamp": 1795599939712
+      },
+      {
+        "executionId": "2fb03b3a-66a7-4357-86cd-1192cf7150c1",
+        "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
+        "timestamp": 1795599963789
+      },
+      {
+        "executionId": "0298edc7-1a78-4b40-a714-b064b971e316",
+        "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
+        "timestamp": 1795600123939
+      }
+    ],
+    "12.2 Write unit tests in `apps/modbus/tests/test_mcp_config.py`": [
+      {
+        "executionId": "0298edc7-1a78-4b40-a714-b064b971e316",
+        "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
+        "timestamp": 1795600124483
+      },
+      {
+        "executionId": "0298edc7-1a78-4b40-a714-b064b971e316",
+        "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
+        "timestamp": 1795600163577
+      }
+    ],
+    "12. Add the Kiro_MCP_Config": [
+      {
+        "executionId": "0298edc7-1a78-4b40-a714-b064b971e316",
+        "chatSessionId": "sess_a0913790-e12d-4c53-ac74-90ae50e5095f",
+        "timestamp": 1795600163665
+      }
     ]
   }
 }

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "seance-modbus": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "apps.modbus"],
+      "env": {
+        "SEANCE_CONSOLE_PORT": "8081"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "list_devices",
+        "list_points",
+        "read_point",
+        "read_points",
+        "device_health"
+      ]
+    }
+  }
+}
