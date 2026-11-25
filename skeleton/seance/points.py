@@ -33,6 +33,7 @@ class PointConfig:
     scale: float | None = None
     decimals: int | None = None
     labels: tuple[tuple[int, str], ...] | None = None
+    healthy: str | None = None
 
 
 @dataclass(frozen=True)

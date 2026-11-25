@@ -186,3 +186,66 @@ def test_labels_round_trip_through_dump_keeps_order(tmp_path: Path) -> None:
 def test_decimals_round_trips_through_dump(tmp_path: Path) -> None:
     config = load_config(write(tmp_path, decimals_text("3")))
     assert load_config(write(tmp_path, dump_config(config))) == config
+
+
+def healthy_text(healthy: str, labels: str | None = "{1: up, 2: down}") -> str:
+    labels_part = f", labels: {labels}" if labels is not None else ""
+    return (
+        "devices:\n  - name: press\n    points:\n"
+        f'      - {{name: state, address: "1", data_type: int16, unit: state{labels_part}, '
+        f"healthy: {healthy}}}\n"
+    )
+
+
+def test_healthy_loads_and_defaults_to_none(tmp_path: Path) -> None:
+    point = load_config(write(tmp_path, healthy_text("up"))).devices[0].points[0]
+    assert point.healthy == "up"
+    assert load_config(write(tmp_path, labels_text("{1: up}"))).devices[0].points[0].healthy is None
+
+
+@pytest.mark.parametrize(
+    ("healthy", "labels", "reason_part"),
+    [
+        ('""', "{1: up, 2: down}", "non-empty"),
+        ("5", "{1: up, 2: down}", "non-empty"),
+        ("up", None, "labels"),
+        ("sideways", "{1: up, 2: down}", "down, up"),
+    ],
+)
+def test_invalid_healthy_names_file_device_and_field(
+    tmp_path: Path, healthy: str, labels: str | None, reason_part: str
+) -> None:
+    path = write(tmp_path, healthy_text(healthy, labels))
+    with pytest.raises(ConfigError) as info:
+        load_config(path)
+    assert info.value.field == "points[state].healthy"
+    assert info.value.device == "press"
+    assert str(path) in str(info.value)
+    assert "points[state].healthy" in str(info.value)
+    assert reason_part in info.value.reason
+
+
+def test_healthy_round_trips_through_dump(tmp_path: Path) -> None:
+    config = load_config(write(tmp_path, healthy_text("up")))
+    text = dump_config(config)
+    assert "healthy: up" in text
+    assert load_config(write(tmp_path, text)) == config
+
+
+def test_snmp_devices_file_carries_healthy_text() -> None:
+    path = Path(__file__).resolve().parents[2] / "apps" / "snmp" / "devices.yaml"
+    config = load_config(path)
+    found = {
+        (device.name, point.name): point.healthy
+        for device in config.devices
+        for point in device.points
+        if point.healthy is not None
+    }
+    assert found == {
+        ("core_switch", "port1_status"): "up",
+        ("core_switch", "port2_status"): "up",
+        ("core_switch", "port3_status"): "up",
+        ("core_switch", "port4_status"): "up",
+        ("edge_router", "wan_link_status"): "up",
+        ("ups", "on_battery"): "normal",
+    }

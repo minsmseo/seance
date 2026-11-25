@@ -25,8 +25,11 @@ _label_maps = st.dictionaries(
 def _points(draw: st.DrawFn) -> PointConfig:
     data_type = draw(st.sampled_from(DataType))
     labels = None
+    healthy = None
     if data_type not in _NO_LABEL_TYPES:
         labels = draw(st.none() | _label_maps)
+        if labels is not None:
+            healthy = draw(st.none() | st.sampled_from([text for _, text in labels]))
     return PointConfig(
         name=draw(_nonempty),
         address=draw(_nonempty),
@@ -34,6 +37,7 @@ def _points(draw: st.DrawFn) -> PointConfig:
         unit=draw(_nonempty),
         scale=draw(st.none() | _positive),
         labels=labels,
+        healthy=healthy,
     )
 
 
@@ -61,6 +65,23 @@ _configurations = st.builds(
 @given(config=_configurations)
 def test_config_round_trip(config: Configuration, tmp_path_factory) -> None:  # noqa: ANN001
     directory = tmp_path_factory.mktemp("cfg")
+    first_file = Path(directory) / "first.yaml"
+    first_file.write_text(dump_config(config), encoding="utf-8")
+    first = load_config(first_file)
+    second_file = Path(directory) / "second.yaml"
+    second_file.write_text(dump_config(first), encoding="utf-8")
+    second = load_config(second_file)
+    assert second == first
+    assert first == config
+
+
+# Feature: console-redesign, Property 4: For any valid Configuration whose points may carry a
+# healthy text, loading, dumping and loading again produces an equal Configuration.
+# **Validates: Requirements 1.7, 1.8**
+@settings(max_examples=100)
+@given(config=_configurations)
+def test_config_round_trip_with_healthy(config: Configuration, tmp_path_factory) -> None:  # noqa: ANN001
+    directory = tmp_path_factory.mktemp("cfg_healthy")
     first_file = Path(directory) / "first.yaml"
     first_file.write_text(dump_config(config), encoding="utf-8")
     first = load_config(first_file)

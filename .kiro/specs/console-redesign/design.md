@@ -109,7 +109,9 @@ if "healthy" in raw and raw["healthy"] is not None:
     allowed = sorted({text for _, text in labels})
     if value not in allowed:
         raise ConfigError(
-            file, device, field,
+            file,
+            device,
+            field,
             f"must be one of the configured labels: {', '.join(allowed)}",
         )
     healthy = value
@@ -632,8 +634,9 @@ separately by the example tests in Requirement 1.9).
 # **Validates: Requirements 1.7, 1.8**
 @settings(max_examples=100)
 @given(config=_configurations)
-def test_config_round_trip_with_healthy(config: Configuration, tmp_path_factory) -> None:
-    ...  # same structure as test_config_round_trip, over the extended strategy
+def test_config_round_trip_with_healthy(
+    config: Configuration, tmp_path_factory
+) -> None: ...  # same structure as test_config_round_trip, over the extended strategy
 ```
 
 ## Error Handling

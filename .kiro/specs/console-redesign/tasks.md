@@ -16,35 +16,35 @@ Constraints that apply to every task:
 
 ## Tasks
 
-- [ ] 1. Add the optional `healthy` field to the configuration
-  - [ ] 1.1 Add `healthy` to `PointConfig` in `skeleton/seance/points.py`
+- [x] 1. Add the optional `healthy` field to the configuration
+  - [x] 1.1 Add `healthy` to `PointConfig` in `skeleton/seance/points.py`
     - Append `healthy: str | None = None` as the last field, so existing positional construction keeps working.
     - _Requirements: 1.1, 10.5_
-  - [ ] 1.2 Parse and validate `healthy` in `_load_point` in `skeleton/seance/config.py`
+  - [x] 1.2 Parse and validate `healthy` in `_load_point` in `skeleton/seance/config.py`
     - Run the check after `labels` is resolved. Accept the key only when it is non-empty text, `labels` is set, and the text is one of the label values.
     - Raise `ConfigError` naming the file, the device and `points[<name>].healthy`. The "not one of the labels" error lists the allowed label texts.
     - A point with no `healthy` key loads exactly as before.
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.6, 1.8_
-  - [ ] 1.3 Emit `healthy` in `dump_config`
+  - [x] 1.3 Emit `healthy` in `dump_config`
     - Write the key after `labels`, only when the value is not `None`.
     - _Requirements: 1.7, 1.8_
-  - [ ] 1.4 Add `healthy: up` and `healthy: normal` to `apps/snmp/devices.yaml`
+  - [x] 1.4 Add `healthy: up` and `healthy: normal` to `apps/snmp/devices.yaml`
     - Add `healthy: up` to `port1_status`, `port2_status`, `port3_status`, `port4_status` and `wan_link_status`.
     - Add `healthy: normal` to `on_battery`.
     - Change no other line and touch no other file under `apps/`. Do not edit `apps/modbus/devices.yaml`.
     - _Requirements: 2.1, 2.2, 2.4_
-  - [ ] 1.5 Write example tests in `skeleton/tests/test_config.py`
+  - [x] 1.5 Write example tests in `skeleton/tests/test_config.py`
     - One test per `ConfigError` case: `healthy` not non-empty text (empty string, number), `healthy` without `labels`, `healthy` not among the label values. Assert the message names the file, the device and `points[<name>].healthy`, and for the last case lists the allowed texts.
     - A test that a point with `healthy` loads with the value stored, and that a point without it loads with `None`.
     - A readable `dump_config` then `load_config` round-trip example with a `healthy` field.
     - A test that `load_config` reads `apps/snmp/devices.yaml` without error and that the six named points carry the expected `healthy` text.
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.9, 2.1, 2.2, 2.3_
-  - [ ] 1.6 Write the Hypothesis round-trip test in `skeleton/tests/test_config_properties.py`
+  - [x] 1.6 Write the Hypothesis round-trip test in `skeleton/tests/test_config_properties.py`
     - **Property 4: Healthy-field round trip**
     - Extend the `_points()` strategy: when `labels` is drawn, draw `healthy` as `None` or one of the drawn label texts. When `labels` is `None`, `healthy` is `None`.
     - Add `test_config_round_trip_with_healthy`, tagged `Feature: console-redesign, Property 4`, with at least 100 examples. Reuse the structure of the existing round-trip test. Create no event loop.
     - **Validates: Requirements 1.7, 1.8**
-  - [ ] 1.7 Run ruff and one targeted test file
+  - [x] 1.7 Run ruff and one targeted test file
     - Run `uv run ruff check .`, then `uv run ruff format .`, then `uv run pytest skeleton/tests/test_config.py` once.
     - _Requirements: 12.10_
 

@@ -93,6 +93,23 @@ def _load_point(file: str, device: str, index: int, raw: object) -> PointConfig:
                 raise ConfigError(file, device, field, f"label for {key} must be non-empty text")
             pairs.append((key, text_value))
         labels = tuple(pairs)
+    healthy: str | None = None
+    if "healthy" in raw and raw["healthy"] is not None:
+        field = f"{prefix}.healthy"
+        value = raw["healthy"]
+        if not isinstance(value, str) or not value:
+            raise ConfigError(file, device, field, "must be a non-empty string")
+        if labels is None:
+            raise ConfigError(file, device, field, "is not allowed because `labels` is required")
+        allowed = sorted({t for _, t in labels})
+        if value not in allowed:
+            raise ConfigError(
+                file,
+                device,
+                field,
+                f"'{value}' is not one of the labels; use one of: {', '.join(allowed)}",
+            )
+        healthy = value
     return PointConfig(
         name=name,
         address=address,
@@ -101,6 +118,7 @@ def _load_point(file: str, device: str, index: int, raw: object) -> PointConfig:
         scale=scale,
         decimals=decimals,
         labels=labels,
+        healthy=healthy,
     )
 
 
@@ -171,6 +189,8 @@ def dump_config(config: Configuration) -> str:
                 entry["decimals"] = point.decimals
             if point.labels is not None:
                 entry["labels"] = dict(point.labels)
+            if point.healthy is not None:
+                entry["healthy"] = point.healthy
             points.append(entry)
         devices.append(
             {

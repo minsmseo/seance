@@ -1,0 +1,66 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Add the optional `healthy` field to the configuration": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609065701
+      },
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609155051
+      }
+    ],
+    "1.1 Add `healthy` to `PointConfig` in `skeleton/seance/points.py`": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609167601
+      }
+    ],
+    "1.2 Parse and validate `healthy` in `_load_point` in `skeleton/seance/config.py`": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609172097
+      }
+    ],
+    "1.3 Emit `healthy` in `dump_config`": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609173089
+      }
+    ],
+    "1.4 Add `healthy: up` and `healthy: normal` to `apps/snmp/devices.yaml`": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609174082
+      }
+    ],
+    "1.5 Write example tests in `skeleton/tests/test_config.py`": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609175082
+      }
+    ],
+    "1.6 Write the Hypothesis round-trip test in `skeleton/tests/test_config_properties.py`": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609176095
+      }
+    ],
+    "1.7 Run ruff and one targeted test file": [
+      {
+        "executionId": "7dd1f7e3-2aff-48a0-a6b2-a371a0e3b285",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795609176622
+      }
+    ]
+  }
+}
