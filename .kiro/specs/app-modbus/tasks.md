@@ -167,8 +167,8 @@ The work follows the order set for this spec: the Simulator first, then the skel
 - [x] 10. Checkpoint - Config and Entry_Point
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Write the README
-  - [ ] 11.1 Create `apps/modbus/README.md`
+- [x] 11. Write the README
+  - [x] 11.1 Create `apps/modbus/README.md`
     - State the command `uv run python -m apps.modbus` and the four environment variables with their defaults
     - List every point with device, name, address, data type, unit and scale
     - Give three example questions, each with the tool calls that answer it
@@ -177,7 +177,7 @@ The work follows the order set for this spec: the Simulator first, then the skel
     - Use ASCII only
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-  - [ ] 11.2 Write unit tests in `apps/modbus/tests/test_readme.py`
+  - [x] 11.2 Write unit tests in `apps/modbus/tests/test_readme.py`
     - The README is ASCII only, contains the command and the four variable names with defaults
     - Every point in `devices.yaml` appears in the README with its address, type, unit and scale
     - Three example questions each name existing tool names
