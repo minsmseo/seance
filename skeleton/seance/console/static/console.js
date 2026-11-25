@@ -204,6 +204,9 @@ function renderDevices(config) {
   }
 }
 
+// Shown on every point of a device whose reply is missing, unreadable or has no results.
+const READ_FAILED = "The console server did not return a reading. Try Read again.";
+
 // Maps the read_points reply to one outcome per configured point.
 function outcomesFor(device, body) {
   const byName = new Map();
@@ -211,12 +214,12 @@ function outcomesFor(device, body) {
   const payload = body ? body.result : null;
   if (payload && typeof payload === "object" && Array.isArray(payload.results)) {
     for (const item of payload.results) {
-      byName.set(item.point, item);
+      if (item && typeof item === "object") {
+        byName.set(item.point, item);
+      }
     }
   } else {
-    wholeError = typeof payload === "string" && payload
-      ? payload
-      : "The device did not answer. Try again in a moment.";
+    wholeError = typeof payload === "string" && payload ? payload : READ_FAILED;
   }
   return device.points.map(function (point) {
     if (wholeError !== null) {
@@ -253,7 +256,8 @@ async function readDevice(view) {
     });
     body = await response.json();
   } catch (failure) {
-    body = { result: "The console could not reach the server. Try Read again." };
+    // A rejected fetch or an unparseable body fails every point of this device.
+    body = { result: READ_FAILED };
   }
   const outcomes = outcomesFor(device, body);
   const tiles = [];
@@ -574,4 +578,7 @@ setInterval(pollAudit, LEDGER_POLL_MS);
 
 document.getElementById("read-again").addEventListener("click", onReadAgain);
 initToolPanel();
-refreshAll();
+refreshAll().catch(function () {
+  document.getElementById("summary").textContent =
+    "The console could not read the devices. Check that the server is running and try Read again.";
+});

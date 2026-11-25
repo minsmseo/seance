@@ -232,7 +232,7 @@ Constraints that apply to every task:
     - Run `uv run ruff check .`, then `uv run ruff format .`, then `uv run pytest skeleton/tests/test_console_design.py` once.
     - _Requirements: 12.10_
 
-- [~] 11. Final checkpoint - Ensure all tests pass
+- [-] 11. Final checkpoint - Ensure all tests pass
   - Ensure ruff is clean. Confirm that GitHub Actions is the place where the full suite is checked, and that the completion note lists every changed test from task 3.5. Ask the user if questions arise.
 
 ## Notes

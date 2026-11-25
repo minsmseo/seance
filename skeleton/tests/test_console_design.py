@@ -13,6 +13,7 @@ import pytest
 from anyio.from_thread import BlockingPortal
 from fastapi.testclient import TestClient
 
+from seance.adapter import AdapterReadError
 from seance.config import load_config
 from seance.console.app import create_app
 from seance.points import Configuration, DataType, DeviceConfig, PointConfig
@@ -622,11 +623,11 @@ def _attention_count(config_points: tuple[PointConfig, ...], reply: dict[str, ob
     return count
 
 
-def _read_all(client: TestClient, config: Configuration) -> dict[str, object]:
+def _read_all(client: TestClient, config: Configuration, status: int = 200) -> dict[str, object]:
     device = config.devices[0]
     body = {"device": device.name, "points": [p.name for p in device.points]}
     reply = client.post("/tools/read_points", json=body)
-    assert reply.status_code == 200
+    assert reply.status_code == status
     return reply.json()
 
 
@@ -671,17 +672,74 @@ def test_read_points_with_every_point_failing_gives_one_attention_per_point(
     # Feature: console-redesign, Property 2
     config = _attention_config()
     with ExitStack() as stack:
+        server = ToolServer(config, Fake_Adapter(error=AdapterReadError("Device offline.")))
+        stack.callback(server.close)
+        client = TestClient(create_app(server))
+        client.portal = session_portal
+        stack.callback(client.close)
+        # Every point failed, so the outcome is adapter_error and the status is 502,
+        # but the body still carries one result per point.
+        reply = _read_all(client, config, status=502)
+    results = reply["result"]["results"]
+    assert [item["point"] for item in results] == ["a", "b", "mode"]
+    assert all("error" in item and item["error"] for item in results)
+    assert "Traceback" not in str(reply)
+    assert _attention_count(config.devices[0].points, reply) == 3
+
+
+def test_read_points_with_an_unexpected_exception_gives_502_and_a_short_sentence(
+    session_portal: BlockingPortal,
+) -> None:
+    config = _attention_config()
+    with ExitStack() as stack:
         server = ToolServer(config, Fake_Adapter(error=RuntimeError("boom")))
         stack.callback(server.close)
         client = TestClient(create_app(server))
         client.portal = session_portal
         stack.callback(client.close)
-        reply = _read_all(client, config)
+        reply = _read_all(client, config, status=502)
+    assert reply["ok"] is False
+    assert reply["outcome"] == "adapter_error"
     results = reply["result"]["results"]
-    assert [item["point"] for item in results] == ["a", "b", "mode"]
-    assert all("error" in item and item["error"] for item in results)
+    assert len(results) == 3
+    for item in results:
+        assert isinstance(item["error"], str) and 0 < len(item["error"]) < 200
     assert "boom" not in str(reply)
-    assert _attention_count(config.devices[0].points, reply) == 3
+    assert "Traceback" not in str(reply)
+
+
+def test_console_js_fails_every_point_when_the_read_reply_is_unusable() -> None:
+    script = load_js()
+    squashed = _squash(js_body(script, "readDevice"))
+    # The fetch and the body parse share one try, so a rejected fetch and an
+    # unparseable body land in the same catch, which fails the whole device.
+    assert squashed.index("try {") < squashed.index("await fetch(")
+    assert squashed.index("await fetch(") < squashed.index("await response.json()")
+    assert squashed.index("await response.json()") < squashed.index("} catch (failure) {")
+    assert "body = { result: READ_FAILED };" in squashed
+    assert "outcomesFor(device, body)" in squashed
+    outcomes = _squash(js_body(script, "outcomesFor"))
+    # A reply with no results array, at any status, gives every point the same error.
+    assert "Array.isArray(payload.results)" in outcomes
+    assert "wholeError = typeof payload" in outcomes
+    assert "READ_FAILED" in outcomes
+    assert "if (wholeError !== null) { return { error: wholeError }; }" in outcomes
+    assert "device.points.map(" in outcomes
+    assert 'const READ_FAILED = "The console server did not return a reading.' in script
+
+
+def test_console_js_clears_in_flight_state_in_finally() -> None:
+    script = load_js()
+    refresh = _squash(js_body(script, "refreshAll"))
+    assert "refreshing = runRefresh().finally(" in refresh
+    assert "refreshing = null;" in refresh
+    again = _squash(js_body(script, "onReadAgain"))
+    assert again.index("button.disabled = true;") < again.index("try {")
+    assert "} finally { button.disabled = false; }" in again
+    poll = _squash(js_body(script, "pollAudit"))
+    assert "} finally { ledgerInFlight = false; }" in poll
+    # The first load handles a rejected refresh instead of leaving it unhandled.
+    assert "refreshAll().catch(" in script
 
 
 def test_read_points_with_one_unknown_point_fails_only_that_point(
