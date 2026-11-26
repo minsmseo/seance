@@ -412,6 +412,7 @@ function renderLedgerTarget(entry, row) {
   }
   const target = document.createElement("span");
   target.className = "ledger-target ledger-detail";
+  target.title = (entry.device ? [entry.device] : []).concat(points).join(", ");
   names.forEach(function (name, index) {
     if (index > 0) {
       addText(target, "span", "ledger-sep", ", ");
@@ -434,7 +435,9 @@ function renderLedgerRows(entries) {
   const rows = entries.map(function (entry) {
     const row = document.createElement("li");
     const main = document.createElement("div");
-    main.className = "ledger-row-main";
+    main.className = "ledger-line ledger-line-main";
+    const meta = document.createElement("div");
+    meta.className = "ledger-line ledger-line-meta";
     const failed = entry.outcome !== "ok";
     if (failed) {
       row.classList.add("attention");
@@ -445,13 +448,14 @@ function renderLedgerRows(entries) {
     if (target) {
       main.appendChild(target);
     }
-    addText(main, "span", "ledger-outcome", entry.outcome);
     const source = entry.source === "console" ? "console" : "agent";
-    addText(main, "span", "ledger-source ledger-source-" + source, source);
+    addText(meta, "span", "ledger-source ledger-source-" + source, source);
+    addText(meta, "span", "ledger-outcome", entry.outcome);
     const when = formatTimestamp(entry.timestamp);
-    const time = addText(main, "span", "ledger-detail", when.text);
+    const time = addText(meta, "span", "ledger-time ledger-detail", when.text);
     time.title = when.title;
     row.appendChild(main);
+    row.appendChild(meta);
     if (failed) {
       addText(row, "p", "ledger-reason", reasonSentence(entry.outcome));
     }

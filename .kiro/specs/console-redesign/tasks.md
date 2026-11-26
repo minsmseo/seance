@@ -273,6 +273,21 @@ Constraints that apply to every task:
     - Run `uv run ruff check .`, then `uv run ruff format .`. Do not run pytest.
     - _Requirements: 12.10_
 
+- [x] 13. Fix the sticky Ledger and give Ledger rows one fixed layout
+  - [x] 13.1 Make the Ledger stay in view beside the devices
+    - On wide screens the Ledger scrolls away with the page. Find the cause (an ancestor with overflow, a grid or flex item stretched to the row height, a missing top value, a stale stylesheet, or a script) and fix it so the Ledger stays in view beside the devices. Below the narrow breakpoint it stays in normal flow.
+    - Record the cause in the completion note.
+    - _Requirements: 14.10, 14.11_
+  - [x] 13.2 Give every Ledger row the same two-line layout
+    - Line 1: tool name, then the target. Line 2: source, outcome, time, left to right, with the time right-aligned.
+    - No row wraps differently from another. A long target truncates with an ellipsis and keeps the full text in `title`.
+    - Failed rows keep the attention style and the reason sentence.
+    - _Requirements: 8.3, 8.4, 14.1, 14.2, 14.9_
+  - [x] 13.3 Update tests in `skeleton/tests/test_console_design.py` and run ruff only
+    - Adjust the Ledger tests from task 12.9 that assert the old row markup, list each changed test by name, and add checks for the two-line row and the sticky fix.
+    - Run `uv run ruff check .`, then `uv run ruff format .`. Do not run pytest.
+    - _Requirements: 12.10, 14.14_
+
 ## Notes
 
 - No task is optional. Every test sub-task is required by Requirement 12.
@@ -327,7 +342,10 @@ Constraints that apply to every task:
     { "id": 39, "tasks": ["12.5"] },
     { "id": 40, "tasks": ["12.6"] },
     { "id": 41, "tasks": ["12.8", "12.9"] },
-    { "id": 42, "tasks": ["12.10"] }
+    { "id": 42, "tasks": ["12.10"] },
+    { "id": 43, "tasks": ["13.1"] },
+    { "id": 44, "tasks": ["13.2"] },
+    { "id": 45, "tasks": ["13.3"] }
   ]
 }
 ```

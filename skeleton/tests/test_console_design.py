@@ -929,7 +929,7 @@ def test_ledger_rows_use_the_target_helper_and_show_the_source() -> None:
     body = _squash(js_body(load_js(), "renderLedgerRows"))
     assert "renderLedgerTarget(entry, row)" in body
     assert 'entry.source === "console" ? "console" : "agent"' in body
-    assert 'addText(main, "span", "ledger-source ledger-source-" + source, source)' in body
+    assert 'addText(meta, "span", "ledger-source ledger-source-" + source, source)' in body
 
 
 def test_tile_unit_is_its_own_smaller_muted_element() -> None:
@@ -996,3 +996,85 @@ def test_ledger_is_in_normal_flow_in_the_narrow_layout() -> None:
     assert ledger["max-height"] == "none"
     assert ledger["overflow-y"] in {"visible", "hidden"} and ledger["overflow-y"] != "auto"
     assert "(max-width" in css[css.index("@media") : css.index("{", css.index("@media"))]
+
+
+# ---------------------------------------------------------------------------
+# Ledger row layout and sticky robustness (task 13)
+# ---------------------------------------------------------------------------
+
+
+def _wide_rules() -> list[Rule]:
+    css = re.sub(r"/\*.*?\*/", "", load_css(), flags=re.DOTALL)
+    return parse_css(css.replace(_media_block(css), ""))
+
+
+def test_ledger_row_has_two_line_containers_in_order() -> None:
+    body = _squash(js_body(load_js(), "renderLedgerRows"))
+    assert 'main.className = "ledger-line ledger-line-main"' in body
+    assert 'meta.className = "ledger-line ledger-line-meta"' in body
+    assert body.index("row.appendChild(main);") < body.index("row.appendChild(meta);")
+
+
+def test_ledger_line_one_is_tool_then_target() -> None:
+    body = _squash(js_body(load_js(), "renderLedgerRows"))
+    tool = body.index('addText(main, "span", "ledger-tool", entry.tool)')
+    target = body.index("main.appendChild(target)")
+    assert tool < target
+    assert 'addText(meta, "span", "ledger-tool"' not in body
+
+
+def test_ledger_line_two_is_source_outcome_time_in_order() -> None:
+    body = _squash(js_body(load_js(), "renderLedgerRows"))
+    source = body.index('addText(meta, "span", "ledger-source ')
+    outcome = body.index('addText(meta, "span", "ledger-outcome", entry.outcome)')
+    time = body.index('addText(meta, "span", "ledger-time ledger-detail", when.text)')
+    assert source < outcome < time
+
+
+def test_ledger_time_is_right_aligned() -> None:
+    assert _declarations(".ledger-time").get("margin-left") == "auto"
+
+
+def test_ledger_lines_never_wrap() -> None:
+    line = _declarations(".ledger-line")
+    assert line.get("white-space") == "nowrap"
+    assert line.get("flex-wrap") == "nowrap"
+    css = load_css()
+    assert "flex-wrap: wrap" not in css.split("/* Ledger */", 1)[1].split("/* Narrow", 1)[0]
+    ledger_css = css.split("/* Ledger */", 1)[1]
+    assert "overflow-wrap" not in ledger_css
+
+
+def test_ledger_target_truncates_with_ellipsis_and_has_a_title() -> None:
+    target = _declarations(".ledger-target")
+    assert target.get("text-overflow") == "ellipsis"
+    assert target.get("overflow") == "hidden"
+    assert target.get("white-space") == "nowrap"
+    assert target.get("min-width") == "0"
+    body = _squash(js_body(load_js(), "renderLedgerTarget"))
+    assert "target.title = " in body
+
+
+def test_ledger_sticky_rule_has_top_and_align_self_start() -> None:
+    ledger: dict[str, str] = {}
+    for selector, decls in _wide_rules():
+        if selector == ".ledger":
+            ledger.update(decls)
+    assert ledger["position"] == "sticky"
+    assert re.fullmatch(r"\d+px", ledger["top"])
+    assert ledger["align-self"] == "start"
+
+
+def test_no_ancestor_of_the_ledger_sets_overflow_or_containment() -> None:
+    ancestors = {"html", "body", ".layout", "*", ":root"}
+    for selector, decls in _wide_rules():
+        if selector in ancestors:
+            for prop, _value in decls:
+                assert not prop.startswith("overflow"), (selector, prop)
+                assert prop not in {"contain", "transform", "filter"}, (selector, prop)
+
+
+def test_shell_links_carry_a_cache_version() -> None:
+    shell = (CONSOLE_DIR / "templates" / "index.html").read_text(encoding="utf-8")
+    assert re.search(r'href="/static/console\.css\?v=\d+"', shell)
+    assert re.search(r'src="/static/console\.js\?v=\d+"', shell)

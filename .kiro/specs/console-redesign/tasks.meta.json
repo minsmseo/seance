@@ -682,6 +682,39 @@
         "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
         "timestamp": 1795611989311
       }
+    ],
+    "13. Fix the sticky Ledger and give Ledger rows one fixed layout": [
+      {
+        "executionId": "9fd9bc49-9c9b-4ce1-a4bd-5fdcff329105",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795659593698
+      },
+      {
+        "executionId": "9fd9bc49-9c9b-4ce1-a4bd-5fdcff329105",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795659696893
+      }
+    ],
+    "13.1 Make the Ledger stay in view beside the devices": [
+      {
+        "executionId": "9fd9bc49-9c9b-4ce1-a4bd-5fdcff329105",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795659695314
+      }
+    ],
+    "13.2 Give every Ledger row the same two-line layout": [
+      {
+        "executionId": "9fd9bc49-9c9b-4ce1-a4bd-5fdcff329105",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795659696535
+      }
+    ],
+    "13.3 Update tests in `skeleton/tests/test_console_design.py` and run ruff only": [
+      {
+        "executionId": "9fd9bc49-9c9b-4ce1-a4bd-5fdcff329105",
+        "chatSessionId": "sess_49c8fef2-0681-488f-a6f0-e8a916dd1583",
+        "timestamp": 1795659696842
+      }
     ]
   }
 }
